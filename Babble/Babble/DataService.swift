@@ -12,8 +12,11 @@
 import Foundation
 import FirebaseAuth
 import FirebaseDatabase
+import FirebaseAuthUI
+import FirebaseDatabaseUI
 
 class DataService {
+    
     static let dataService = DataService()
     
     private var _BASE_REF = Firebase(url: "\(BASE_URL)")
