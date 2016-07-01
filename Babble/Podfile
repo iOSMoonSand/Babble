@@ -3,4 +3,6 @@ use_frameworks!
 
 target "Babble" do
 	pod 'Firebase', '>= 2.5.0'
+	pod 'Firebase/Auth'
+	pod 'Firebase/Database'
 end
