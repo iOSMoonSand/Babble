@@ -8,20 +8,8 @@
 //This is a service class that interacts with Firebase
 
 import Foundation
-import FirebaseAuth
-import FirebaseDatabase
+import Firebase
 
 class DataService {
-    
-    //singleton shared instance
-    static let sharedManager = DataService()
-    
-    //create a reference to your database
-    let firebaseRef = FIRDatabase.database().reference()
-    
-    func funky{
-        
-        firebaseRef.ch
-    }
     
 }

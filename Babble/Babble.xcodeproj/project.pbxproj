@@ -12,9 +12,9 @@
 		5E2E6F271D25A794003588DC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5E2E6F261D25A794003588DC /* Assets.xcassets */; };
 		5E2E6F2A1D25A794003588DC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5E2E6F281D25A794003588DC /* LaunchScreen.storyboard */; };
 		5E2E6F321D25B8F2003588DC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5E2E6F311D25B8F2003588DC /* GoogleService-Info.plist */; };
+		5E3E77011D2843B7006E5EA4 /* HomeScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3E77001D2843B7006E5EA4 /* HomeScreenViewController.swift */; };
+		5E3E77041D284CB5006E5EA4 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3E77031D284CB5006E5EA4 /* SignInViewController.swift */; };
 		5E4775661D25ED3B00A5E9B0 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E4775651D25ED3B00A5E9B0 /* DataService.swift */; };
-		5E4775681D25EE7700A5E9B0 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E4775671D25EE7700A5E9B0 /* LoginViewController.swift */; };
-		5E47756A1D25EED500A5E9B0 /* CreateAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E4775691D25EED500A5E9B0 /* CreateAccountViewController.swift */; };
 		5E47756C1D2601B900A5E9B0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E47756B1D2601B900A5E9B0 /* Constants.swift */; };
 		89062636351A659F5583CF1A /* Pods_Babble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553BF0229359E709927D1DE1 /* Pods_Babble.framework */; };
 /* End PBXBuildFile section */
@@ -30,9 +30,9 @@
 		5E2E6F291D25A794003588DC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5E2E6F2B1D25A794003588DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5E2E6F311D25B8F2003588DC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		5E3E77001D2843B7006E5EA4 /* HomeScreenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeScreenViewController.swift; sourceTree = "<group>"; };
+		5E3E77031D284CB5006E5EA4 /* SignInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		5E4775651D25ED3B00A5E9B0 /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
-		5E4775671D25EE7700A5E9B0 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
-		5E4775691D25EED500A5E9B0 /* CreateAccountViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateAccountViewController.swift; sourceTree = "<group>"; };
 		5E47756B1D2601B900A5E9B0 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -86,11 +86,10 @@
 		5E2E6F1E1D25A794003588DC /* Babble */ = {
 			isa = PBXGroup;
 			children = (
+				5E3E77021D284421006E5EA4 /* View Controllers */,
 				5E2E6F1F1D25A794003588DC /* AppDelegate.swift */,
 				5E47756B1D2601B900A5E9B0 /* Constants.swift */,
 				5E4775651D25ED3B00A5E9B0 /* DataService.swift */,
-				5E4775671D25EE7700A5E9B0 /* LoginViewController.swift */,
-				5E4775691D25EED500A5E9B0 /* CreateAccountViewController.swift */,
 				5E2E6F231D25A794003588DC /* Main.storyboard */,
 				5E2E6F261D25A794003588DC /* Assets.xcassets */,
 				5E2E6F281D25A794003588DC /* LaunchScreen.storyboard */,
@@ -98,6 +97,15 @@
 				5E2E6F311D25B8F2003588DC /* GoogleService-Info.plist */,
 			);
 			path = Babble;
+			sourceTree = "<group>";
+		};
+		5E3E77021D284421006E5EA4 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				5E3E77001D2843B7006E5EA4 /* HomeScreenViewController.swift */,
+				5E3E77031D284CB5006E5EA4 /* SignInViewController.swift */,
+			);
+			name = "View Controllers";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -224,10 +232,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				5E47756C1D2601B900A5E9B0 /* Constants.swift in Sources */,
-				5E47756A1D25EED500A5E9B0 /* CreateAccountViewController.swift in Sources */,
-				5E4775681D25EE7700A5E9B0 /* LoginViewController.swift in Sources */,
 				5E4775661D25ED3B00A5E9B0 /* DataService.swift in Sources */,
 				5E2E6F201D25A794003588DC /* AppDelegate.swift in Sources */,
+				5E3E77041D284CB5006E5EA4 /* SignInViewController.swift in Sources */,
+				5E3E77011D2843B7006E5EA4 /* HomeScreenViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
