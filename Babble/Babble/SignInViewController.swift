@@ -31,7 +31,7 @@ class SignInViewController: UIViewController {
     func signedIn(user: FIRUser?) {
         
 //        MeasurementHelper.sendLoginEvent()
-//        
+//
 //        //<FIRUserInfo> is a protocol that represents user data from an identity provider (the user)
 //        //FIRUser is the delegate
 //        //gives us the user's display name if one was entered or else their email
@@ -40,10 +40,10 @@ class SignInViewController: UIViewController {
 //        AppState.sharedInstance.photoUrl = user?.photoURL
 //        //idicates the user is singed in
 //        AppState.sharedInstance.signedIn = true
-        
+//        
 //        //creates notification in the Notification Center's dispatch table named "SignInCompleted" and posts it to the receiver
 //        NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.SignedIn, object: nil, userInfo: nil)
-        
+//        
         performSegueWithIdentifier(Constants.Segues.SignInToHome, sender: nil)
     }
     
