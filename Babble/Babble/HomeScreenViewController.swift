@@ -9,7 +9,10 @@
 import UIKit
 import Firebase
 
-class HomeScreenViewController: UIViewController {
+class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    
+    @IBOutlet weak var tableView: UITableView!
+    
     
     @IBAction func didTapSignOut(sender: AnyObject) {
         
@@ -21,5 +24,22 @@ class HomeScreenViewController: UIViewController {
         } catch let signOutError as NSError {
             print ("Error signing out: \(signOutError)")
         }
+    }
+    
+    override func viewDidLoad() {
+        
+        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tableViewCell")
+    }
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        return 1
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
+        let cell = UITableViewCell()
+        
+        return cell
     }
 }
