@@ -19,12 +19,12 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="E-mail" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zCq-5g-y7S">
-                                <rect key="frame" x="163" y="169" width="274" height="30"/>
+                                <rect key="frame" x="20" y="169" width="560" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="5p2-Kw-41S">
-                                <rect key="frame" x="163" y="207" width="274" height="30"/>
+                                <rect key="frame" x="20" y="207" width="560" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
@@ -63,7 +63,7 @@
                         <constraints>
                             <constraint firstItem="fYi-yw-k7T" firstAttribute="top" secondItem="phj-Te-0Jb" secondAttribute="bottom" constant="8" symbolic="YES" id="3Ch-Ba-aDW"/>
                             <constraint firstItem="zCq-5g-y7S" firstAttribute="trailing" secondItem="5p2-Kw-41S" secondAttribute="trailing" id="AVf-hf-yr9"/>
-                            <constraint firstItem="zCq-5g-y7S" firstAttribute="leading" secondItem="33r-da-ra2" secondAttribute="leadingMargin" constant="143" id="BHv-1N-s2t"/>
+                            <constraint firstItem="zCq-5g-y7S" firstAttribute="leading" secondItem="33r-da-ra2" secondAttribute="leadingMargin" id="BHv-1N-s2t"/>
                             <constraint firstItem="5p2-Kw-41S" firstAttribute="centerX" secondItem="phj-Te-0Jb" secondAttribute="centerX" id="HNP-44-r1T"/>
                             <constraint firstItem="BCD-Qo-xjv" firstAttribute="top" secondItem="G3X-mN-mZA" secondAttribute="bottom" constant="49" id="NUv-nK-ivS"/>
                             <constraint firstItem="phj-Te-0Jb" firstAttribute="centerY" secondItem="33r-da-ra2" secondAttribute="centerY" id="NWo-n5-eat"/>
@@ -71,7 +71,7 @@
                             <constraint firstItem="BCD-Qo-xjv" firstAttribute="centerX" secondItem="zCq-5g-y7S" secondAttribute="centerX" constant="-3" id="POy-AC-v7E"/>
                             <constraint firstItem="5p2-Kw-41S" firstAttribute="top" secondItem="zCq-5g-y7S" secondAttribute="bottom" constant="8" symbolic="YES" id="Qya-me-V6d"/>
                             <constraint firstItem="phj-Te-0Jb" firstAttribute="top" secondItem="5p2-Kw-41S" secondAttribute="bottom" constant="48" id="c5c-we-zDL"/>
-                            <constraint firstItem="zCq-5g-y7S" firstAttribute="trailing" secondItem="33r-da-ra2" secondAttribute="trailingMargin" constant="-143" id="ggF-vZ-naL"/>
+                            <constraint firstItem="zCq-5g-y7S" firstAttribute="trailing" secondItem="33r-da-ra2" secondAttribute="trailingMargin" id="ggF-vZ-naL"/>
                             <constraint firstItem="zCq-5g-y7S" firstAttribute="leading" secondItem="5p2-Kw-41S" secondAttribute="leading" id="nYZ-yq-fIl"/>
                             <constraint firstItem="jzu-Fv-7Ew" firstAttribute="centerX" secondItem="fYi-yw-k7T" secondAttribute="centerX" id="qhn-54-q6E"/>
                             <constraint firstItem="jzu-Fv-7Ew" firstAttribute="top" secondItem="fYi-yw-k7T" secondAttribute="bottom" constant="8" symbolic="YES" id="ujP-gF-Kmh"/>

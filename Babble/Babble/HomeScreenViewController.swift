@@ -28,16 +28,8 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
         
         ref = FIRDatabase.database().reference()
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tableViewCell")
-    }
-    
-    override func viewWillAppear(animated: Bool) {
         
-        self.questionsArray.removeAll()
-        _refHandle = self.ref.child("questions").observeEventType(.ChildAdded, withBlock: { (snapshot) -> Void in
-            
-            self.questionsArray.append(snapshot)
-            self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.questionsArray.count-1, inSection: 0)], withRowAnimation: .Automatic)
-        })
+        configureDatabase()
     }
     
     override func viewWillDisappear(animated: Bool) {
