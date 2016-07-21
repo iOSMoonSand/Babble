@@ -120,8 +120,8 @@
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>
-                                    <outlet property="dataSource" destination="D7w-iU-d5k" id="snl-63-7Qe"/>
-                                    <outlet property="delegate" destination="D7w-iU-d5k" id="cZb-G2-uLA"/>
+                                    <outlet property="dataSource" destination="D7w-iU-d5k" id="EWA-5z-gLt"/>
+                                    <outlet property="delegate" destination="D7w-iU-d5k" id="LYx-RW-B5V"/>
                                 </connections>
                             </tableView>
                         </subviews>

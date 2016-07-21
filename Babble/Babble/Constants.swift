@@ -19,7 +19,7 @@ struct Constants {
         static let HomeToSignIn = "HomeToSignIn"
     }
     
-    struct MessageFields {
+    struct QuestionFields {
         static let name = "name"
         static let text = "text"
         static let photoUrl = "photoUrl"
