@@ -81,6 +81,11 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
         return cell!
     }
     
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
+        performSegueWithIdentifier(Constants.Segues.HomeToAnswersNavController, sender: nil)
+    }
+    
     
 // MARK: - IBActions
     @IBAction func didTapSignOut(sender: AnyObject) {

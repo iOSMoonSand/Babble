@@ -17,9 +17,17 @@ struct Constants {
     struct Segues {
         static let SignInToHome = "SignInToHome"
         static let HomeToSignIn = "HomeToSignIn"
+        static let HomeToAnswersNavController = "HomeToAnswersNavController"
     }
     
     struct QuestionFields {
+        static let name = "name"
+        static let text = "text"
+        static let photoUrl = "photoUrl"
+        static let imageUrl = "imageUrl"
+    }
+    
+    struct AnswerFields {
         static let name = "name"
         static let text = "text"
         static let photoUrl = "photoUrl"
