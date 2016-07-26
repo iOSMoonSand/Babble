@@ -42,8 +42,8 @@ class SignInViewController: UIViewController {
 //        AppState.sharedInstance.signedIn = true
 //        
 //        //creates notification in the Notification Center's dispatch table named "SignInCompleted" and posts it to the receiver
-//        NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.SignedIn, object: nil, userInfo: nil)
-//        
+        NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.SignedIn, object: nil, userInfo: nil)
+//
         performSegueWithIdentifier(Constants.Segues.SignInToHome, sender: nil)
     }
     

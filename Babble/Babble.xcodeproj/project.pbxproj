@@ -65,10 +65,24 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		5E1190A11D4040BA00F05B9F /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				5E2E6F281D25A794003588DC /* LaunchScreen.storyboard */,
+				5E2E6F311D25B8F2003588DC /* GoogleService-Info.plist */,
+				5E2E6F2B1D25A794003588DC /* Info.plist */,
+				5E2E6F261D25A794003588DC /* Assets.xcassets */,
+				5E2E6F1F1D25A794003588DC /* AppDelegate.swift */,
+			);
+			name = "Support Files";
+			path = Babble;
+			sourceTree = "<group>";
+		};
 		5E2E6F131D25A794003588DC = {
 			isa = PBXGroup;
 			children = (
 				5E2E6F1E1D25A794003588DC /* Babble */,
+				5E1190A11D4040BA00F05B9F /* Support Files */,
 				5E2E6F1D1D25A794003588DC /* Products */,
 				1E5059947B2692634C64B41A /* Pods */,
 				02D537B40D799E4BDEBAA375 /* Frameworks */,
@@ -87,14 +101,9 @@
 			isa = PBXGroup;
 			children = (
 				5E3E77021D284421006E5EA4 /* View Controllers */,
-				5E2E6F1F1D25A794003588DC /* AppDelegate.swift */,
 				5E47756B1D2601B900A5E9B0 /* Constants.swift */,
 				5E4775651D25ED3B00A5E9B0 /* DataService.swift */,
 				5E2E6F231D25A794003588DC /* Main.storyboard */,
-				5E2E6F261D25A794003588DC /* Assets.xcassets */,
-				5E2E6F281D25A794003588DC /* LaunchScreen.storyboard */,
-				5E2E6F2B1D25A794003588DC /* Info.plist */,
-				5E2E6F311D25B8F2003588DC /* GoogleService-Info.plist */,
 			);
 			path = Babble;
 			sourceTree = "<group>";
