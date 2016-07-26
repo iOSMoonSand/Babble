@@ -14,7 +14,7 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
 // MARK: - Instance Variables
     var ref: FIRDatabaseReference!
     private var _refHandle: FIRDatabaseHandle!
-    var questionsArray: [FIRDataSnapshot]! = [] //empty array that can hold data snapshots
+    var questionsArray: [FIRDataSnapshot]! = [] //empty array that can hold data snapshots of questions
     
     
 // MARK: - IBOutlets
@@ -83,7 +83,18 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        performSegueWithIdentifier(Constants.Segues.HomeToAnswersNavController, sender: nil)
+        let questionSnapshot: FIRDataSnapshot! = self.questionsArray[indexPath.row]
+        let selectedQuestion = questionSnapshot.key
+        
+        let destinationVC = AnswersViewController()
+        let answerVCQuestionRef = destinationVC.questionRef
+        if var tempAnswerVCQuestionRef = answerVCQuestionRef {
+            tempAnswerVCQuestionRef = selectedQuestion
+            print("User tapped on: \(answerVCQuestionRef)")
+        }
+        
+        performSegueWithIdentifier(Constants.Segues.HomeToAnswersNavController, sender: self)
+        
     }
     
     
