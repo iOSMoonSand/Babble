@@ -12,11 +12,11 @@
 		5E2E6F251D25A794003588DC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5E2E6F231D25A794003588DC /* Main.storyboard */; };
 		5E2E6F271D25A794003588DC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5E2E6F261D25A794003588DC /* Assets.xcassets */; };
 		5E2E6F2A1D25A794003588DC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5E2E6F281D25A794003588DC /* LaunchScreen.storyboard */; };
-		5E2E6F321D25B8F2003588DC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5E2E6F311D25B8F2003588DC /* GoogleService-Info.plist */; };
 		5E3E77011D2843B7006E5EA4 /* HomeScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3E77001D2843B7006E5EA4 /* HomeScreenViewController.swift */; };
 		5E3E77041D284CB5006E5EA4 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3E77031D284CB5006E5EA4 /* SignInViewController.swift */; };
 		5E4775661D25ED3B00A5E9B0 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E4775651D25ED3B00A5E9B0 /* DataService.swift */; };
 		5E47756C1D2601B900A5E9B0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E47756B1D2601B900A5E9B0 /* Constants.swift */; };
+		5ECC913B1D482B3E001221C4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5ECC913A1D482B3E001221C4 /* GoogleService-Info.plist */; };
 		89062636351A659F5583CF1A /* Pods_Babble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553BF0229359E709927D1DE1 /* Pods_Babble.framework */; };
 /* End PBXBuildFile section */
 
@@ -31,11 +31,11 @@
 		5E2E6F261D25A794003588DC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5E2E6F291D25A794003588DC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5E2E6F2B1D25A794003588DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5E2E6F311D25B8F2003588DC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5E3E77001D2843B7006E5EA4 /* HomeScreenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeScreenViewController.swift; sourceTree = "<group>"; };
 		5E3E77031D284CB5006E5EA4 /* SignInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		5E4775651D25ED3B00A5E9B0 /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
 		5E47756B1D2601B900A5E9B0 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		5ECC913A1D482B3E001221C4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,7 +71,7 @@
 			isa = PBXGroup;
 			children = (
 				5E2E6F281D25A794003588DC /* LaunchScreen.storyboard */,
-				5E2E6F311D25B8F2003588DC /* GoogleService-Info.plist */,
+				5ECC913A1D482B3E001221C4 /* GoogleService-Info.plist */,
 				5E2E6F2B1D25A794003588DC /* Info.plist */,
 				5E2E6F261D25A794003588DC /* Assets.xcassets */,
 				5E2E6F1F1D25A794003588DC /* AppDelegate.swift */,
@@ -181,8 +181,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5ECC913B1D482B3E001221C4 /* GoogleService-Info.plist in Resources */,
 				5E2E6F2A1D25A794003588DC /* LaunchScreen.storyboard in Resources */,
-				5E2E6F321D25B8F2003588DC /* GoogleService-Info.plist in Resources */,
 				5E2E6F271D25A794003588DC /* Assets.xcassets in Resources */,
 				5E2E6F251D25A794003588DC /* Main.storyboard in Resources */,
 			);
@@ -364,6 +364,8 @@
 			baseConfigurationReference = 05ECB09160E9B9F1CFEAAC06 /* Pods-Babble.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Babble/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.MoonSandApps.Babble;
@@ -376,6 +378,8 @@
 			baseConfigurationReference = 082DA9B7534698C643D204B5 /* Pods-Babble.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Babble/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.MoonSandApps.Babble;
