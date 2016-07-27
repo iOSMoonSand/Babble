@@ -9,10 +9,12 @@
 import UIKit
 import Firebase
 
-class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
 
 // MARK: - Properties
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var textField: UITextField!
+    @IBOutlet weak var sendButton: UIButton!
     var ref: FIRDatabaseReference!
     private var _refHandle: FIRDatabaseHandle!
     var answersArray: [FIRDataSnapshot]! = [] //empty array that can hold data snapshots of answers
@@ -61,4 +63,52 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
         } 
         return cell!
     }
+    
+    
+// MARK: - IBAction: Send Messages
+    @IBAction func didTapSendButton(sender: UIButton) {
+        textFieldShouldReturn(textField)
+    }
+    
+    
+// MARK: - UITextFieldDelegate Methods
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        let data = [Constants.AnswerFields.text: textField.text! as String]
+        sendAnswer(data)
+        return true
+    }
+    
+    
+// MARK: - Set Firebase Data
+    func sendAnswer(data: [String: String]) {
+        var answerData = data
+        answerData[Constants.AnswerFields.name] = AppState.sharedInstance.displayName
+        if let photoUrl = AppState.sharedInstance.photoUrl {
+            answerData[Constants.AnswerFields.photoUrl] = photoUrl.absoluteString
+        }
+        self.ref.child("answers").child(questionRef!).childByAutoId().setValue(answerData)
+    }
+    
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
