@@ -139,7 +139,10 @@
                             <constraint firstItem="q6J-fg-ivJ" firstAttribute="top" secondItem="CWI-Cv-41O" secondAttribute="bottom" constant="8" symbolic="YES" id="y8g-xe-xIm"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="pei-9j-Pkn"/>
+                    <navigationItem key="navigationItem" id="pei-9j-Pkn">
+                        <barButtonItem key="leftBarButtonItem" title="Sign Out" id="53E-RT-VP0"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="W2o-NG-sre"/>
+                    </navigationItem>
                     <connections>
                         <outlet property="tableView" destination="q6J-fg-ivJ" id="J9a-z2-HB0"/>
                         <segue destination="gr6-q9-TAC" kind="show" identifier="HomeToSignIn" id="msV-Om-w4h"/>
