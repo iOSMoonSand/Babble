@@ -18,6 +18,8 @@ struct Constants {
         static let SignInToHome = "SignInToHome"
         static let HomeToSignIn = "HomeToSignIn"
         static let HomeToAnswersNavController = "HomeToAnswersNavController"
+        static let HomeToAddQuestion = "HomeToAddQuestion"
+        static let PostNewQuestionToHome = "PostNewQuestionToHome"
     }
     
     struct QuestionFields {

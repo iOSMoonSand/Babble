@@ -16,6 +16,7 @@
 		5E3E77041D284CB5006E5EA4 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3E77031D284CB5006E5EA4 /* SignInViewController.swift */; };
 		5E47756C1D2601B900A5E9B0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E47756B1D2601B900A5E9B0 /* Constants.swift */; };
 		5E753B0A1D493F72001D82B8 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E753B091D493F72001D82B8 /* AppState.swift */; };
+		5E753B0C1D498C54001D82B8 /* AddQuestionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E753B0B1D498C54001D82B8 /* AddQuestionViewController.swift */; };
 		5ECC913B1D482B3E001221C4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5ECC913A1D482B3E001221C4 /* GoogleService-Info.plist */; };
 		89062636351A659F5583CF1A /* Pods_Babble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553BF0229359E709927D1DE1 /* Pods_Babble.framework */; };
 /* End PBXBuildFile section */
@@ -35,6 +36,7 @@
 		5E3E77031D284CB5006E5EA4 /* SignInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		5E47756B1D2601B900A5E9B0 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		5E753B091D493F72001D82B8 /* AppState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		5E753B0B1D498C54001D82B8 /* AddQuestionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddQuestionViewController.swift; sourceTree = "<group>"; };
 		5ECC913A1D482B3E001221C4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -116,6 +118,7 @@
 				5E1190A21D41CBB600F05B9F /* AnswersViewController.swift */,
 				5E3E77001D2843B7006E5EA4 /* HomeScreenViewController.swift */,
 				5E3E77031D284CB5006E5EA4 /* SignInViewController.swift */,
+				5E753B0B1D498C54001D82B8 /* AddQuestionViewController.swift */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -248,6 +251,7 @@
 				5E753B0A1D493F72001D82B8 /* AppState.swift in Sources */,
 				5E2E6F201D25A794003588DC /* AppDelegate.swift in Sources */,
 				5E3E77041D284CB5006E5EA4 /* SignInViewController.swift in Sources */,
+				5E753B0C1D498C54001D82B8 /* AddQuestionViewController.swift in Sources */,
 				5E3E77011D2843B7006E5EA4 /* HomeScreenViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

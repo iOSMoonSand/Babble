@@ -16,6 +16,7 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     var ref: FIRDatabaseReference!
     private var _refHandle: FIRDatabaseHandle!
     var questionsArray: [FIRDataSnapshot]! = [] //empty array that can hold data snapshots of questions
+    var newQuestion: String?
 
 
 // MARK: - UIViewController Methods
@@ -79,8 +80,8 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     
     
 // MARK: - IBActions
+    
     @IBAction func didTapSignOut(sender: AnyObject) {
-        
         let firebaseAuth = FIRAuth.auth()
         do {
             try firebaseAuth?.signOut()
@@ -91,5 +92,39 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
+    @IBAction func didTapCancelAddQuestion(segue:UIStoryboardSegue) {
+        //unwind segue from AddQuestion to HomeScreen
+        
+    }
+    
+    @IBAction func didTapPostAddQuestion(segue:UIStoryboardSegue) {
+        //unwind segue from AddQuestion to HomeScreen
+        let data = [Constants.QuestionFields.text: newQuestion! as String]
+        postQuestion(data)
+    }
+    
+    func postQuestion(data: [String: String]) {
+        var questionData = data
+        questionData[Constants.QuestionFields.name] = AppState.sharedInstance.displayName
+        if let photoUrl = AppState.sharedInstance.photoUrl {
+            questionData[Constants.QuestionFields.photoUrl] = photoUrl.absoluteString
+        }
+        self.ref.child("questions").childByAutoId().setValue(questionData)
+    }
+    
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
