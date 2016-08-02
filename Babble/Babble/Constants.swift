@@ -20,6 +20,8 @@ struct Constants {
         static let HomeToAnswersNavController = "HomeToAnswersNavController"
         static let HomeToAddQuestion = "HomeToAddQuestion"
         static let PostNewQuestionToHome = "PostNewQuestionToHome"
+        static let MyProfileToProfilePhoto = "MyProfileToProfilePhoto"
+        static let ProfilePhotoToMyProfile = "ProfilePhotoToMyProfile"
     }
     
     struct QuestionFields {

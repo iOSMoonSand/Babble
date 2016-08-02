@@ -13,13 +13,19 @@ import Firebase
 
 class SignInViewController: UIViewController {
     
-// MARK: - Properties
+//MARK: - Properties
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
     
 
-// MARK: - UIViewController Methods
+//MARK: - UIViewController Methods
+    override func viewDidLoad() {
+        super.viewDidLoad()
+//TODO: navigationItem.hidesBackButton = true
+    }
+
     override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(true)
         //checks for cached user credentials
         if let user = FIRAuth.auth()?.currentUser {
             self.signedIn(user)

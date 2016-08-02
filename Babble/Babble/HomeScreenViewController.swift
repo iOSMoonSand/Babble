@@ -10,16 +10,17 @@ import UIKit
 import Firebase
 
 class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
-
-// MARK: - Properties
+//MARK: -
+//MARK: - Properties
+//MARK: -
     @IBOutlet weak var tableView: UITableView!
     var ref: FIRDatabaseReference!
     private var _refHandle: FIRDatabaseHandle!
     var questionsArray: [FIRDataSnapshot]! = [] //empty array that can hold data snapshots of questions
     var newQuestion: String?
-
-
-// MARK: - UIViewController Methods
+//MARK: -
+//MARK: - UIViewController Methods
+//MARK: -
     override func viewDidLoad() {
         super.viewDidLoad()
         ref = FIRDatabase.database().reference()
