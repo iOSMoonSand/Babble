@@ -7,7 +7,11 @@
 //
 
 import UIKit
+import Firebase
 
+//MARK: -
+//MARK: - ProfilePhotoViewController Class
+//MARK: -
 class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     //MARK: -
     //MARK: - Propeties
@@ -15,12 +19,21 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
     @IBOutlet weak var fullScreenImageView: UIImageView!
     var imageFromMeVC: UIImage!
     var selectedImage: UIImage!
-//MARK: -
-//MARK: - UIViewController Methods
-//MARK: -
+    //MARK: -
+    //MARK: - UIViewController Methods
+    //MARK: -
     override func viewDidLoad() {
         super.viewDidLoad()
         fullScreenImageView.image = imageFromMeVC
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        let path = ProfileImageManager.sharedManager.fileInDocumentsDirectory(ProfileImageManager.profileImageName)
+        //
+        //load saved image
+        //
+        guard let image = ProfileImageManager.sharedManager.loadImageFromPath(path) else { return }
+        fullScreenImageView.image = image
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -29,9 +42,9 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
             destinationVC.imageFromProfilePhotoVC = fullScreenImageView.image
         }
     }
-//MARK: -
-//MARK: - IBActions
-//MARK: -
+    //MARK: -
+    //MARK: - IBActions
+    //MARK: -
     @IBAction func didTapEditProfilePhoto(sender: UIBarButtonItem) {
         let actionSheet = UIAlertController.init(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
         //.PhotoLibrary
@@ -64,16 +77,36 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
         actionSheet.addAction(cancelAction)
         presentViewController(actionSheet, animated: true, completion: nil);
     }
-//MARK: -
-//MARK: - UIImagePickerControllerDelegate Methods
-//MARK: -
+    //MARK: -
+    //MARK: - UIImagePickerControllerDelegate Methods
+    //MARK: -
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         dismissViewControllerAnimated(true, completion: nil)
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        selectedImage = info[UIImagePickerControllerOriginalImage] as! UIImage
-        fullScreenImageView.image = selectedImage
+        self.selectedImage = info[UIImagePickerControllerOriginalImage] as! UIImage
+        self.fullScreenImageView.image = self.selectedImage
+        //
+        //save image
+        //
+        let imagePath = ProfileImageManager.sharedManager.fileInDocumentsDirectory(ProfileImageManager.profileImageName)
+        ProfileImageManager.sharedManager.saveImage(self.fullScreenImageView.image!, path: imagePath)
+        let fileURL = NSURL.fileURLWithPath(imagePath)
+        AppState.sharedInstance.photoUrl = fileURL
+        
+        let user = FIRAuth.auth()?.currentUser
+        if let user = user {
+            let changeRequest = user.profileChangeRequest()
+            changeRequest.photoURL = fileURL
+            changeRequest.commitChangesWithCompletion { error in
+                if let error = error {
+                    print(error.localizedDescription)
+                    return
+                }
+            }
+        }
+
         dismissViewControllerAnimated(true, completion: nil)
         performSegueWithIdentifier(Constants.Segues.ProfilePhotoToMyProfile, sender: nil)
     }

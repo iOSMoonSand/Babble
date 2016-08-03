@@ -63,14 +63,14 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
         let cell: UITableViewCell! = self.tableView.dequeueReusableCellWithIdentifier("tableViewCell", forIndexPath: indexPath)
         //unpack question from database
         let questionSnapshot: FIRDataSnapshot! = self.questionsArray[indexPath.row]
-        let question = questionSnapshot.value as! Dictionary<String, String>
+        var question = questionSnapshot.value as! Dictionary<String, String>
         let name = question[Constants.QuestionFields.name] as String!
         let text = question[Constants.QuestionFields.text] as String!
         //assign data to cell
         cell!.textLabel?.text = name + ": " + text
         cell!.imageView?.image = UIImage(named: "ic_account_circle")
         if let photoUrl = question[Constants.QuestionFields.photoUrl], url = NSURL(string:photoUrl), data = NSData(contentsOfURL: url) {
-        cell!.imageView?.image = UIImage(data: data)
+            cell!.imageView?.image = UIImage(data: data)
         }
         return cell!
     }

@@ -15,6 +15,7 @@
 		5E3E77011D2843B7006E5EA4 /* HomeScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3E77001D2843B7006E5EA4 /* HomeScreenViewController.swift */; };
 		5E3E77041D284CB5006E5EA4 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3E77031D284CB5006E5EA4 /* SignInViewController.swift */; };
 		5E47756C1D2601B900A5E9B0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E47756B1D2601B900A5E9B0 /* Constants.swift */; };
+		5E59CCDD1D518A9300708053 /* ProfileImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E59CCDC1D518A9300708053 /* ProfileImageManager.swift */; };
 		5E753B0A1D493F72001D82B8 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E753B091D493F72001D82B8 /* AppState.swift */; };
 		5E753B0C1D498C54001D82B8 /* AddQuestionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E753B0B1D498C54001D82B8 /* AddQuestionViewController.swift */; };
 		5E753B0E1D4BD123001D82B8 /* MeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E753B0D1D4BD123001D82B8 /* MeViewController.swift */; };
@@ -37,6 +38,7 @@
 		5E3E77001D2843B7006E5EA4 /* HomeScreenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeScreenViewController.swift; sourceTree = "<group>"; };
 		5E3E77031D284CB5006E5EA4 /* SignInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		5E47756B1D2601B900A5E9B0 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		5E59CCDC1D518A9300708053 /* ProfileImageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileImageManager.swift; sourceTree = "<group>"; };
 		5E753B091D493F72001D82B8 /* AppState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		5E753B0B1D498C54001D82B8 /* AddQuestionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddQuestionViewController.swift; sourceTree = "<group>"; };
 		5E753B0D1D4BD123001D82B8 /* MeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeViewController.swift; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 				5E3E77031D284CB5006E5EA4 /* SignInViewController.swift */,
 				5E753B111D4FCBAE001D82B8 /* Home */,
 				5E753B121D4FCBCB001D82B8 /* Me */,
+				5E59CCDC1D518A9300708053 /* ProfileImageManager.swift */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -269,6 +272,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5E753B101D4EA23F001D82B8 /* ProfilePhotoViewController.swift in Sources */,
+				5E59CCDD1D518A9300708053 /* ProfileImageManager.swift in Sources */,
 				5E1190A31D41CBB600F05B9F /* AnswersViewController.swift in Sources */,
 				5E47756C1D2601B900A5E9B0 /* Constants.swift in Sources */,
 				5E753B0E1D4BD123001D82B8 /* MeViewController.swift in Sources */,

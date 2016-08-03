@@ -36,6 +36,15 @@ class MeViewController: UITableViewController {
         }
     }
     
+    override func viewWillAppear(animated: Bool) {
+        let path = ProfileImageManager.sharedManager.fileInDocumentsDirectory(ProfileImageManager.profileImageName)
+        //
+        //load saved image
+        //
+        guard let image = ProfileImageManager.sharedManager.loadImageFromPath(path) else { return }
+        imageView.image = image
+    }
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == Constants.Segues.MyProfileToProfilePhoto {
             guard let destinationVC = segue.destinationViewController as? ProfilePhotoViewController else { return }

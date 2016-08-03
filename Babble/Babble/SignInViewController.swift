@@ -71,7 +71,7 @@ class SignInViewController: UIViewController {
             self.setDisplayName(user!)
         }
     }
-//!! Could be used for profile editing
+
     func setDisplayName(user: FIRUser) {
         //Creates an object which may be used to change the user's profile data.
         let changeRequest = user.profileChangeRequest()
