@@ -92,20 +92,6 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
         //
         let imagePath = ProfileImageManager.sharedManager.fileInDocumentsDirectory(ProfileImageManager.profileImageName)
         ProfileImageManager.sharedManager.saveImage(self.fullScreenImageView.image!, path: imagePath)
-        let fileURL = NSURL.fileURLWithPath(imagePath)
-        AppState.sharedInstance.photoUrl = fileURL
-        
-        let user = FIRAuth.auth()?.currentUser
-        if let user = user {
-            let changeRequest = user.profileChangeRequest()
-            changeRequest.photoURL = fileURL
-            changeRequest.commitChangesWithCompletion { error in
-                if let error = error {
-                    print(error.localizedDescription)
-                    return
-                }
-            }
-        }
 
         dismissViewControllerAnimated(true, completion: nil)
         performSegueWithIdentifier(Constants.Segues.ProfilePhotoToMyProfile, sender: nil)

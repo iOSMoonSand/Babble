@@ -12,6 +12,7 @@ class ProfileImageManager {
 
     static let sharedManager = ProfileImageManager()
     static let profileImageName = "profileImageName"
+    var localImagePath: String?
     
     //add methods for saving and loading image
     func getDocumentsURL() -> NSURL {

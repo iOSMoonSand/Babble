@@ -11,29 +11,34 @@
 import UIKit
 import Firebase
 
+//MARK:
+//MARK: - SignInViewController Class
+//MARK:
 class SignInViewController: UIViewController {
-    
-//MARK: - Properties
+    //MARK:
+    //MARK: - Properties
+    //MARK:
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
     
-
-//MARK: - UIViewController Methods
+    //MARK:
+    //MARK: - UIViewController Methods
+    //MARK:
     override func viewDidLoad() {
         super.viewDidLoad()
 //TODO: navigationItem.hidesBackButton = true
     }
 
     override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(true)
+        //super.viewDidAppear(true)
         //checks for cached user credentials
         if let user = FIRAuth.auth()?.currentUser {
             self.signedIn(user)
         }
     }
-    
-    
-// MARK: - Firebase Authentication Configuration
+    // MARK:
+    // MARK: - Firebase Authentication Configuration
+    // MARK:
     func signedIn(user: FIRUser?) {
         //<FIRUserInfo> protocol providing user data to FIRUser
         AppState.sharedInstance.displayName = user?.displayName ?? user?.email
@@ -43,9 +48,9 @@ class SignInViewController: UIViewController {
         NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.SignedIn, object: nil, userInfo: nil)
         performSegueWithIdentifier(Constants.Segues.SignInToHome, sender: nil)
     }
-    
-    
-// MARK: - IBAction: Sign In
+    // MARK:
+    // MARK: - IBAction: Sign In
+    // MARK:
     @IBAction func didTapSignIn(sender: AnyObject) {
         let email = emailField.text
         let password = passwordField.text
@@ -57,9 +62,9 @@ class SignInViewController: UIViewController {
             self.signedIn(user!)
         }
     }
-    
-    
-// MARK: - IBAction: Account Creation
+    // MARK:
+    // MARK: - IBAction: Create New Account
+    // MARK:
     @IBAction func didTapCreateAccount(sender: AnyObject) {
         let email = emailField.text
         let password = passwordField.text
@@ -73,7 +78,6 @@ class SignInViewController: UIViewController {
     }
 
     func setDisplayName(user: FIRUser) {
-        //Creates an object which may be used to change the user's profile data.
         let changeRequest = user.profileChangeRequest()
         changeRequest.displayName = user.email!.componentsSeparatedByString("@")[0]
         changeRequest.commitChangesWithCompletion(){ (error) in
@@ -84,9 +88,9 @@ class SignInViewController: UIViewController {
             self.signedIn(FIRAuth.auth()?.currentUser)
         }
     }
-
-    
-// MARK: - IBAction: Password Reset
+    // MARK:
+    // MARK: - IBAction: Reset Password
+    // MARK:
     @IBAction func didTapForgotPassword(sender: AnyObject) {
         let prompt = UIAlertController.init(title: nil, message: "Email:", preferredStyle: UIAlertControllerStyle.Alert)
         let okAction = UIAlertAction.init(title: "OK", style: UIAlertActionStyle.Default) { (action) in
