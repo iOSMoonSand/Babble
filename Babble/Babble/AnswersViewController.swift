@@ -9,32 +9,39 @@
 import UIKit
 import Firebase
 
+// MARK:
+// MARK: - AnswersViewController Class
+// MARK:
 class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
-
-// MARK: - Properties
+    // MARK:
+    // MARK: - Properties
+    // MARK:
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var sendButton: UIButton!
     var ref: FIRDatabaseReference!
     private var _refHandle: FIRDatabaseHandle!
-    var answersArray: [FIRDataSnapshot]! = [] //empty array that can hold data snapshots of answers
+    var answersArray: [FIRDataSnapshot]! = []
     var questionRef: String?
-
-    
-// MARK: - UIViewController Methods
+    var storageRef: FIRStorageReference!
+    var profilePhotoString: String?
+    // MARK:
+    // MARK: - UIViewController Methods
+    // MARK:
     override func viewDidLoad() {
         super.viewDidLoad()
         self.ref = FIRDatabase.database().reference()
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tableViewCell")
         self.configureDatabase()
+        self.configureStorage()
     }
     
     deinit {
         self.ref.child("answers").child(questionRef!).removeObserverWithHandle(_refHandle)
     }
-
-    
-// MARK: - Firebase Database Configuration
+    // MARK:
+    // MARK: - Firebase Database Configuration
+    // MARK:
     func configureDatabase() {
         self.ref = FIRDatabase.database().reference()
         _refHandle = self.ref.child("answers").child(questionRef!).observeEventType(.ChildAdded, withBlock: { (snapshot) -> Void in
@@ -42,9 +49,15 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
             self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.answersArray.count-1, inSection: 0)], withRowAnimation: .Automatic)
         })
     }
-    
-    
-// MARK: - UITableViewDataSource & UITableViewDelegate methods
+    // MARK:
+    // MARK: - Firebase StorageConfiguration
+    // MARK:
+    func configureStorage() {
+        storageRef = FIRStorage.storage().referenceForURL("gs://babble-8b668.appspot.com/")
+    }
+    // MARK:
+    // MARK: - UITableViewDataSource & UITableViewDelegate methods
+    // MARK:
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.answersArray.count
     }
@@ -57,35 +70,53 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
         let name = answer[Constants.AnswerFields.name] as String!
         let text = answer[Constants.AnswerFields.text] as String!
         cell!.textLabel?.text = name + ": " + text
-        cell!.imageView?.image = UIImage(named: "ic_account_circle")
-        if let photoUrl = answer[Constants.QuestionFields.photoUrl], url = NSURL(string:photoUrl), data = NSData(contentsOfURL: url) {
-            cell!.imageView?.image = UIImage(data: data)
-        } 
+        if let photoUrl = answer[Constants.QuestionFields.photoUrl] {
+            FIRStorage.storage().referenceForURL(photoUrl).dataWithMaxSize(INT64_MAX) { (data, error) in
+                if let error = error {
+                    print("Error downloading: \(error)")
+                    return
+                }
+                cell.imageView?.image = UIImage.init(data: data!)
+            }
+        } else if profilePhotoString == nil {
+            cell!.imageView?.image = UIImage(named: "ic_account_circle")
+        } else if let url = NSURL(string:profilePhotoString!), data = NSData(contentsOfURL: url) {
+            cell.imageView?.image = UIImage.init(data: data)
+        }
         return cell!
     }
-    
-    
-// MARK: - IBAction: Send Messages
+    // MARK:
+    // MARK: - IBAction: Send Messages
+    // MARK:
     @IBAction func didTapSendButton(sender: UIButton) {
         textFieldShouldReturn(textField)
     }
     
-    
-// MARK: - UITextFieldDelegate Methods
+    // MARK:
+    // MARK: - UITextFieldDelegate Methods
+    // MARK:
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         let data = [Constants.AnswerFields.text: textField.text! as String]
         sendAnswer(data)
         return true
     }
     
-    
-// MARK: - Set Firebase Data
+    // MARK:
+    // MARK: - Set Firebase Data
+    // MARK:
     func sendAnswer(data: [String: String]) {
         var answerData = data
         answerData[Constants.AnswerFields.name] = AppState.sharedInstance.displayName
         if let photoUrl = AppState.sharedInstance.photoUrl {
-            answerData[Constants.AnswerFields.photoUrl] = photoUrl.absoluteString
+            answerData[Constants.QuestionFields.photoUrl] = photoUrl.absoluteString
+        } else {
+            let placeholderPhotoRef = storageRef.child("Profile_avatar_placeholder_large.png")
+            let placeholderPhotoRefString = "gs://babble-8b668.appspot.com/" + placeholderPhotoRef.fullPath
+            answerData[Constants.QuestionFields.photoUrl] = placeholderPhotoRefString
+            profilePhotoString = placeholderPhotoRefString
+            
         }
+
         self.ref.child("answers").child(questionRef!).childByAutoId().setValue(answerData)
     }
     

@@ -8,10 +8,12 @@
 
 import UIKit
 import Firebase
+import Photos
 
 //MARK: -
 //MARK: - ProfilePhotoViewController Class
 //MARK: -
+@objc(ProfilePhotoViewController)
 class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     //MARK: -
     //MARK: - Propeties
@@ -19,28 +21,34 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
     @IBOutlet weak var fullScreenImageView: UIImageView!
     var imageFromMeVC: UIImage!
     var selectedImage: UIImage!
+    var storageRef: FIRStorageReference!
     //MARK: -
     //MARK: - UIViewController Methods
     //MARK: -
     override func viewDidLoad() {
         super.viewDidLoad()
         fullScreenImageView.image = imageFromMeVC
+        configureStorage()
     }
-    
+    ///
+    ///
+    ///
     override func viewWillAppear(animated: Bool) {
-        let path = ProfileImageManager.sharedManager.fileInDocumentsDirectory(ProfileImageManager.profileImageName)
-        //
-        //load saved image
-        //
-        guard let image = ProfileImageManager.sharedManager.loadImageFromPath(path) else { return }
-        fullScreenImageView.image = image
     }
-    
+    ///
+    ///
+    ///
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == Constants.Segues.ProfilePhotoToMyProfile {
             guard let destinationVC = segue.destinationViewController as? MeViewController else { return }
             destinationVC.imageFromProfilePhotoVC = fullScreenImageView.image
         }
+    }
+    // MARK:
+    // MARK: - Firebase StorageConfiguration
+    // MARK:
+    func configureStorage() {
+        storageRef = FIRStorage.storage().referenceForURL("gs://babble-8b668.appspot.com/")
     }
     //MARK: -
     //MARK: - IBActions
@@ -59,7 +67,8 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
             let imagePickerController = UIImagePickerController()
             if UIImagePickerController.isSourceTypeAvailable(.Camera) {
                 imagePickerController.sourceType = .Camera
-                self.presentViewController(imagePickerController, animated: true, completion: nil)
+                //self.presentViewController(imagePickerController, animated: true, completion: nil)
+                print("Camera option not yet configured :(")
             } else {//TODO: localized error handling
                 let noCameraAlert = UIAlertController.init(title: nil, message: "No camera attached to this device", preferredStyle: .Alert)
                 let okAction = UIAlertAction.init(title: "OK", style: .Default) { (action) in
@@ -87,20 +96,42 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         self.selectedImage = info[UIImagePickerControllerOriginalImage] as! UIImage
         self.fullScreenImageView.image = self.selectedImage
-        //
-        //save image
-        //
-        let imagePath = ProfileImageManager.sharedManager.fileInDocumentsDirectory(ProfileImageManager.profileImageName)
-        ProfileImageManager.sharedManager.saveImage(self.fullScreenImageView.image!, path: imagePath)
-
+        
+        // if it's a photo from the library, not an image from the camera
+        if #available(iOS 8.0, *), let referenceUrl = info[UIImagePickerControllerReferenceURL] {
+            let assets = PHAsset.fetchAssetsWithALAssetURLs([referenceUrl as! NSURL], options: nil)
+            let asset = assets.firstObject
+            asset?.requestContentEditingInputWithOptions(nil, completionHandler: { (contentEditingInput, info) in
+                let imageFile = contentEditingInput?.fullSizeImageURL
+                let filePath = "\(FIRAuth.auth()?.currentUser?.uid)/\(Int(NSDate.timeIntervalSinceReferenceDate() * 1000))/\(referenceUrl.lastPathComponent!)"
+                self.storageRef.child(filePath).putFile(imageFile!, metadata: nil) { (metadata, error) in
+                        if let error = error {
+                            print("Error uploading:\(error.localizedDescription)")
+                            return
+                        }
+                    let storageRefString = self.storageRef.child((metadata?.path)!).description
+                    let storageRefUrl = NSURL(string: storageRefString)
+                    
+                    if let user = FIRAuth.auth()?.currentUser{
+                        let changeRequest = user.profileChangeRequest()
+                        changeRequest.photoURL = storageRefUrl
+                        changeRequest.commitChangesWithCompletion(){ (error) in
+                            if let error = error {
+                                print(error.localizedDescription)
+                                return
+                            }
+                        }
+                    }
+                    AppState.sharedInstance.photoUrl = storageRefUrl
+                }
+            })
+        }
+        
         dismissViewControllerAnimated(true, completion: nil)
         performSegueWithIdentifier(Constants.Segues.ProfilePhotoToMyProfile, sender: nil)
     }
     
 }
-
-
-
 
 
 

@@ -25,10 +25,10 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     //MARK: -
     override func viewDidLoad() {
         super.viewDidLoad()
-        ref = FIRDatabase.database().reference()
+        self.ref = FIRDatabase.database().reference()
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tableViewCell")
-        configureDatabase()
-        configureStorage()
+        self.configureDatabase()
+        self.configureStorage()
     }
     
     deinit {
@@ -77,54 +77,32 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
         //assign data to cell
         cell!.textLabel?.text = name + ": " + text
         
-//        if let photoUrl = AppState.sharedInstance.photoUrl {
-//            question[Constants.QuestionFields.photoUrl] = photoUrl.absoluteString
-//        } else {
-//            let placeholderPhotoRef = storageRef.child("Profile_avatar_placeholder_large.png")
-//            let placeholderPhotoRefString = "gs://babble-8b668.appspot.com/" + placeholderPhotoRef.fullPath
-//            question[Constants.QuestionFields.photoUrl] = placeholderPhotoRefString
-            //
-            //download photo: home page just downloads whatever photo it's fed from the USER
-            if let photoUrl = question[Constants.QuestionFields.photoUrl] {
-                FIRStorage.storage().referenceForURL(photoUrl).dataWithMaxSize(INT64_MAX) { (data, error) in
-                    if let error = error {
-                        print("Error downloading: \(error)")
-                        return
-                    }
-                    cell.imageView?.image = UIImage.init(data: data!)
+        if let photoUrl = AppState.sharedInstance.photoUrl {
+            question[Constants.QuestionFields.photoUrl] = photoUrl.absoluteString
+        }
+        
+        if let photoUrl = question[Constants.QuestionFields.photoUrl] {
+            FIRStorage.storage().referenceForURL(photoUrl).dataWithMaxSize(INT64_MAX) { (data, error) in
+                if let error = error {
+                    print("Error downloading: \(error)")
+                    return
                 }
-            } else if profilePhotoString == nil {
-                cell!.imageView?.image = UIImage(named: "ic_account_circle")
+                cell.imageView?.image = UIImage.init(data: data!)
+            }
+        } else if profilePhotoString == nil {
+            cell!.imageView?.image = UIImage(named: "ic_account_circle")
         } else if let url = NSURL(string:profilePhotoString!), data = NSData(contentsOfURL: url) {
                 cell.imageView?.image = UIImage.init(data: data)
         }
-//        }
         return cell!
     }
-    
-    
-    //
-    //        if let url = question[Constants.QuestionFields.photoUrl] as String! {
-    //            FIRStorage.storage().referenceForURL(url).dataWithMaxSize(1 * 1024 * 1024) { (data, error) -> Void in
-    //                if (error != nil) {
-    //                    cell!.imageView?.image = UIImage(named: "ic_account_circle")
-    //                    // Uh-oh, an error occurred!
-    //                } else {
-    //                    cell!.imageView?.image = UIImage(data: data!)
-    //                    // Data for "images/island.jpg" is returned
-    //                    // ... let islandImage: UIImage! = UIImage(data: data!)
-    //                }
-    //            }
-    //        }
 
-    
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         performSegueWithIdentifier(Constants.Segues.HomeToAnswersNavController, sender: self)
     }
-    
-    
+    // MARK:
     // MARK: - IBActions
-    
+    // MARK:
     @IBAction func didTapSignOut(sender: AnyObject) {
         let firebaseAuth = FIRAuth.auth()
         do {

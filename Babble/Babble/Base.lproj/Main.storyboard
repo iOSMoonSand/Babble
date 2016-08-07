@@ -309,11 +309,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="UZ3-Tb-O3D">
-                        <barButtonItem key="leftBarButtonItem" title="Back" id="LSQ-ur-vsH">
-                            <connections>
-                                <segue destination="XsW-2Z-dH9" kind="unwind" unwindAction="didTapCancelProfilePhotoEdit:" id="UMa-44-vsP"/>
-                            </connections>
-                        </barButtonItem>
+                        <barButtonItem key="leftBarButtonItem" title="Back" id="LSQ-ur-vsH"/>
                         <barButtonItem key="rightBarButtonItem" systemItem="edit" id="7fN-kh-HvP">
                             <connections>
                                 <action selector="didTapEditProfilePhoto:" destination="tIN-zK-ffY" id="5nD-ok-fzq"/>
@@ -322,13 +318,11 @@
                     </navigationItem>
                     <connections>
                         <outlet property="fullScreenImageView" destination="MRU-hM-nUL" id="3qB-55-2XJ"/>
-                        <segue destination="lPD-CE-k35" kind="show" identifier="ProfilePhotoToMyProfile" id="OIW-vf-fdm"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ukO-gJ-sNX" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="XsW-2Z-dH9" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="3105" y="1632"/>
+            <point key="canvasLocation" x="3017" y="2470"/>
         </scene>
         <!--Home-->
         <scene sceneID="8Pp-gF-lBE">
@@ -463,7 +457,7 @@
                                                         <constraint firstAttribute="height" constant="160" id="LQa-ad-ti1"/>
                                                     </constraints>
                                                     <connections>
-                                                        <outletCollection property="gestureRecognizers" destination="U01-DY-M2R" appends="YES" id="Hjr-8U-dIM"/>
+                                                        <outletCollection property="gestureRecognizers" destination="UAv-96-T6h" appends="YES" id="gf0-r3-yA6"/>
                                                     </connections>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="edit" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yPd-Ql-s3E">
@@ -523,13 +517,13 @@
                         <outlet property="imageView" destination="QjP-8L-Xtc" id="f50-RK-2GH"/>
                         <outlet property="textLabel" destination="yPd-Ql-s3E" id="FrO-ve-1Yd"/>
                         <outlet property="textView" destination="UU7-Ac-GRY" id="l1J-De-BDI"/>
+                        <segue destination="tIN-zK-ffY" kind="show" identifier="MyProfileToProfilePhoto" id="eSJ-NS-s5D"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UiM-RM-iPv" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tapGestureRecognizer id="U01-DY-M2R">
+                <tapGestureRecognizer id="UAv-96-T6h">
                     <connections>
-                        <action selector="didTapProfileImage:" destination="lPD-CE-k35" id="gjK-7s-ddx"/>
-                        <segue destination="tIN-zK-ffY" kind="show" identifier="MyProfileToProfilePhoto" id="Hb0-uL-nre"/>
+                        <action selector="didTapProfilePhotoImageView:" destination="lPD-CE-k35" id="AYZ-I0-NLF"/>
                     </connections>
                 </tapGestureRecognizer>
             </objects>
@@ -539,7 +533,4 @@
     <resources>
         <image name="default_my_profile" width="360" height="360"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="ROg-dH-jD0"/>
-    </inferredMetricsTieBreakers>
 </document>

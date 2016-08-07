@@ -9,6 +9,7 @@
 //
 
 import UIKit
+import Firebase
 
 
 //MARK: -
@@ -22,50 +23,63 @@ class MeViewController: UITableViewController {
     @IBOutlet weak var textLabel: UILabel!
     @IBOutlet weak var textView: UITextView!
     var imageFromProfilePhotoVC: UIImage!
+    var storageRef: FIRStorageReference!
 //MARK: -
 //MARK: - UIViewController Methods
 //MARK: -
     override func viewDidLoad() {
-        textView.delegate = self
+        
+        self.configureStorage()
         
         navigationItem.hidesBackButton = true
-        imageView.layer.cornerRadius = imageView.bounds.width/2
-        imageView.clipsToBounds = true
+        
+        let placeholderPhotoRef = storageRef.child("Profile_avatar_placeholder_large.png")
+        let placeholderPhotoRefString: String? = "gs://babble-8b668.appspot.com/" + placeholderPhotoRef.fullPath
+        
+        if let placeholderPhotoRefString = placeholderPhotoRefString {
+            
+            FIRStorage.storage().referenceForURL(placeholderPhotoRefString).dataWithMaxSize(INT64_MAX) { (data, error) in
+                if let error = error {
+                    print("Error downloading: \(error)")
+                    return
+                }
+                self.imageView.image = UIImage.init(data: data!)
+            }
+        } else if placeholderPhotoRefString == nil {
+            self.imageView.image = UIImage(named: "ic_account_circle")
+        } else if let url = NSURL(string:placeholderPhotoRefString!), data = NSData(contentsOfURL: url) {
+            self.imageView.image = UIImage.init(data: data)
+        }
+
         if imageFromProfilePhotoVC != nil {
             imageView.image = imageFromProfilePhotoVC
         }
     }
-    
+
     override func viewWillAppear(animated: Bool) {
-        let path = ProfileImageManager.sharedManager.fileInDocumentsDirectory(ProfileImageManager.profileImageName)
-        //
-        //load saved image
-        //
-        guard let image = ProfileImageManager.sharedManager.loadImageFromPath(path) else { return }
-        imageView.image = image
+        imageView.layer.cornerRadius = imageView.bounds.width/2
+        imageView.clipsToBounds = true
     }
-    
+
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == Constants.Segues.MyProfileToProfilePhoto {
             guard let destinationVC = segue.destinationViewController as? ProfilePhotoViewController else { return }
             destinationVC.imageFromMeVC = imageView.image
         }
     }
-}
+    
+    func configureStorage() {
+        storageRef = FIRStorage.storage().referenceForURL("gs://babble-8b668.appspot.com/")
+    }
+    
+    
+    
+    
+    @IBAction func didTapProfilePhotoImageView(sender: UITapGestureRecognizer) {
+        performSegueWithIdentifier(Constants.Segues.MyProfileToProfilePhoto, sender: self)
+    }
+    
 
-extension MeViewController: UITextViewDelegate {
-    
-    func textViewDidBeginEditing(textView: UITextView) {
-    }
-    
-    @IBAction func didTapProfileImage(sender: UITapGestureRecognizer) {
-        //action segue to present ProfilePhotoVC added via Storyboard
-    }
-    
-    @IBAction func didTapCancelProfilePhotoEdit(segue: UIStoryboardSegue) {
-        //exit segue back to MeVC
-    }
-    
 }
 
 
