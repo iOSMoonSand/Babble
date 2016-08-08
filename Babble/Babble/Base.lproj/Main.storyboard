@@ -287,7 +287,7 @@
         <!--Profile Photo View Controller-->
         <scene sceneID="3jK-yR-Mzg">
             <objects>
-                <viewController modalTransitionStyle="flipHorizontal" id="tIN-zK-ffY" customClass="ProfilePhotoViewController" customModule="Babble" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController modalTransitionStyle="flipHorizontal" id="tIN-zK-ffY" customClass="ProfilePhotoViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="pbV-Bd-1nh"/>
                         <viewControllerLayoutGuide type="bottom" id="fDA-dJ-BPZ"/>
@@ -317,7 +317,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="fullScreenImageView" destination="MRU-hM-nUL" id="3qB-55-2XJ"/>
+                        <outlet property="fullScreenImageView" destination="MRU-hM-nUL" id="Kg3-1F-q5H"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ukO-gJ-sNX" userLabel="First Responder" sceneMemberID="firstResponder"/>
