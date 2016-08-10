@@ -51,7 +51,9 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
         ref = FIRDatabase.database().reference()
         _refHandle = self.ref.child("questions").observeEventType(.ChildAdded, withBlock: {(snapshot) -> Void in
             self.questionsArray.append(snapshot)
+            // query for photo URLs
             self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.questionsArray.count-1, inSection: 0)], withRowAnimation: .Automatic)
+            
         })
     }
     // MARK:
@@ -72,28 +74,37 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
         //unpack question from database
         let questionSnapshot: FIRDataSnapshot! = self.questionsArray[indexPath.row]
         var question = questionSnapshot.value as! Dictionary<String, String>
+        
         let name = question[Constants.QuestionFields.name] as String!
         let text = question[Constants.QuestionFields.text] as String!
         //assign data to cell
         cell!.textLabel?.text = name + ": " + text
         
-        if let photoUrl = AppState.sharedInstance.photoUrl {
-            question[Constants.QuestionFields.photoUrl] = photoUrl.absoluteString
+        if let uid = question[Constants.QuestionFields.userUID] as String! {
+            let photoURLQuery = ref.child("userInfo").child(uid).observeEventType(.ChildAdded, withBlock: {(snapshot) -> Void in
+                
+            })
+            print(photoURLQuery)
         }
         
-        if let photoUrl = question[Constants.QuestionFields.photoUrl] {
-            FIRStorage.storage().referenceForURL(photoUrl).dataWithMaxSize(INT64_MAX) { (data, error) in
-                if let error = error {
-                    print("Error downloading: \(error)")
-                    return
-                }
-                cell.imageView?.image = UIImage.init(data: data!)
-            }
-        } else if profilePhotoString == nil {
-            cell!.imageView?.image = UIImage(named: "ic_account_circle")
-        } else if let url = NSURL(string:profilePhotoString!), data = NSData(contentsOfURL: url) {
-                cell.imageView?.image = UIImage.init(data: data)
-        }
+        
+        
+        
+//        if let photoUrl = question[Constants.QuestionFields.photoUrl] {
+//            FIRStorage.storage().referenceForURL(photoUrl).dataWithMaxSize(INT64_MAX) { (data, error) in
+//                if let error = error {
+//                    print("Error downloading: \(error)")
+//                    return
+//                }
+//                cell!.imageView?.image = UIImage.init(data: data!)
+//            }
+//        } else if let photoUrl = question[Constants.QuestionFields.photoUrl], url = NSURL(string:photoUrl), data = NSData(contentsOfURL: url) {
+//                cell!.imageView?.image = UIImage.init(data: data)
+//        } else {
+//            cell!.imageView?.image = UIImage(named: "ic_account_circle")
+//        }
+        
+        
         return cell!
     }
 
@@ -127,16 +138,8 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func postQuestion(data: [String: String]) {
         var questionData = data
+        questionData[Constants.QuestionFields.userUID] = FIRAuth.auth()?.currentUser?.uid
         questionData[Constants.QuestionFields.name] = AppState.sharedInstance.displayName
-        if let photoUrl = AppState.sharedInstance.photoUrl {
-            questionData[Constants.QuestionFields.photoUrl] = photoUrl.absoluteString
-        } else {
-            let placeholderPhotoRef = storageRef.child("Profile_avatar_placeholder_large.png")
-            let placeholderPhotoRefString = "gs://babble-8b668.appspot.com/" + placeholderPhotoRef.fullPath
-            questionData[Constants.QuestionFields.photoUrl] = placeholderPhotoRefString
-            profilePhotoString = placeholderPhotoRefString
-
-        }
         self.ref.child("questions").childByAutoId().setValue(questionData)
     }
     

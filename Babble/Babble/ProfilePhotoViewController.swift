@@ -21,6 +21,7 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
     @IBOutlet weak var fullScreenImageView: UIImageView!
     var imageFromMeVC: UIImage!
     var selectedImage: UIImage!
+    var ref: FIRDatabaseReference!
     var storageRef: FIRStorageReference!
     //MARK: -
     //MARK: - UIViewController Methods
@@ -45,7 +46,13 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
         }
     }
     // MARK:
-    // MARK: - Firebase StorageConfiguration
+    // MARK: - Firebase Database Reference
+    // MARK:
+    func configureDatabase() {
+        ref = FIRDatabase.database().reference()
+    }
+    // MARK:
+    // MARK: - Firebase Storage Reference
     // MARK:
     func configureStorage() {
         storageRef = FIRStorage.storage().referenceForURL("gs://babble-8b668.appspot.com/")
@@ -103,32 +110,33 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
             let asset = assets.firstObject
             asset?.requestContentEditingInputWithOptions(nil, completionHandler: { (contentEditingInput, info) in
                 let imageFile = contentEditingInput?.fullSizeImageURL
-                let filePath = "\(FIRAuth.auth()?.currentUser?.uid)/\(Int(NSDate.timeIntervalSinceReferenceDate() * 1000))/\(referenceUrl.lastPathComponent!)"
+                let filePath = "\(FIRAuth.auth()!.currentUser!.uid)/\(Int(NSDate.timeIntervalSinceReferenceDate() * 1000))/\(referenceUrl.lastPathComponent!)"
                 self.storageRef.child(filePath).putFile(imageFile!, metadata: nil) { (metadata, error) in
                         if let error = error {
                             print("Error uploading:\(error.localizedDescription)")
                             return
                         }
                     let storageRefString = self.storageRef.child((metadata?.path)!).description
-                    let storageRefUrl = NSURL(string: storageRefString)
+                    //let storageRefUrl = NSURL(string: storageRefString)
+                        
+                    let data = [Constants.UserInfoFields.photoUrl: storageRefString]
+                    self.createUser(data)
                     
-                    if let user = FIRAuth.auth()?.currentUser{
-                        let changeRequest = user.profileChangeRequest()
-                        changeRequest.photoURL = storageRefUrl
-                        changeRequest.commitChangesWithCompletion(){ (error) in
-                            if let error = error {
-                                print(error.localizedDescription)
-                                return
-                            }
-                        }
-                    }
-                    AppState.sharedInstance.photoUrl = storageRefUrl
+                    //AppState.sharedInstance.photoUrl = storageRefUrl
                 }
             })
         }
         
         dismissViewControllerAnimated(true, completion: nil)
         performSegueWithIdentifier(Constants.Segues.ProfilePhotoToMyProfile, sender: nil)
+    }
+    
+    func createUser(data: [String: String]) {
+        self.configureDatabase()
+        let userInfoData = data
+        if let currentUserUID = FIRAuth.auth()?.currentUser?.uid{
+            self.ref.child("userInfo").child(currentUserUID).setValue(userInfoData)
+        }
     }
     
 }

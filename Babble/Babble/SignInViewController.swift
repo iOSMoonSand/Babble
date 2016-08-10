@@ -20,7 +20,8 @@ class SignInViewController: UIViewController {
     //MARK:
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
-    
+    var ref: FIRDatabaseReference!
+    var storageRef: FIRStorageReference!
     //MARK:
     //MARK: - UIViewController Methods
     //MARK:
@@ -78,6 +79,8 @@ class SignInViewController: UIViewController {
     }
 
     func setDisplayName(user: FIRUser) {
+        self.configureStorage()
+        
         let changeRequest = user.profileChangeRequest()
         changeRequest.displayName = user.email!.componentsSeparatedByString("@")[0]
         changeRequest.commitChangesWithCompletion(){ (error) in
@@ -85,8 +88,32 @@ class SignInViewController: UIViewController {
                 print(error.localizedDescription)
                 return
             }
-            self.signedIn(FIRAuth.auth()?.currentUser)
         }
+        
+        self.signedIn(FIRAuth.auth()?.currentUser)
+        
+        let placeholderPhotoRef = storageRef.child("Profile_avatar_placeholder_large.png")
+        let placeholderPhotoRefString = "gs://babble-8b668.appspot.com/" + placeholderPhotoRef.fullPath
+        //let placeholderPhotoRefURL = NSURL(string: placeholderPhotoRefString)
+        
+        let data = [Constants.UserInfoFields.photoUrl: placeholderPhotoRefString]
+        self.createUserInfo(data)
+    }
+    
+    func createUserInfo(data: [String: String]) {
+        configureDatabase()
+        let userInfoData = data
+        if let currentUserUID = FIRAuth.auth()?.currentUser?.uid{
+            self.ref.child("userInfo").child(currentUserUID).setValue(userInfoData)
+        }
+    }
+    
+    func configureDatabase() {
+        ref = FIRDatabase.database().reference()
+    }
+    
+    func configureStorage() {
+        storageRef = FIRStorage.storage().referenceForURL("gs://babble-8b668.appspot.com/")
     }
     // MARK:
     // MARK: - IBAction: Reset Password

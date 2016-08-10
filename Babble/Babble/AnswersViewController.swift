@@ -70,19 +70,21 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
         let name = answer[Constants.AnswerFields.name] as String!
         let text = answer[Constants.AnswerFields.text] as String!
         cell!.textLabel?.text = name + ": " + text
-        if let photoUrl = answer[Constants.QuestionFields.photoUrl] {
-            FIRStorage.storage().referenceForURL(photoUrl).dataWithMaxSize(INT64_MAX) { (data, error) in
-                if let error = error {
-                    print("Error downloading: \(error)")
-                    return
-                }
-                cell.imageView?.image = UIImage.init(data: data!)
-            }
-        } else if profilePhotoString == nil {
-            cell!.imageView?.image = UIImage(named: "ic_account_circle")
-        } else if let url = NSURL(string:profilePhotoString!), data = NSData(contentsOfURL: url) {
-            cell.imageView?.image = UIImage.init(data: data)
-        }
+        
+        //TODO: update code to with userUID
+//        if let photoUrl = answer[Constants.QuestionFields.photoUrl] {
+//            FIRStorage.storage().referenceForURL(photoUrl).dataWithMaxSize(INT64_MAX) { (data, error) in
+//                if let error = error {
+//                    print("Error downloading: \(error)")
+//                    return
+//                }
+//                cell.imageView?.image = UIImage.init(data: data!)
+//            }
+//        } else if profilePhotoString == nil {
+//            cell!.imageView?.image = UIImage(named: "ic_account_circle")
+//        } else if let url = NSURL(string:profilePhotoString!), data = NSData(contentsOfURL: url) {
+//            cell.imageView?.image = UIImage.init(data: data)
+//        }
         return cell!
     }
     // MARK:
@@ -107,15 +109,17 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
     func sendAnswer(data: [String: String]) {
         var answerData = data
         answerData[Constants.AnswerFields.name] = AppState.sharedInstance.displayName
-        if let photoUrl = AppState.sharedInstance.photoUrl {
-            answerData[Constants.QuestionFields.photoUrl] = photoUrl.absoluteString
-        } else {
-            let placeholderPhotoRef = storageRef.child("Profile_avatar_placeholder_large.png")
-            let placeholderPhotoRefString = "gs://babble-8b668.appspot.com/" + placeholderPhotoRef.fullPath
-            answerData[Constants.QuestionFields.photoUrl] = placeholderPhotoRefString
-            profilePhotoString = placeholderPhotoRefString
-            
-        }
+        
+        //TODO: update code to with userUID
+//        if let photoUrl = AppState.sharedInstance.photoUrl {
+//            answerData[Constants.QuestionFields.photoUrl] = photoUrl.absoluteString
+//        } else {
+//            let placeholderPhotoRef = storageRef.child("Profile_avatar_placeholder_large.png")
+//            let placeholderPhotoRefString = "gs://babble-8b668.appspot.com/" + placeholderPhotoRef.fullPath
+//            answerData[Constants.QuestionFields.photoUrl] = placeholderPhotoRefString
+//            profilePhotoString = placeholderPhotoRefString
+//            
+//        }
 
         self.ref.child("answers").child(questionRef!).childByAutoId().setValue(answerData)
     }

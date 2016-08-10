@@ -296,7 +296,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="MRU-hM-nUL">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MRU-hM-nUL">
                                 <rect key="frame" x="100" y="100" width="400" height="400"/>
                             </imageView>
                         </subviews>
@@ -318,6 +318,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="fullScreenImageView" destination="MRU-hM-nUL" id="Kg3-1F-q5H"/>
+                        <segue destination="lPD-CE-k35" kind="show" identifier="ProfilePhotoToMyProfile" id="Xbo-DC-sfx"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ukO-gJ-sNX" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -443,7 +444,7 @@
                             <tableViewSection id="wZ3-P6-C2T">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="288" id="Qkh-ma-VcN">
-                                        <rect key="frame" x="0.0" y="64" width="600" height="288"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="288"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Qkh-ma-VcN" id="zFH-ST-bJ3">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="287.5"/>
@@ -483,7 +484,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="199" id="dSY-16-M6e">
-                                        <rect key="frame" x="0.0" y="352" width="600" height="199"/>
+                                        <rect key="frame" x="0.0" y="288" width="600" height="199"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="dSY-16-M6e" id="5yt-t3-1ot">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="198.5"/>
@@ -533,4 +534,7 @@
     <resources>
         <image name="default_my_profile" width="360" height="360"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="Xbo-DC-sfx"/>
+    </inferredMetricsTieBreakers>
 </document>

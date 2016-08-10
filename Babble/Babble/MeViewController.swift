@@ -32,28 +32,28 @@ class MeViewController: UITableViewController {
         self.configureStorage()
         
         navigationItem.hidesBackButton = true
+        //
+        //TODO: why not user FIRUser ?
+        //
         
-        let placeholderPhotoRef = storageRef.child("Profile_avatar_placeholder_large.png")
-        let placeholderPhotoRefString: String? = "gs://babble-8b668.appspot.com/" + placeholderPhotoRef.fullPath
+        if let photoUrl = AppState.sharedInstance.photoUrl?.description {
         
-        if let placeholderPhotoRefString = placeholderPhotoRefString {
-            
-            FIRStorage.storage().referenceForURL(placeholderPhotoRefString).dataWithMaxSize(INT64_MAX) { (data, error) in
+            FIRStorage.storage().referenceForURL(photoUrl).dataWithMaxSize(INT64_MAX) { (data, error) in
                 if let error = error {
                     print("Error downloading: \(error)")
                     return
                 }
                 self.imageView.image = UIImage.init(data: data!)
             }
-        } else if placeholderPhotoRefString == nil {
-            self.imageView.image = UIImage(named: "ic_account_circle")
-        } else if let url = NSURL(string:placeholderPhotoRefString!), data = NSData(contentsOfURL: url) {
+        } else if let photoUrl = AppState.sharedInstance.photoUrl?.description, url = NSURL(string:photoUrl), data = NSData(contentsOfURL: url) {
             self.imageView.image = UIImage.init(data: data)
+        } else {
+            self.imageView.image = UIImage(named: "ic_account_circle")
         }
 
-        if imageFromProfilePhotoVC != nil {
-            imageView.image = imageFromProfilePhotoVC
-        }
+//        if imageFromProfilePhotoVC != nil {
+//            imageView.image = imageFromProfilePhotoVC
+//        }
     }
 
     override func viewWillAppear(animated: Bool) {
