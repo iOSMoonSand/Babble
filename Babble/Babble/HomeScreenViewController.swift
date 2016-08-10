@@ -21,7 +21,7 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     var questionsArray: [FIRDataSnapshot]! = []
     var profilePhotoString: String?
     var newQuestion: String?
-    var photoUrlArray: [FIRDataSnapshot]! = []
+    var photoUrlArray = [String]()
     //MARK: -
     //MARK: - UIViewController Methods
     //MARK: -
@@ -57,11 +57,10 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
             
             if let uid = snapshot.value?[Constants.QuestionFields.userUID] as? String {
                 self._photoURLrefHandle = self.ref.child("userInfo").child(uid).observeEventType(.ChildAdded, withBlock: {(snapshot) -> Void in
-                    //if let url = snapshot.value?[Constants.UserInfoFields.photoUrl] as? String {
-                    let photoURLDict = snapshot.value as! [String : AnyObject]
-                    let photoURL = photoURLDict[Constants.UserInfoFields.photoUrl] as! String
+                    if let photoURL = snapshot.value as? String {
+                        self.photoUrlArray.append(photoURL)
                         self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.questionsArray.count-1, inSection: 0)], withRowAnimation: .Automatic)
-                    //}
+                    }
                 })
             }
         })
