@@ -16,10 +16,12 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     @IBOutlet weak var tableView: UITableView!
     var ref: FIRDatabaseReference!
     private var _refHandle: FIRDatabaseHandle!
+    private var _photoURLrefHandle: FIRDatabaseHandle!
     var storageRef: FIRStorageReference!
     var questionsArray: [FIRDataSnapshot]! = []
     var profilePhotoString: String?
     var newQuestion: String?
+    var photoUrlArray: [FIRDataSnapshot]! = []
     //MARK: -
     //MARK: - UIViewController Methods
     //MARK: -
@@ -33,6 +35,7 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     
     deinit {
         self.ref.child("questions").removeObserverWithHandle(_refHandle)
+        // repeat for photoURLRefHandle
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -51,9 +54,16 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
         ref = FIRDatabase.database().reference()
         _refHandle = self.ref.child("questions").observeEventType(.ChildAdded, withBlock: {(snapshot) -> Void in
             self.questionsArray.append(snapshot)
-            // query for photo URLs
-            self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.questionsArray.count-1, inSection: 0)], withRowAnimation: .Automatic)
             
+            if let uid = snapshot.value?[Constants.QuestionFields.userUID] as? String {
+                self._photoURLrefHandle = self.ref.child("userInfo").child(uid).observeEventType(.ChildAdded, withBlock: {(snapshot) -> Void in
+                    //if let url = snapshot.value?[Constants.UserInfoFields.photoUrl] as? String {
+                    let photoURLDict = snapshot.value as! [String : AnyObject]
+                    let photoURL = photoURLDict[Constants.UserInfoFields.photoUrl] as! String
+                        self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.questionsArray.count-1, inSection: 0)], withRowAnimation: .Automatic)
+                    //}
+                })
+            }
         })
     }
     // MARK:
@@ -74,21 +84,12 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
         //unpack question from database
         let questionSnapshot: FIRDataSnapshot! = self.questionsArray[indexPath.row]
         var question = questionSnapshot.value as! Dictionary<String, String>
-        
         let name = question[Constants.QuestionFields.name] as String!
         let text = question[Constants.QuestionFields.text] as String!
-        //assign data to cell
         cell!.textLabel?.text = name + ": " + text
-        
-        if let uid = question[Constants.QuestionFields.userUID] as String! {
-            let photoURLQuery = ref.child("userInfo").child(uid).observeEventType(.ChildAdded, withBlock: {(snapshot) -> Void in
-                
-            })
-            print(photoURLQuery)
-        }
-        
-        
-        
+    
+//        let photoUrl = self.photoUrlArray[indexPath.row]
+//        print(photoUrl)
         
 //        if let photoUrl = question[Constants.QuestionFields.photoUrl] {
 //            FIRStorage.storage().referenceForURL(photoUrl).dataWithMaxSize(INT64_MAX) { (data, error) in
@@ -103,8 +104,8 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
 //        } else {
 //            cell!.imageView?.image = UIImage(named: "ic_account_circle")
 //        }
-        
-        
+
+
         return cell!
     }
 
