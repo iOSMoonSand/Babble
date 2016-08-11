@@ -36,20 +36,20 @@ class MeViewController: UITableViewController {
         //TODO: why not user FIRUser ?
         //
         
-        if let photoUrl = AppState.sharedInstance.photoUrl?.description {
-        
-            FIRStorage.storage().referenceForURL(photoUrl).dataWithMaxSize(INT64_MAX) { (data, error) in
-                if let error = error {
-                    print("Error downloading: \(error)")
-                    return
-                }
-                self.imageView.image = UIImage.init(data: data!)
-            }
-        } else if let photoUrl = AppState.sharedInstance.photoUrl?.description, url = NSURL(string:photoUrl), data = NSData(contentsOfURL: url) {
-            self.imageView.image = UIImage.init(data: data)
-        } else {
-            self.imageView.image = UIImage(named: "ic_account_circle")
-        }
+//        if let photoUrl = AppState.sharedInstance.photoUrlString? {
+//        
+//            FIRStorage.storage().referenceForURL(photoUrl).dataWithMaxSize(INT64_MAX) { (data, error) in
+//                if let error = error {
+//                    print("Error downloading: \(error)")
+//                    return
+//                }
+//                self.imageView.image = UIImage.init(data: data!)
+//            }
+//        } else if let photoUrl = AppState.sharedInstance.photoUrlString?, url = NSURL(string:photoUrl), data = NSData(contentsOfURL: url) {
+//            self.imageView.image = UIImage.init(data: data)
+//        } else {
+//            self.imageView.image = UIImage(named: "ic_account_circle")
+//        }
 
 //        if imageFromProfilePhotoVC != nil {
 //            imageView.image = imageFromProfilePhotoVC

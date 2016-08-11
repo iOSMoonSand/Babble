@@ -119,8 +119,8 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
                     let storageRefString = self.storageRef.child((metadata?.path)!).description
                     //let storageRefUrl = NSURL(string: storageRefString)
                         
-                    let data = [Constants.UserInfoFields.photoUrl: storageRefString]
-                    self.createUser(data)
+//                    let data = [Constants.UserInfoFields.photoUrl: storageRefString]
+//                    self.createUser(data)
                     
                     //AppState.sharedInstance.photoUrl = storageRefUrl
                 }

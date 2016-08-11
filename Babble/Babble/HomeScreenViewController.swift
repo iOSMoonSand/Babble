@@ -137,10 +137,12 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func postQuestion(data: [String: String]) {
-        var questionData = data
-        questionData[Constants.QuestionFields.userUID] = FIRAuth.auth()?.currentUser?.uid
-        questionData[Constants.QuestionFields.name] = AppState.sharedInstance.displayName
-        self.ref.child("questions").childByAutoId().setValue(questionData)
+        var questionDataDict = data
+        questionDataDict[Constants.QuestionFields.name] = FIRAuth.auth()?.currentUser?.displayName
+        guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
+        questionDataDict[currentUserID] = [Constants.QuestionFields.photoUrl: AppState.sharedInstance.photoUrlString]
+
+        self.ref.child("questions").childByAutoId().setValue(questionDataDict)
     }
     
     

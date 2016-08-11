@@ -43,7 +43,7 @@ class SignInViewController: UIViewController {
     func signedIn(user: FIRUser?) {
         //<FIRUserInfo> protocol providing user data to FIRUser
         AppState.sharedInstance.displayName = user?.displayName ?? user?.email
-        AppState.sharedInstance.photoUrl = user?.photoURL
+        //AppState.sharedInstance.photoUrlString = user?.photoURL
         AppState.sharedInstance.signedIn = true
 
         NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.SignedIn, object: nil, userInfo: nil)
@@ -94,17 +94,19 @@ class SignInViewController: UIViewController {
         
         let placeholderPhotoRef = storageRef.child("Profile_avatar_placeholder_large.png")
         let placeholderPhotoRefString = "gs://babble-8b668.appspot.com/" + placeholderPhotoRef.fullPath
-        //let placeholderPhotoRefURL = NSURL(string: placeholderPhotoRefString)
         
-        let data = [Constants.UserInfoFields.photoUrl: placeholderPhotoRefString]
-        self.createUserInfo(data)
+        let UserData = [Constants.UserFields.photoUrl: placeholderPhotoRefString]
+        AppState.sharedInstance.photoUrlString = placeholderPhotoRefString
+        self.createUserData(UserData)
     }
     
-    func createUserInfo(data: [String: String]) {
+    func createUserData(data: [String: String]) {
         configureDatabase()
-        let userInfoData = data
+        var userDataDict = data
+        guard let name = FIRAuth.auth()?.currentUser?.displayName else { return }
+        userDataDict[Constants.UserFields.name] = name
         if let currentUserUID = FIRAuth.auth()?.currentUser?.uid{
-            self.ref.child("userInfo").child(currentUserUID).setValue(userInfoData)
+            self.ref.child("userInfo").child(currentUserUID).setValue(userDataDict)
         }
     }
     
