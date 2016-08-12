@@ -123,20 +123,10 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
     // MARK: - Set Firebase Data
     // MARK:
     func sendAnswer(data: [String: String]) {
-        var answerData = data
-//        answerData[Constants.AnswerFields.name] = AppState.sharedInstance.displayName
-//        
-//        if let photoUrl = AppState.sharedInstance.photoUrl {
-//            answerData[Constants.QuestionFields.photoUrl] = photoUrl.absoluteString
-//        } else {
-//            let placeholderPhotoRef = storageRef.child("Profile_avatar_placeholder_large.png")
-//            let placeholderPhotoRefString = "gs://babble-8b668.appspot.com/" + placeholderPhotoRef.fullPath
-//            answerData[Constants.QuestionFields.photoUrl] = placeholderPhotoRefString
-//            profilePhotoString = placeholderPhotoRefString
-//            
-//        }
-
-        self.ref.child("answers").child(questionRef!).childByAutoId().setValue(answerData)
+        var answerDataDict = data
+        guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
+        answerDataDict[Constants.QuestionFields.userID] = currentUserID
+        self.ref.child("answers").child(questionRef!).childByAutoId().setValue(answerDataDict)
     }
     
 }

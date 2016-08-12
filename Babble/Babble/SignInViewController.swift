@@ -6,8 +6,6 @@
 //  Copyright © 2016 Alexis Schreier. All rights reserved.
 //
 
-//SignUp a user, set display name, Sign In with email/password, remember a signed in user and request a password reset
-
 import UIKit
 import Firebase
 
@@ -31,8 +29,7 @@ class SignInViewController: UIViewController {
     }
 
     override func viewDidAppear(animated: Bool) {
-        //super.viewDidAppear(true)
-        //checks for cached user credentials
+        super.viewDidAppear(true)
         if let user = FIRAuth.auth()?.currentUser {
             self.signedIn(user)
         }
@@ -41,9 +38,9 @@ class SignInViewController: UIViewController {
     // MARK: - Firebase Authentication Configuration
     // MARK:
     func signedIn(user: FIRUser?) {
-        //<FIRUserInfo> protocol providing user data to FIRUser
+        //<FIRUserInfo> protocol provides user data to FIRUser
         AppState.sharedInstance.displayName = user?.displayName ?? user?.email
-        //AppState.sharedInstance.photoUrlString = user?.photoURL
+        AppState.sharedInstance.photoUrlString = user?.photoURL
         AppState.sharedInstance.signedIn = true
 
         NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.SignedIn, object: nil, userInfo: nil)
@@ -95,16 +92,15 @@ class SignInViewController: UIViewController {
         let placeholderPhotoRef = storageRef.child("Profile_avatar_placeholder_large.png")
         let placeholderPhotoRefString = "gs://babble-8b668.appspot.com/" + placeholderPhotoRef.fullPath
         
-        let UserData = [Constants.UserFields.photoUrl: placeholderPhotoRefString]
-        AppState.sharedInstance.photoUrlString = placeholderPhotoRefString
-        self.createUserData(UserData)
+        let userDataDict = [Constants.UserFields.photoUrl: placeholderPhotoRefString]
+        self.createUserData(userDataDict)
     }
     
     func createUserData(data: [String: String]) {
         configureDatabase()
-        let userDataDict = data
-//        let name = FIRAuth.auth()?.currentUser?.displayName
-//        userDataDict[Constants.UserFields.name] = name
+        var userDataDict = data
+        let displayName = FIRAuth.auth()?.currentUser?.displayName
+        userDataDict[Constants.UserFields.displayName] = displayName
         if let currentUserUID = FIRAuth.auth()?.currentUser?.uid {
             self.ref.child("users").child(currentUserUID).setValue(userDataDict)
         }

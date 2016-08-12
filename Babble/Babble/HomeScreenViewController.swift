@@ -9,6 +9,9 @@
 import UIKit
 import Firebase
 
+//MARK: -
+//MARK: - HomeScreenViewController Class
+//MARK: -
 class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     //MARK: -
     //MARK: - Properties
@@ -30,7 +33,6 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
         self.ref = FIRDatabase.database().reference()
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tableViewCell")
         self.configureDatabase()
-        self.configureStorage()
     }
     
     deinit {
@@ -52,7 +54,7 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     // MARK:
     func configureDatabase() {
         ref = FIRDatabase.database().reference()
-        _refHandle = self.ref.child("questions").observeEventType(.ChildAdded, withBlock: {(questionSnapshot) -> Void in
+        _refHandle = self.ref.child("questions").observeEventType(.ChildAdded, withBlock: {(questionSnapshot) in
             
             let questionID = questionSnapshot.key
             var question = questionSnapshot.value as! Dictionary<String, String>
@@ -61,11 +63,12 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
             
             let usersRef = self.ref.child("users")
             usersRef.child(userID).observeSingleEventOfType(.Value, withBlock: { (userSnapshot) in
-                
                 var user = userSnapshot.value as! Dictionary<String, String>
                 let photoURL = user[Constants.UserFields.photoUrl] as String!
+                let displayName = FIRAuth.auth()?.currentUser?.displayName as String!
                 
                 question[Constants.QuestionFields.photoUrl] = photoURL
+                question[Constants.QuestionFields.displayName] = displayName
                 
                 self.questionsArray.append(question)
                 self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.questionsArray.count-1, inSection: 0)], withRowAnimation: .Automatic)
@@ -76,12 +79,6 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
         })
     }
     // MARK:
-    // MARK: - Firebase StorageConfiguration
-    // MARK:
-    func configureStorage() {
-        storageRef = FIRStorage.storage().referenceForURL("gs://babble-8b668.appspot.com/")
-    }
-    // MARK:
     // MARK: - UITableViewDataSource & UITableViewDelegate methods
     // MARK:
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -89,30 +86,32 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell: UITableViewCell! = self.tableView.dequeueReusableCellWithIdentifier("tableViewCell", forIndexPath: indexPath)
-        //unpack question from database
+        let cell = self.tableView.dequeueReusableCellWithIdentifier("QuestionCell", forIndexPath: indexPath) as! QuestionCell
+        //unpack question from local dict
         let question: Dictionary<String, String>! = self.questionsArray[indexPath.row]
-        
-        let text = question[Constants.QuestionFields.text] as String!
-        cell!.textLabel?.text = /*name + ": " + */text
-        
+        let questionText = question[Constants.QuestionFields.text] as String!
+        let displayName = question[Constants.QuestionFields.displayName] as String!
+        cell.questionTextLabel.text = questionText
+        //cell.displayNameLabel = displayName
         if let photoUrl = question[Constants.QuestionFields.photoUrl] {
             FIRStorage.storage().referenceForURL(photoUrl).dataWithMaxSize(INT64_MAX) { (data, error) in
                 if let error = error {
                     print("Error downloading: \(error)")
                     return
                 }
-//                cell!.imageView?.image = UIImage.init(data: data!)
-                cell!.imageView?.image = UIImage(data: data!)
+                cell.profilePhotoImageView.image = UIImage(data: data!)
             }
         } else if let photoUrl = question[Constants.QuestionFields.photoUrl], url = NSURL(string:photoUrl), data = NSData(contentsOfURL: url) {
-                cell!.imageView?.image = UIImage(data: data)
+                cell.profilePhotoImageView.image = UIImage(data: data)
         } else {
-            cell!.imageView?.image = UIImage(named: "ic_account_circle")
+            cell.profilePhotoImageView.image = UIImage(named: "ic_account_circle")
         }
-
-
-        return cell!
+//TODO: is this the right way to reload the data?
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.tableView.reloadData()
+        })
+        
+        return cell
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -157,18 +156,18 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
 
 
 
-class StandardTableViewCell : UITableViewCell {
-    //attributes
-    
-    //outlets
-    @IBOutlet weak var avatarImageView : UIImage!
-    func perform(/*param1: param2:*/) {
-        //Excute Completion block ----> Response {
-        /*
-            self.avatarImageView = UIImage(data:data)
-        */
-    }
-}
+//class StandardTableViewCell : UITableViewCell {
+//    //attributes
+//    
+//    //outlets
+//    @IBOutlet weak var avatarImageView : UIImage!
+//    func perform(/*param1: param2:*/) {
+//        //Excute Completion block ----> Response {
+//        /*
+//            self.avatarImageView = UIImage(data:data)
+//        */
+//    }
+//}
 
 
 
