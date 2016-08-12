@@ -105,27 +105,27 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
         self.fullScreenImageView.image = self.selectedImage
         
         // if it's a photo from the library, not an image from the camera
-        if #available(iOS 8.0, *), let referenceUrl = info[UIImagePickerControllerReferenceURL] {
-            let assets = PHAsset.fetchAssetsWithALAssetURLs([referenceUrl as! NSURL], options: nil)
-            let asset = assets.firstObject
-            asset?.requestContentEditingInputWithOptions(nil, completionHandler: { (contentEditingInput, info) in
-                let imageFile = contentEditingInput?.fullSizeImageURL
-                let filePath = "\(FIRAuth.auth()!.currentUser!.uid)/\(Int(NSDate.timeIntervalSinceReferenceDate() * 1000))/\(referenceUrl.lastPathComponent!)"
-                self.storageRef.child(filePath).putFile(imageFile!, metadata: nil) { (metadata, error) in
-                        if let error = error {
-                            print("Error uploading:\(error.localizedDescription)")
-                            return
-                        }
-                    let storageRefString = self.storageRef.child((metadata?.path)!).description
-                    //let storageRefUrl = NSURL(string: storageRefString)
-                        
+//        if #available(iOS 8.0, *), let referenceUrl = info[UIImagePickerControllerReferenceURL] {
+//            let assets = PHAsset.fetchAssetsWithALAssetURLs([referenceUrl as! NSURL], options: nil)
+//            let asset = assets.firstObject
+//            asset?.requestContentEditingInputWithOptions(nil, completionHandler: { (contentEditingInput, info) in
+//                let imageFile = contentEditingInput?.fullSizeImageURL
+//                let filePath = "\(FIRAuth.auth()!.currentUser!.uid)/\(Int(NSDate.timeIntervalSinceReferenceDate() * 1000))/\(referenceUrl.lastPathComponent!)"
+//                self.storageRef.child(filePath).putFile(imageFile!, metadata: nil) { (metadata, error) in
+//                        if let error = error {
+//                            print("Error uploading:\(error.localizedDescription)")
+//                            return
+//                        }
+//                    let storageRefString = self.storageRef.child((metadata?.path)!).description
+//                    let storageRefUrl = NSURL(string: storageRefString)
+//                        
 //                    let data = [Constants.UserInfoFields.photoUrl: storageRefString]
 //                    self.createUser(data)
-                    
-                    //AppState.sharedInstance.photoUrl = storageRefUrl
-                }
-            })
-        }
+//                    
+//                    AppState.sharedInstance.photoUrl = storageRefUrl
+//                }
+//            })
+//        }
         
         dismissViewControllerAnimated(true, completion: nil)
         performSegueWithIdentifier(Constants.Segues.ProfilePhotoToMyProfile, sender: nil)

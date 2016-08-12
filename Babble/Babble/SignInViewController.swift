@@ -102,11 +102,11 @@ class SignInViewController: UIViewController {
     
     func createUserData(data: [String: String]) {
         configureDatabase()
-        var userDataDict = data
-        guard let name = FIRAuth.auth()?.currentUser?.displayName else { return }
-        userDataDict[Constants.UserFields.name] = name
-        if let currentUserUID = FIRAuth.auth()?.currentUser?.uid{
-            self.ref.child("userInfo").child(currentUserUID).setValue(userDataDict)
+        let userDataDict = data
+//        let name = FIRAuth.auth()?.currentUser?.displayName
+//        userDataDict[Constants.UserFields.name] = name
+        if let currentUserUID = FIRAuth.auth()?.currentUser?.uid {
+            self.ref.child("users").child(currentUserUID).setValue(userDataDict)
         }
     }
     

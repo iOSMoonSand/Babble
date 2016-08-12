@@ -21,7 +21,7 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
     @IBOutlet weak var sendButton: UIButton!
     var ref: FIRDatabaseReference!
     private var _refHandle: FIRDatabaseHandle!
-    var answersArray: [FIRDataSnapshot]! = []
+    var answersArray: [Dictionary<String, String>]! = []
     var questionRef: String?
     var storageRef: FIRStorageReference!
     var profilePhotoString: String?
@@ -44,9 +44,27 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
     // MARK:
     func configureDatabase() {
         self.ref = FIRDatabase.database().reference()
-        _refHandle = self.ref.child("answers").child(questionRef!).observeEventType(.ChildAdded, withBlock: { (snapshot) -> Void in
-            self.answersArray.append(snapshot)
-            self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.answersArray.count-1, inSection: 0)], withRowAnimation: .Automatic)
+        _refHandle = self.ref.child("answers").child(questionRef!).observeEventType(.ChildAdded, withBlock: { (answerSnapshot) -> Void in
+            var answer = answerSnapshot.value as! Dictionary<String, String>
+            let userID = answer[Constants.AnswerFields.userID] as String!
+            
+            
+            
+            let usersRef = self.ref.child("users")
+            usersRef.child(userID).observeSingleEventOfType(.Value, withBlock: { (userSnapshot) in
+                print("userSnapshot value:\(userSnapshot.value!)")
+                
+                var user = userSnapshot.value as! Dictionary<String, String>
+                let photoURL = user[Constants.UserFields.photoUrl] as String!
+                
+                answer[Constants.AnswerFields.photoUrl] = photoURL
+                
+                self.answersArray.append(answer)
+                self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.answersArray.count-1, inSection: 0)], withRowAnimation: .Automatic)
+                })
+            { (error) in
+                print(error.localizedDescription)
+            }
         })
     }
     // MARK:
@@ -65,26 +83,24 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell: UITableViewCell! = self.tableView.dequeueReusableCellWithIdentifier("tableViewCell", forIndexPath: indexPath)
         //unpack question from database
-        let answerSnapshot: FIRDataSnapshot! = self.answersArray[indexPath.row]
-        let answer = answerSnapshot.value as! Dictionary<String, String>
-        let name = answer[Constants.AnswerFields.name] as String!
-        let text = answer[Constants.AnswerFields.text] as String!
-        cell!.textLabel?.text = name + ": " + text
+        let answer: Dictionary<String, String>! = self.answersArray[indexPath.row]
         
-        //TODO: update code to with userUID
-//        if let photoUrl = answer[Constants.QuestionFields.photoUrl] {
-//            FIRStorage.storage().referenceForURL(photoUrl).dataWithMaxSize(INT64_MAX) { (data, error) in
-//                if let error = error {
-//                    print("Error downloading: \(error)")
-//                    return
-//                }
-//                cell.imageView?.image = UIImage.init(data: data!)
-//            }
-//        } else if profilePhotoString == nil {
-//            cell!.imageView?.image = UIImage(named: "ic_account_circle")
-//        } else if let url = NSURL(string:profilePhotoString!), data = NSData(contentsOfURL: url) {
-//            cell.imageView?.image = UIImage.init(data: data)
-//        }
+        let text = answer[Constants.QuestionFields.text] as String!
+        cell!.textLabel?.text = /*name + ": " + */text
+        
+        if let photoUrl = answer[Constants.QuestionFields.photoUrl] {
+            FIRStorage.storage().referenceForURL(photoUrl).dataWithMaxSize(INT64_MAX) { (data, error) in
+                if let error = error {
+                    print("Error downloading: \(error)")
+                    return
+                }
+                cell!.imageView?.image = UIImage.init(data: data!)
+            }
+        } else if let photoUrl = answer[Constants.QuestionFields.photoUrl], url = NSURL(string:photoUrl), data = NSData(contentsOfURL: url) {
+            cell!.imageView?.image = UIImage.init(data: data)
+        } else {
+            cell!.imageView?.image = UIImage(named: "ic_account_circle")
+        }
         return cell!
     }
     // MARK:
@@ -108,9 +124,8 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
     // MARK:
     func sendAnswer(data: [String: String]) {
         var answerData = data
-        answerData[Constants.AnswerFields.name] = AppState.sharedInstance.displayName
-        
-        //TODO: update code to with userUID
+//        answerData[Constants.AnswerFields.name] = AppState.sharedInstance.displayName
+//        
 //        if let photoUrl = AppState.sharedInstance.photoUrl {
 //            answerData[Constants.QuestionFields.photoUrl] = photoUrl.absoluteString
 //        } else {

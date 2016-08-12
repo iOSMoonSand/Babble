@@ -25,18 +25,19 @@ struct Constants {
     }
     
     struct QuestionFields {
-        static let name = "name"
+        static let questionID = "questionID"
         static let text = "text"
+        static let userID = "userID"
         static let photoUrl = "photoURL"
     }
     
     struct AnswerFields {
-        static let name = "name"
         static let text = "text"
-        static let userUID = "userUID"
+        static let userID = "userID"
+        static let photoUrl = "photoURL"
     }
     
-    struct UserFields {
+    struct UserFields {//each user separated by uid
         static let photoUrl = "photoURL"
         static let name = "name"
     }
