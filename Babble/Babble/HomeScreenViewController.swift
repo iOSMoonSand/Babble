@@ -21,7 +21,7 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     private var _refHandle: FIRDatabaseHandle!
     private var _photoURLrefHandle: FIRDatabaseHandle!
     var storageRef: FIRStorageReference!
-    var questionsArray: [Dictionary<String, String>]! = []
+    var questionsArray = [[String : AnyObject]]()
     var profilePhotoString: String?
     var newQuestion: String?
     var userArray = [String]()
@@ -43,16 +43,16 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == Constants.Segues.HomeToAnswers {
             guard let selectedIndexPath = self.tableView.indexPathForSelectedRow else { return }
-            let questionSnapShot: Dictionary<String, String>! = self.questionsArray[selectedIndexPath.row]
+            let questionSnapShot = self.questionsArray[selectedIndexPath.row]
             let questionID = questionSnapShot[Constants.QuestionFields.questionID]
             
             guard let nav = segue.destinationViewController as? UINavigationController else { return }
             guard let answersVC = nav.topViewController as? AnswersViewController else { return }
             
-            answersVC.questionRef = questionID as String!
+            answersVC.questionRef = questionID as? String
             
             guard let destinationVC = segue.destinationViewController as? AnswersViewController else { return }
-            destinationVC.questionRef = questionID as String!
+            destinationVC.questionRef = questionID as? String
         }
     }
     // MARK:
@@ -63,15 +63,17 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
         _refHandle = self.ref.child("questions").observeEventType(.ChildAdded, withBlock: {(questionSnapshot) in
             
             let questionID = questionSnapshot.key
-            var question = questionSnapshot.value as! Dictionary<String, String>
+        
+            var question = questionSnapshot.value as! [String: AnyObject]
             question[Constants.QuestionFields.questionID] = questionID
-            let userID = question[Constants.QuestionFields.userID] as String!
+            let userID = question[Constants.QuestionFields.userID] as! String
+            let likeCount = question[Constants.QuestionFields.likeCount] as! Int
             
             let usersRef = self.ref.child("users")
             usersRef.child(userID).observeSingleEventOfType(.Value, withBlock: { (userSnapshot) in
-                var user = userSnapshot.value as! Dictionary<String, String>
-                let photoURL = user[Constants.UserFields.photoUrl] as String!
-                let displayName = FIRAuth.auth()?.currentUser?.displayName as String!
+                var user = userSnapshot.value as! [String: AnyObject]
+                let photoURL = user[Constants.UserFields.photoUrl] as! String
+                let displayName = FIRAuth.auth()?.currentUser?.displayName
                 
                 question[Constants.QuestionFields.photoUrl] = photoURL
                 question[Constants.QuestionFields.displayName] = displayName
@@ -94,20 +96,20 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = self.tableView.dequeueReusableCellWithIdentifier("QuestionCell", forIndexPath: indexPath) as! QuestionCell
         //unpack question from local dict
-        let question: Dictionary<String, String>! = self.questionsArray[indexPath.row]
-        let questionText = question[Constants.QuestionFields.text] as String!
-        let displayName = question[Constants.QuestionFields.displayName] as String!
+        let question: [String : AnyObject] = self.questionsArray[indexPath.row]
+        let questionText = question[Constants.QuestionFields.text] as! String
+        let displayName = question[Constants.QuestionFields.displayName] as! String
         cell.questionTextLabel.text = questionText
         //cell.displayNameLabel = displayName
         if let photoUrl = question[Constants.QuestionFields.photoUrl] {
-            FIRStorage.storage().referenceForURL(photoUrl).dataWithMaxSize(INT64_MAX) { (data, error) in
+            FIRStorage.storage().referenceForURL(photoUrl as! String).dataWithMaxSize(INT64_MAX) { (data, error) in
                 if let error = error {
                     print("Error downloading: \(error)")
                     return
                 }
                 cell.profilePhotoImageView.image = UIImage(data: data!)
             }
-        } else if let photoUrl = question[Constants.QuestionFields.photoUrl], url = NSURL(string:photoUrl), data = NSData(contentsOfURL: url) {
+        } else if let photoUrl = question[Constants.QuestionFields.photoUrl], url = NSURL(string:photoUrl as! String), data = NSData(contentsOfURL: url) {
                 cell.profilePhotoImageView.image = UIImage(data: data)
         } else {
             cell.profilePhotoImageView.image = UIImage(named: "ic_account_circle")
