@@ -12,7 +12,7 @@ import Firebase
 //MARK: -
 //MARK: - HomeScreenViewController Class
 //MARK: -
-class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIGestureRecognizerDelegate {
     //MARK: -
     //MARK: - Properties
     //MARK: -
@@ -95,12 +95,22 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = self.tableView.dequeueReusableCellWithIdentifier("QuestionCell", forIndexPath: indexPath) as! QuestionCell
+        
+        cell.likeButton.tag = indexPath.row
+        
+//        if cell.likeButton.imageView?.image = "heart-empty" {
+//            //do this
+//        }
+        cell.likeButton.addTarget(self, action: "updateLikeButtonAndCount:", forControlEvents: .TouchUpInside)
+        
         //unpack question from local dict
         let question: [String : AnyObject] = self.questionsArray[indexPath.row]
         let questionText = question[Constants.QuestionFields.text] as! String
         let displayName = question[Constants.QuestionFields.displayName] as! String
+        let likeCount = question[Constants.QuestionFields.likeCount] as! Int
         cell.questionTextLabel.text = questionText
         //cell.displayNameLabel = displayName
+        cell.likeButtonCountLabel.text = String(likeCount)
         if let photoUrl = question[Constants.QuestionFields.photoUrl] {
             FIRStorage.storage().referenceForURL(photoUrl as! String).dataWithMaxSize(INT64_MAX) { (data, error) in
                 if let error = error {
@@ -121,6 +131,18 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
         
         return cell
     }
+    
+    @IBAction func updateLikeButtonAndCount(sender: UIButton) {
+        print("tap fired")
+        var question: [String : AnyObject] = self.questionsArray[sender.tag]
+        let likeCount = question[Constants.QuestionFields.likeCount] as! Int
+        question[Constants.QuestionFields.likeCount] = likeCount + 1
+        let incrementedLikeCount = question[Constants.QuestionFields.likeCount] as! Int
+        let questionID = question[Constants.QuestionFields.questionID] as! String
+        self.ref.child("questions/\(questionID)/likeCount").setValue(incrementedLikeCount)
+    }
+    
+    
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         performSegueWithIdentifier(Constants.Segues.HomeToAnswers, sender: self)
@@ -152,12 +174,12 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func postQuestion(data: [String: String]) {
         
-        
         var questionDataDict = data
         guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
         questionDataDict[Constants.QuestionFields.userID] = currentUserID
         self.ref.child("questions").childByAutoId().setValue(questionDataDict)
     }
+
     
 }
 

@@ -18,7 +18,10 @@ class QuestionCell: UITableViewCell {
     @IBOutlet weak var profilePhotoImageView: UIImageView!
     @IBOutlet weak var displayNameLabel: UILabel!
     @IBOutlet weak var questionTextLabel: UILabel!
-    @IBOutlet weak var likeButtonImageView: UIImageView!
     @IBOutlet weak var likeButtonCountLabel: UILabel!
+    @IBOutlet weak var likeButton: UIButton!
+    
+    
+    
     
 }
