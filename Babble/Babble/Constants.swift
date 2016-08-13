@@ -17,7 +17,7 @@ struct Constants {
     struct Segues {
         static let SignInToHome = "SignInToHome"
         static let HomeToSignIn = "HomeToSignIn"
-        static let HomeToAnswersNavController = "HomeToAnswersNavController"
+        static let HomeToAnswers = "HomeToAnswers"
         static let HomeToAddQuestion = "HomeToAddQuestion"
         static let PostNewQuestionToHome = "PostNewQuestionToHome"
         static let MyProfileToProfilePhoto = "MyProfileToProfilePhoto"
@@ -30,16 +30,23 @@ struct Constants {
         static let userID = "userID"
         static let photoUrl = "photoURL"
         static let displayName = "displayName"
+        static let likeCount = "likeCount"
     }
     
     struct AnswerFields {//each answer separated by questionID child
         static let text = "text"
         static let userID = "userID"
         static let photoUrl = "photoURL"
+        static let likeCount = "likeCount"
     }
     
     struct UserFields {//each user separated by userID child
         static let photoUrl = "photoURL"
         static let displayName = "displayName"
     }
+    
+    struct LikeCountFields {//each LikeCount separated by questionID child
+        static let likeCount = "likeCount"
+    }
+
 }

@@ -41,10 +41,16 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == Constants.Segues.HomeToAnswersNavController {
+        if segue.identifier == Constants.Segues.HomeToAnswers {
             guard let selectedIndexPath = self.tableView.indexPathForSelectedRow else { return }
             let questionSnapShot: Dictionary<String, String>! = self.questionsArray[selectedIndexPath.row]
             let questionID = questionSnapShot[Constants.QuestionFields.questionID]
+            
+            guard let nav = segue.destinationViewController as? UINavigationController else { return }
+            guard let answersVC = nav.topViewController as? AnswersViewController else { return }
+            
+            answersVC.questionRef = questionID as String!
+            
             guard let destinationVC = segue.destinationViewController as? AnswersViewController else { return }
             destinationVC.questionRef = questionID as String!
         }
@@ -115,7 +121,7 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        performSegueWithIdentifier(Constants.Segues.HomeToAnswersNavController, sender: self)
+        performSegueWithIdentifier(Constants.Segues.HomeToAnswers, sender: self)
     }
     // MARK:
     // MARK: - IBActions
@@ -143,6 +149,8 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func postQuestion(data: [String: String]) {
+        
+        
         var questionDataDict = data
         guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
         questionDataDict[Constants.QuestionFields.userID] = currentUserID
@@ -151,23 +159,6 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     
 }
 
-
-
-
-
-
-//class StandardTableViewCell : UITableViewCell {
-//    //attributes
-//    
-//    //outlets
-//    @IBOutlet weak var avatarImageView : UIImage!
-//    func perform(/*param1: param2:*/) {
-//        //Excute Completion block ----> Response {
-//        /*
-//            self.avatarImageView = UIImage(data:data)
-//        */
-//    }
-//}
 
 
 

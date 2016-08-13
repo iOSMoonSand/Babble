@@ -1,5 +1,5 @@
 //
-//  QuestionCell.swift
+//  AnswerCell.swift
 //  Babble
 //
 //  Created by Alexis Schreier on 08/12/16.
@@ -7,18 +7,15 @@
 //
 
 import UIKit
-
 //MARK:
-//MARK: - QuestionCell Class
+//MARK: - AnswerCell Class
 //MARK:
-class QuestionCell: UITableViewCell {
+class AnswerCell: UITableViewCell {
     //MARK:
     //MARK: - Properties
     //MARK:
     @IBOutlet weak var profilePhotoImageView: UIImageView!
     @IBOutlet weak var displayNameLabel: UILabel!
-    @IBOutlet weak var questionTextLabel: UILabel!
-    @IBOutlet weak var likeButtonImageView: UIImageView!
-    @IBOutlet weak var likeButtonCountLabel: UILabel!
-    
+    @IBOutlet weak var answerTextLabel: UILabel!
+
 }

@@ -81,27 +81,33 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell: UITableViewCell! = self.tableView.dequeueReusableCellWithIdentifier("tableViewCell", forIndexPath: indexPath)
-        //unpack question from database
+        let cell = self.tableView.dequeueReusableCellWithIdentifier("AnswerCell", forIndexPath: indexPath) as! AnswerCell
+        //unpack answer from local dict
         let answer: Dictionary<String, String>! = self.answersArray[indexPath.row]
         
-        let text = answer[Constants.QuestionFields.text] as String!
-        cell!.textLabel?.text = /*name + ": " + */text
-        
+        let answerText = answer[Constants.QuestionFields.text] as String!
+        let displayName = answer[Constants.QuestionFields.displayName] as String!
+        cell.answerTextLabel.text = answerText
+        //cell.displayNameLabel = displayName
         if let photoUrl = answer[Constants.QuestionFields.photoUrl] {
             FIRStorage.storage().referenceForURL(photoUrl).dataWithMaxSize(INT64_MAX) { (data, error) in
                 if let error = error {
                     print("Error downloading: \(error)")
                     return
                 }
-                cell!.imageView?.image = UIImage.init(data: data!)
+                cell.profilePhotoImageView.image = UIImage(data: data!)
             }
         } else if let photoUrl = answer[Constants.QuestionFields.photoUrl], url = NSURL(string:photoUrl), data = NSData(contentsOfURL: url) {
-            cell!.imageView?.image = UIImage.init(data: data)
+            cell.profilePhotoImageView.image = UIImage(data: data)
         } else {
-            cell!.imageView?.image = UIImage(named: "ic_account_circle")
+            cell.profilePhotoImageView.image = UIImage(named: "ic_account_circle")
         }
-        return cell!
+//TODO: is this the right way to reload the data?
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.tableView.reloadData()
+        })
+        
+        return cell
     }
     // MARK:
     // MARK: - IBAction: Send Messages
