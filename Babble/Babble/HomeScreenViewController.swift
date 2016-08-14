@@ -97,10 +97,7 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
         let cell = self.tableView.dequeueReusableCellWithIdentifier("QuestionCell", forIndexPath: indexPath) as! QuestionCell
         
         cell.likeButton.tag = indexPath.row
-        
-//        if cell.likeButton.imageView?.image = "heart-empty" {
-//            //do this
-//        }
+
         cell.likeButton.addTarget(self, action: "updateLikeButtonAndCount:", forControlEvents: .TouchUpInside)
         
         //unpack question from local dict
