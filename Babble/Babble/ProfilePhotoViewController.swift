@@ -9,6 +9,12 @@
 import UIKit
 import Firebase
 import Photos
+import SDWebImage
+//
+//
+//TODO: update MeVC imageView when ProfilePhotoVC image view gets set
+//
+//
 
 //MARK: -
 //MARK: - ProfilePhotoViewController Class
@@ -23,6 +29,7 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
     var selectedImage: UIImage!
     var ref: FIRDatabaseReference!
     var storageRef: FIRStorageReference!
+    var selectedImageURLString = String()
     //MARK: -
     //MARK: - UIViewController Methods
     //MARK: -
@@ -31,25 +38,12 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
         fullScreenImageView.image = imageFromMeVC
         configureStorage()
     }
-    ///
-    ///
-    ///
-    override func viewWillAppear(animated: Bool) {
-    }
-    ///
-    ///
-    ///
+
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == Constants.Segues.ProfilePhotoToMyProfile {
             guard let destinationVC = segue.destinationViewController as? MeViewController else { return }
-            destinationVC.imageFromProfilePhotoVC = fullScreenImageView.image
+            destinationVC.imageFromProfilePhotoVC = self.selectedImage
         }
-    }
-    // MARK:
-    // MARK: - Firebase Database Reference
-    // MARK:
-    func configureDatabase() {
-        ref = FIRDatabase.database().reference()
     }
     // MARK:
     // MARK: - Firebase Storage Reference
@@ -68,7 +62,7 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
             imagePickerController.sourceType = .PhotoLibrary
             imagePickerController.delegate = self
             self.presentViewController(imagePickerController, animated: true, completion: nil)
-            }
+        }
         //.Carmera
         let takePhotoAction = UIAlertAction.init(title: "Take Photo", style: UIAlertActionStyle.Default) { (action) in
             let imagePickerController = UIImagePickerController()
@@ -103,7 +97,7 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         self.selectedImage = info[UIImagePickerControllerOriginalImage] as! UIImage
         self.fullScreenImageView.image = self.selectedImage
-        
+        AppState.sharedInstance.profileImage = self.selectedImage
         // if it's a photo from the library, not an image from the camera
         if let selectedImageURL = info[UIImagePickerControllerReferenceURL] {
           let assets = PHAsset.fetchAssetsWithALAssetURLs([selectedImageURL as! NSURL], options: nil)
@@ -112,22 +106,50 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
                 let imageFile = contentEditingInput?.fullSizeImageURL
              let filePath = "\(FIRAuth.auth()!.currentUser!.uid)/\(Int(NSDate.timeIntervalSinceReferenceDate() * 1000))/\(selectedImageURL.lastPathComponent!)"
                 self.storageRef.child(filePath).putFile(imageFile!, metadata: nil) { (metadata, error) in
-                        if let error = error {
-                            print("Error uploading:\(error.localizedDescription)")
-                            return
+                    if let error = error {
+                        print("Error uploading:\(error.localizedDescription)")
+                        return
+                    } else {
+                        if let url = metadata?.downloadURL()?.absoluteString {
+                            SDImageCache.sharedImageCache().storeImage(self.selectedImage, forKey: url)
+                            AppState.sharedInstance.photoUrlString = url
                         }
-                
-                   let selectedImageURLString = self.storageRef.child((metadata?.path)!).description
-                    self.configureDatabase()
-                    if let currentUserUID = FIRAuth.auth()?.currentUser?.uid{
-                        self.ref.child("users").child(currentUserUID).setValue(["photoURL": selectedImageURLString])
+                        self.selectedImageURLString = self.storageRef.child((metadata?.path)!).description
+                        self.ref = FIRDatabase.database().reference()
+                        if let currentUserUID = FIRAuth.auth()?.currentUser?.uid {
+                            self.ref.child("users/\(currentUserUID)/photoURL").setValue(self.selectedImageURLString)
+                            self.setSelectedImageAsProfileImageView()
+                        }
                     }
                 }
             })
         }
-        
         dismissViewControllerAnimated(true, completion: nil)
-        performSegueWithIdentifier(Constants.Segues.ProfilePhotoToMyProfile, sender: nil)
+    }
+    
+    func setSelectedImageAsProfileImageView() {
+        if self.selectedImageURLString.isEmpty {
+            print("selectedImageURLString is an empty string...")
+        } else {
+            FIRStorage.storage().referenceForURL(self.selectedImageURLString).dataWithMaxSize(INT64_MAX) { (data, error) in
+                if let error = error {
+                    print("Error downloading: \(error)")
+                    return
+                }
+                self.fullScreenImageView.image = UIImage(data: data!)
+                
+            }
+        }
+//        else if let url = NSURL(string:self.selectedImageURLString), data = NSData(contentsOfURL: url) {
+//            self.fullScreenImageView.image = UIImage(data: data)
+//        } else {
+//            self.fullScreenImageView.image = UIImage(named: "ic_account_circle")
+//        }
+    }
+
+
+    @IBAction func didTapBackProfilePhotoVC(sender: UIBarButtonItem) {
+        performSegueWithIdentifier(Constants.Segues.ProfilePhotoToMyProfile, sender: self)
     }
     
 }

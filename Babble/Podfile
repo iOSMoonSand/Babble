@@ -7,4 +7,5 @@ target "Babble" do
 	pod 'Firebase/Database'
 	pod 'Firebase/Storage'
 	pod 'FirebaseUI', '~> 0.4'
+	pod 'SDWebImage', '~>3.8'
 end

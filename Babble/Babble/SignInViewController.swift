@@ -32,6 +32,9 @@ class SignInViewController: UIViewController {
         super.viewDidAppear(true)
         if let user = FIRAuth.auth()?.currentUser {
             self.signedIn(user)
+            //check if user has profileimage url in Firebase
+            // if so, download and cache profileImage
+            // set url on AppState
         }
     }
     // MARK:
@@ -40,11 +43,17 @@ class SignInViewController: UIViewController {
     func signedIn(user: FIRUser?) {
         //<FIRUserInfo> protocol provides user data to FIRUser
         AppState.sharedInstance.displayName = user?.displayName ?? user?.email
-        AppState.sharedInstance.photoUrlString = user?.photoURL
+        //AppState.sharedInstance.photoUrlString = user?.photoURL
         AppState.sharedInstance.signedIn = true
 
         NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.SignedIn, object: nil, userInfo: nil)
         performSegueWithIdentifier(Constants.Segues.SignInToHome, sender: nil)
+    }
+    // MARK:
+    // MARK: - Firebase Storage Configuration
+    // MARK:
+    func configureStorage() {
+        storageRef = FIRStorage.storage().referenceForURL("gs://babble-8b668.appspot.com/")
     }
     // MARK:
     // MARK: - IBAction: Sign In
@@ -77,41 +86,29 @@ class SignInViewController: UIViewController {
 
     func setDisplayName(user: FIRUser) {
         self.configureStorage()
-        
         let changeRequest = user.profileChangeRequest()
         changeRequest.displayName = user.email!.componentsSeparatedByString("@")[0]
-        changeRequest.commitChangesWithCompletion(){ (error) in
+        changeRequest.commitChangesWithCompletion() { [weak self] (error) in
             if let error = error {
                 print(error.localizedDescription)
                 return
             }
+            guard let placeholderPhotoRef = self?.storageRef.child("Profile_avatar_placeholder_large.png") else { return }
+            let placeholderPhotoRefString = "gs://babble-8b668.appspot.com/" + placeholderPhotoRef.fullPath ?? ""
+            let userDataDict = [Constants.UserFields.photoUrl: placeholderPhotoRefString]
+            self?.createUserData(userDataDict)
+            self?.signedIn(FIRAuth.auth()?.currentUser)
         }
-        
-        self.signedIn(FIRAuth.auth()?.currentUser)
-        
-        let placeholderPhotoRef = storageRef.child("Profile_avatar_placeholder_large.png")
-        let placeholderPhotoRefString = "gs://babble-8b668.appspot.com/" + placeholderPhotoRef.fullPath
-        
-        let userDataDict = [Constants.UserFields.photoUrl: placeholderPhotoRefString]
-        self.createUserData(userDataDict)
     }
     
     func createUserData(data: [String: String]) {
-        configureDatabase()
+        ref = FIRDatabase.database().reference()
         var userDataDict = data
         let displayName = FIRAuth.auth()?.currentUser?.displayName
         userDataDict[Constants.UserFields.displayName] = displayName
         if let currentUserUID = FIRAuth.auth()?.currentUser?.uid {
             self.ref.child("users").child(currentUserUID).setValue(userDataDict)
         }
-    }
-    
-    func configureDatabase() {
-        ref = FIRDatabase.database().reference()
-    }
-    
-    func configureStorage() {
-        storageRef = FIRStorage.storage().referenceForURL("gs://babble-8b668.appspot.com/")
     }
     // MARK:
     // MARK: - IBAction: Reset Password

@@ -389,7 +389,7 @@
             </objects>
             <point key="canvasLocation" x="3829" y="868"/>
         </scene>
-        <!--Profile Photo View Controller-->
+        <!--Profile Photo-->
         <scene sceneID="3jK-yR-Mzg">
             <objects>
                 <viewController modalTransitionStyle="flipHorizontal" id="tIN-zK-ffY" customClass="ProfilePhotoViewController" sceneMemberID="viewController">
@@ -413,22 +413,28 @@
                             <constraint firstItem="MRU-hM-nUL" firstAttribute="top" secondItem="pbV-Bd-1nh" secondAttribute="bottom" constant="36" id="f9z-Qa-vAd"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="UZ3-Tb-O3D">
-                        <barButtonItem key="leftBarButtonItem" title="Back" id="LSQ-ur-vsH"/>
-                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="7fN-kh-HvP">
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" title="Profile Photo" id="aLe-el-8jq">
+                        <barButtonItem key="leftBarButtonItem" title="Back" id="MKc-Go-lC5">
                             <connections>
-                                <action selector="didTapEditProfilePhoto:" destination="tIN-zK-ffY" id="5nD-ok-fzq"/>
+                                <action selector="didTapBackProfilePhotoVC:" destination="tIN-zK-ffY" id="aDB-Zj-MQj"/>
+                                <segue destination="lPD-CE-k35" kind="show" identifier="ProfilePhotoToMyProfile" id="4O1-d8-E5f"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Edit" id="XKg-h1-KH3">
+                            <connections>
+                                <action selector="didTapEditProfilePhoto:" destination="tIN-zK-ffY" id="gWD-d6-ZvB"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="fullScreenImageView" destination="MRU-hM-nUL" id="Kg3-1F-q5H"/>
-                        <segue destination="lPD-CE-k35" kind="show" identifier="ProfilePhotoToMyProfile" id="Xbo-DC-sfx"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ukO-gJ-sNX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3017" y="2470"/>
+            <point key="canvasLocation" x="2979" y="2470"/>
         </scene>
         <!--Home-->
         <scene sceneID="8Pp-gF-lBE">
@@ -537,7 +543,7 @@
             </objects>
             <point key="canvasLocation" x="1364" y="1688"/>
         </scene>
-        <!--My Profile-->
+        <!--Me-->
         <scene sceneID="10M-dq-1vg">
             <objects>
                 <tableViewController id="lPD-CE-k35" customClass="MeViewController" customModule="Babble" customModuleProvider="target" sceneMemberID="viewController">
@@ -555,7 +561,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="287.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="default_my_profile" translatesAutoresizingMaskIntoConstraints="NO" id="QjP-8L-Xtc">
+                                                <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="QjP-8L-Xtc">
                                                     <rect key="frame" x="220" y="62" width="160" height="160"/>
                                                     <gestureRecognizers/>
                                                     <constraints>
@@ -595,7 +601,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="198.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Write your bio here!" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="UU7-Ac-GRY">
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" keyboardDismissMode="interactive" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="UU7-Ac-GRY">
                                                     <rect key="frame" x="8" y="8" width="584" height="183"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -618,7 +624,7 @@
                             <outlet property="delegate" destination="lPD-CE-k35" id="WfO-IH-dxC"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="My Profile" id="u9g-FI-Usz"/>
+                    <navigationItem key="navigationItem" title="Me" id="u9g-FI-Usz"/>
                     <connections>
                         <outlet property="imageView" destination="QjP-8L-Xtc" id="f50-RK-2GH"/>
                         <outlet property="textLabel" destination="yPd-Ql-s3E" id="FrO-ve-1Yd"/>
@@ -655,10 +661,9 @@
         </scene>
     </scenes>
     <resources>
-        <image name="default_my_profile" width="360" height="360"/>
         <image name="heart-empty" width="28" height="27"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Xbo-DC-sfx"/>
+        <segue reference="4O1-d8-E5f"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 class AppState: NSObject {
     
@@ -14,6 +15,7 @@ class AppState: NSObject {
     
     var signedIn = false
     var displayName: String?
-    var photoUrlString: NSURL?
+    var photoUrlString: String = ""
+    var profileImage: UIImage?
 }
 

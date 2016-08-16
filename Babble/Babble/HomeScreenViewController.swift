@@ -60,26 +60,42 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     // MARK:
     func configureDatabase() {
         ref = FIRDatabase.database().reference()
-        _refHandle = self.ref.child("questions").observeEventType(.ChildAdded, withBlock: {(questionSnapshot) in
+        _refHandle = self.ref.child("questions").observeEventType(.ChildAdded, withBlock: {[weak self] (questionSnapshot) in
             
             let questionID = questionSnapshot.key
         
             var question = questionSnapshot.value as! [String: AnyObject]
             question[Constants.QuestionFields.questionID] = questionID
             let userID = question[Constants.QuestionFields.userID] as! String
-            let likeCount = question[Constants.QuestionFields.likeCount] as! Int
+            //let likeCount = question[Constants.QuestionFields.likeCount] as! Int
             
             let usersRef = self.ref.child("users")
-            usersRef.child(userID).observeSingleEventOfType(.Value, withBlock: { (userSnapshot) in
+            usersRef.child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
                 var user = userSnapshot.value as! [String: AnyObject]
                 let photoURL = user[Constants.UserFields.photoUrl] as! String
-                let displayName = FIRAuth.auth()?.currentUser?.displayName
+                let displayName = user[Constants.UserFields.displayName] as! String
                 
                 question[Constants.QuestionFields.photoUrl] = photoURL
                 question[Constants.QuestionFields.displayName] = displayName
-                
+                var reload = false
+                for dict in self.questionsArray {
+                    guard let dictQuestionId = dict[Constants.QuestionFields.questionID] as? String else { continue }
+                    guard let newQuestionId = dict[Constants.QuestionFields.questionID] as? String else { continue }
+                    if dictQuestionId == newQuestionId {
+                    //change photo url of dictionary
+                    reload = true
+                    
+                    }
+                    
+                }
+                // check to see if the newest questionId is in the questionsArray, if it is, go to that index in the questionArray and change the imageUrl
+                // if not, append the question to the questionsArray
+                if reload {
+                    self.tableView.reloadData()
+                } else {
                 self.questionsArray.append(question)
-                self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.questionsArray.count-1, inSection: 0)], withRowAnimation: .Automatic)
+                    self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.questionsArray.count-1, inSection: 0)], withRowAnimation: .Automatic)
+                }
             })
             { (error) in
                 print(error.localizedDescription)
@@ -91,24 +107,25 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     // MARK:
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return questionsArray.count
-    }
+    }	
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = self.tableView.dequeueReusableCellWithIdentifier("QuestionCell", forIndexPath: indexPath) as! QuestionCell
         
-        cell.likeButton.tag = indexPath.row
+        //cell.likeButton.tag = indexPath.row
 
-        cell.likeButton.addTarget(self, action: "updateLikeButtonAndCount:", forControlEvents: .TouchUpInside)
+        //cell.likeButton.addTarget(self, action: "updateLikeButtonAndCount:", forControlEvents: .TouchUpInside)
         
         //unpack question from local dict
         let question: [String : AnyObject] = self.questionsArray[indexPath.row]
         let questionText = question[Constants.QuestionFields.text] as! String
         let displayName = question[Constants.QuestionFields.displayName] as! String
-        let likeCount = question[Constants.QuestionFields.likeCount] as! Int
+        //let likeCount = question[Constants.QuestionFields.likeCount] as! Int
         cell.questionTextLabel.text = questionText
-        //cell.displayNameLabel = displayName
-        cell.likeButtonCountLabel.text = String(likeCount)
+        cell.displayNameLabel.text = displayName
+        //cell.likeButtonCountLabel.text = String(likeCount)
         if let photoUrl = question[Constants.QuestionFields.photoUrl] {
+            print("Photo URL TableView: \(photoUrl)")
             FIRStorage.storage().referenceForURL(photoUrl as! String).dataWithMaxSize(INT64_MAX) { (data, error) in
                 if let error = error {
                     print("Error downloading: \(error)")
@@ -122,10 +139,6 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
             cell.profilePhotoImageView.image = UIImage(named: "ic_account_circle")
         }
 //TODO: is this the right way to reload the data?
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.tableView.reloadData()
-        })
-        
         return cell
     }
     
