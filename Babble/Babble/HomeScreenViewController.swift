@@ -61,41 +61,42 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     func configureDatabase() {
         ref = FIRDatabase.database().reference()
         _refHandle = self.ref.child("questions").observeEventType(.ChildAdded, withBlock: {[weak self] (questionSnapshot) in
-            
             let questionID = questionSnapshot.key
-        
             var question = questionSnapshot.value as! [String: AnyObject]
             question[Constants.QuestionFields.questionID] = questionID
             let userID = question[Constants.QuestionFields.userID] as! String
             //let likeCount = question[Constants.QuestionFields.likeCount] as! Int
             
-            let usersRef = self.ref.child("users")
-            usersRef.child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
+            let usersRef = self?.ref.child("users")
+            usersRef?.child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
                 var user = userSnapshot.value as! [String: AnyObject]
                 let photoURL = user[Constants.UserFields.photoUrl] as! String
                 let displayName = user[Constants.UserFields.displayName] as! String
                 
                 question[Constants.QuestionFields.photoUrl] = photoURL
                 question[Constants.QuestionFields.displayName] = displayName
-                var reload = false
-                for dict in self.questionsArray {
-                    guard let dictQuestionId = dict[Constants.QuestionFields.questionID] as? String else { continue }
-                    guard let newQuestionId = dict[Constants.QuestionFields.questionID] as? String else { continue }
-                    if dictQuestionId == newQuestionId {
-                    //change photo url of dictionary
-                    reload = true
-                    
-                    }
-                    
-                }
-                // check to see if the newest questionId is in the questionsArray, if it is, go to that index in the questionArray and change the imageUrl
-                // if not, append the question to the questionsArray
-                if reload {
-                    self.tableView.reloadData()
-                } else {
-                self.questionsArray.append(question)
-                    self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.questionsArray.count-1, inSection: 0)], withRowAnimation: .Automatic)
-                }
+                
+//                var reload = false
+//                for dict in (self?.questionsArray)! {
+//                    guard let dictQuestionId = dict[Constants.QuestionFields.questionID] as? String else { continue }
+//                    guard let newQuestionId = dict[Constants.QuestionFields.questionID] as? String else { continue }
+//                    if dictQuestionId == newQuestionId {
+//                    //change photo url of dictionary
+//                    reload = true
+//                    
+//                    }
+//                    
+//                }
+//                // check to see if the newest questionId is in the questionsArray, if it is, go to that index in the questionArray and change the imageUrl
+//                // if not, append the question to the questionsArray
+//                if reload {
+//                    self?.tableView.reloadData()
+//                } else {
+                self?.questionsArray.append(question)
+                    self?.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: (self?.questionsArray.count)!-1, inSection: 0)], withRowAnimation: .Automatic)
+//                }
+                print(self!.questionsArray)
+                
             })
             { (error) in
                 print(error.localizedDescription)
