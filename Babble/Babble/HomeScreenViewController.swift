@@ -76,31 +76,41 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
                 question[Constants.QuestionFields.photoUrl] = photoURL
                 question[Constants.QuestionFields.displayName] = displayName
                 
+                var indexesToReload = [NSIndexPath]()
+                
                 var reload = false
                 //guard let questionsArray = self.questionsArray else { return }
-                var i = 0
-                for (index, dict) in self.questionsArray.enumerate() {
+//                var i = 0
+                for (index, var dict) in self.questionsArray.enumerate() {
                     guard let dictQuestionId = dict[Constants.QuestionFields.questionID] as? String else { continue }
                     guard let newQuestionId = question[Constants.QuestionFields.questionID] as? String else { continue }
                     if dictQuestionId == newQuestionId {
                     //change photo url of dictionary
                         reload = true
-                        i = index
+//                        i = index
+                        
+//                        var questionToChange = self.questionsArray[i]
+//                        let photoURL = question[Constants.QuestionFields.photoUrl]
+                        self.questionsArray[index][Constants.QuestionFields.photoUrl] = photoURL
+//                        print("Photo URL in for loop: \(photoURL)")
+//                        print("QuestionToChange Photo URL : \(questionToChange[Constants.QuestionFields.photoUrl])")
+                        indexesToReload.append(NSIndexPath(forRow: index, inSection: 0))
                     }
                     
                 }
                 // check to see if the newest questionId is in the questionsArray, if it is, go to that index in the questionArray and change the imageUrl
                 // if not, append the question to the questionsArray
                 if reload {
-                    var questionToChange = self.questionsArray[i]
-                    let photoURL = question[Constants.QuestionFields.photoUrl]
-                    questionToChange[Constants.QuestionFields.photoUrl] = photoURL
-                    print("Photo URL in for loop: \(photoURL)")
-                    print("QuestionToChange Photo URL : \(questionToChange[Constants.QuestionFields.photoUrl])")
-                    self.tableView.reloadData()
+//                    var questionToChange = self.questionsArray[i]
+//                    let photoURL = question[Constants.QuestionFields.photoUrl]
+//                    questionToChange[Constants.QuestionFields.photoUrl] = photoURL
+//                    print("Photo URL in for loop: \(photoURL)")
+//                    print("QuestionToChange Photo URL : \(questionToChange[Constants.QuestionFields.photoUrl])")
+//                    self.tableView.reloadData()
+                    self.tableView.reloadRowsAtIndexPaths(indexesToReload, withRowAnimation: .None)
                 } else {
                 self.questionsArray.append(question)
-                    self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: (self.questionsArray.count) -1, inSection: 0)], withRowAnimation: .Automatic)
+                    self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: (self.questionsArray.count)-1, inSection: 0)], withRowAnimation: .Automatic)
                 }
                 print(self.questionsArray)
                 
@@ -131,14 +141,16 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
         cell.questionTextLabel.text = questionText
         cell.displayNameLabel.text = displayName
         //cell.likeButtonCountLabel.text = String(likeCount)
+        cell.profilePhotoImageView.image = nil
         if let photoUrl = question[Constants.QuestionFields.photoUrl] {
             print("Photo URL TableView: \(photoUrl)")
             FIRStorage.storage().referenceForURL(photoUrl as! String).dataWithMaxSize(INT64_MAX) { (data, error) in
-                if let error = error {
+                if error != nil {
                     print("Error downloading: \(error)")
                     return
+                } else {
+                    cell.profilePhotoImageView.image = UIImage(data: data!)
                 }
-                cell.profilePhotoImageView.image = UIImage(data: data!)
             }
         } else if let photoUrl = question[Constants.QuestionFields.photoUrl], url = NSURL(string:photoUrl as! String), data = NSData(contentsOfURL: url) {
                 cell.profilePhotoImageView.image = UIImage(data: data)
