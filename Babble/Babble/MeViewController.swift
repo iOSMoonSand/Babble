@@ -75,7 +75,7 @@ class MeViewController: UITableViewController, UITextViewDelegate {
             
             let url = NSURL(string: AppState.sharedInstance.photoUrlString)
             print("Photo URL: \(url?.absoluteString)")
-            self.imageView.sd_setImageWithURL(url, placeholderImage: UIImage(named: "ic_account_circle"))
+            self.imageView.sd_setImageWithURL(url, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"))
         }
         //        self.ref = FIRDatabase.database().reference()
         //        let usersRef = self.ref.child("users")

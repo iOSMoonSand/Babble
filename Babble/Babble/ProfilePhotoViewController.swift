@@ -98,21 +98,32 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
         self.selectedImage = info[UIImagePickerControllerOriginalImage] as! UIImage
         self.fullScreenImageView.image = self.selectedImage
         AppState.sharedInstance.profileImage = self.selectedImage
+        //
         // if it's a photo from the library, not an image from the camera
+        //
         if let selectedImageURL = info[UIImagePickerControllerReferenceURL] {
           let assets = PHAsset.fetchAssetsWithALAssetURLs([selectedImageURL as! NSURL], options: nil)
             let asset = assets.firstObject
             asset?.requestContentEditingInputWithOptions(nil, completionHandler: { (contentEditingInput, info) in
                 let imageFile = contentEditingInput?.fullSizeImageURL
              let filePath = "\(FIRAuth.auth()!.currentUser!.uid)/\(Int(NSDate.timeIntervalSinceReferenceDate() * 1000))/\(selectedImageURL.lastPathComponent!)"
+                /*
+                1. image file is uploaded to storage bucket for later retreival
+                2. image file stored in cache to increase read performance
+                3. current user's photoURL is set to new photo URL so that question and answer objects can retreive it
+                */
                 self.storageRef.child(filePath).putFile(imageFile!, metadata: nil) { (metadata, error) in
                     if let error = error {
                         print("Error uploading:\(error.localizedDescription)")
                         return
                     } else {
+                        self.ref = FIRDatabase.database().reference()
                         if let url = metadata?.downloadURL()?.absoluteString {
                             SDImageCache.sharedImageCache().storeImage(self.selectedImage, forKey: url)
                             AppState.sharedInstance.photoUrlString = url
+                            if let currentUserUID = FIRAuth.auth()?.currentUser?.uid {
+                                self.ref.child("users/\(currentUserUID)/photoDownloadURL").setValue(url)
+                            }
                         }
                         self.selectedImageURLString = self.storageRef.child((metadata?.path)!).description
                         self.ref = FIRDatabase.database().reference()

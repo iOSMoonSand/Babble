@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import SDWebImage
 
 //MARK:
 //MARK: - SignInViewController Class
@@ -30,8 +31,30 @@ class SignInViewController: UIViewController {
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
+        self.configureStorage()
         if let user = FIRAuth.auth()?.currentUser {
-            self.signedIn(user)
+        self.signedIn(user)
+            ref = FIRDatabase.database().reference()
+            let usersRef = self.ref.child("users")
+            let userID = user.uid
+            usersRef.child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
+                var user = userSnapshot.value as! [String: AnyObject]
+                if let photoDownloadURL = user[Constants.UserFields.photoDownloadURL] as! String? {
+                    FIRStorage.storage().referenceForURL(photoDownloadURL).dataWithMaxSize(INT64_MAX) { (data, error) in
+                        if let error = error {
+                            print("Error downloading: \(error)")
+                            return
+                        }
+                        let image = UIImage(data: data!)
+                        SDImageCache.sharedImageCache().storeImage(image, forKey: photoDownloadURL)
+                        AppState.sharedInstance.profileImage = image
+                        
+                    }
+
+                }
+                
+            })
+            
             //check if user has profileimage url in Firebase
             // if so, download and cache profileImage
             // set url on AppState

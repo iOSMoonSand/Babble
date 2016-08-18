@@ -65,9 +65,6 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
             //let likeCount = question[Constants.QuestionFields.likeCount] as! Int
             
             let usersRef = self.ref.child("users")
-            //
-            //what if we change this to .ChildAdded so that
-            //
             usersRef.child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
                 var user = userSnapshot.value as! [String: AnyObject]
                 let photoURL = user[Constants.UserFields.photoUrl] as! String
@@ -112,8 +109,6 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
                 self.questionsArray.append(question)
                     self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: (self.questionsArray.count)-1, inSection: 0)], withRowAnimation: .Automatic)
                 }
-                print(self.questionsArray)
-                
             })
             { (error) in
                 print(error.localizedDescription)
@@ -143,7 +138,6 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
         //cell.likeButtonCountLabel.text = String(likeCount)
         cell.profilePhotoImageView.image = nil
         if let photoUrl = question[Constants.QuestionFields.photoUrl] {
-            print("Photo URL TableView: \(photoUrl)")
             FIRStorage.storage().referenceForURL(photoUrl as! String).dataWithMaxSize(INT64_MAX) { (data, error) in
                 if error != nil {
                     print("Error downloading: \(error)")
@@ -157,7 +151,6 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
         } else {
             cell.profilePhotoImageView.image = UIImage(named: "ic_account_circle")
         }
-//TODO: is this the right way to reload the data?
         return cell
     }
     
@@ -190,6 +183,11 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
+    @IBAction func didTapBackAnswers(segue:UIStoryboardSegue) {
+        //unwind segue from AddQuestion to HomeScreen
+        
+    }
+    
     @IBAction func didTapCancelAddQuestion(segue:UIStoryboardSegue) {
         //unwind segue from AddQuestion to HomeScreen
         
@@ -200,7 +198,7 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
         let data = [Constants.QuestionFields.text: newQuestion! as String]
         postQuestion(data)
     }
-    
+
     func postQuestion(data: [String: String]) {
         
         var questionDataDict = data
