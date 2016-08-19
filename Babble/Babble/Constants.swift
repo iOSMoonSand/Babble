@@ -30,6 +30,7 @@ struct Constants {
         static let userID = "userID"
         static let photoUrl = "photoURL"
         static let displayName = "displayName"
+        static let likeCountID = "likeCountID"
         static let likeCount = "likeCount"
     }
     
@@ -49,7 +50,7 @@ struct Constants {
         static let photoDownloadURL = "photoDownloadURL"
     }
     
-    struct LikeCountFields {//each LikeCount separated by questionID child
+    struct LikeCountFields {//each LikeCount separated by likeCountID child
         static let likeCount = "likeCount"
     }
 

@@ -61,8 +61,34 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
             let questionID = questionSnapshot.key
             var question = questionSnapshot.value as! [String: AnyObject]
             question[Constants.QuestionFields.questionID] = questionID
+            let likeCount = question[Constants.QuestionFields.likeCount] as! Int
             let userID = question[Constants.QuestionFields.userID] as! String
-            //let likeCount = question[Constants.QuestionFields.likeCount] as! Int
+            AppState.sharedInstance.likeCountQuestionID = questionID
+            
+            self.ref.child("likeCounts").child(AppState.sharedInstance.likeCountQuestionID).observeEventType(.ChildChanged, withBlock: {(likeCountSnapshot) in
+                let likeCount = likeCountSnapshot.value as! Int
+                
+                question[Constants.QuestionFields.likeCount] = likeCount
+                
+                var indexesToReload = [NSIndexPath]()
+                var reload = false
+                for (index, var dict) in self.questionsArray.enumerate() {
+                    guard let dictQuestionId = dict[Constants.QuestionFields.questionID] as? String else { continue }
+                    guard let newQuestionId = question[Constants.QuestionFields.questionID] as? String else { continue }
+                    if (dictQuestionId == newQuestionId) {
+                        reload = true
+                        self.questionsArray[index][Constants.QuestionFields.likeCount] = likeCount
+                        indexesToReload.append(NSIndexPath(forRow: index, inSection: 0))
+                    }
+                    
+                }
+                if reload {
+                    self.tableView.reloadRowsAtIndexPaths(indexesToReload, withRowAnimation: .None)
+                } else {
+                    self.questionsArray.append(question)
+                    self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: (self.questionsArray.count)-1, inSection: 0)], withRowAnimation: .Automatic)
+                }
+            })
             
             let usersRef = self.ref.child("users")
             usersRef.child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
@@ -81,7 +107,7 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
                 for (index, var dict) in self.questionsArray.enumerate() {
                     guard let dictQuestionId = dict[Constants.QuestionFields.questionID] as? String else { continue }
                     guard let newQuestionId = question[Constants.QuestionFields.questionID] as? String else { continue }
-                    if dictQuestionId == newQuestionId {
+                    if (dictQuestionId == newQuestionId) {
                     //change photo url of dictionary
                         reload = true
 //                        i = index
@@ -106,7 +132,7 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
 //                    self.tableView.reloadData()
                     self.tableView.reloadRowsAtIndexPaths(indexesToReload, withRowAnimation: .None)
                 } else {
-                self.questionsArray.append(question)
+                    self.questionsArray.append(question)
                     self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: (self.questionsArray.count)-1, inSection: 0)], withRowAnimation: .Automatic)
                 }
             })
@@ -125,17 +151,17 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = self.tableView.dequeueReusableCellWithIdentifier("QuestionCell", forIndexPath: indexPath) as! QuestionCell
         
-        //cell.likeButton.tag = indexPath.row
-        //cell.likeButton.addTarget(self, action: "updateLikeButtonAndCount:", forControlEvents: .TouchUpInside)
+        cell.likeButton.tag = indexPath.row
+        cell.likeButton.addTarget(self, action: "tapFiredLikeButton:", forControlEvents: .TouchUpInside)
         
         //unpack question from local dict
         let question: [String : AnyObject] = self.questionsArray[indexPath.row]
         let questionText = question[Constants.QuestionFields.text] as! String
         let displayName = question[Constants.QuestionFields.displayName] as! String
-        //let likeCount = question[Constants.QuestionFields.likeCount] as! Int
+        let likeCount = question[Constants.QuestionFields.likeCount] as! Int
         cell.questionTextLabel.text = questionText
         cell.displayNameLabel.text = displayName
-        //cell.likeButtonCountLabel.text = String(likeCount)
+        cell.likeButtonCountLabel.text = String(likeCount)
         cell.profilePhotoImageView.image = nil
         if let photoUrl = question[Constants.QuestionFields.photoUrl] {
             FIRStorage.storage().referenceForURL(photoUrl as! String).dataWithMaxSize(INT64_MAX) { (data, error) in
@@ -154,16 +180,18 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
         return cell
     }
     
-    @IBAction func updateLikeButtonAndCount(sender: UIButton) {
-        print("tap fired")
+    @IBAction func tapFiredLikeButton(sender: UIButton) {
+        
+        print("tap fired for like button")
         var question: [String : AnyObject] = self.questionsArray[sender.tag]
         let likeCount = question[Constants.QuestionFields.likeCount] as! Int
         question[Constants.QuestionFields.likeCount] = likeCount + 1
         let incrementedLikeCount = question[Constants.QuestionFields.likeCount] as! Int
         let questionID = question[Constants.QuestionFields.questionID] as! String
+        self.ref.child("likeCounts/\(questionID)/likeCount").setValue(incrementedLikeCount)
         self.ref.child("questions/\(questionID)/likeCount").setValue(incrementedLikeCount)
+        AppState.sharedInstance.likeCountQuestionID = questionID
     }
-    
     
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -199,11 +227,12 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
         postQuestion(data)
     }
 
-    func postQuestion(data: [String: String]) {
+    func postQuestion(data: [String: AnyObject]) {
         
         var questionDataDict = data
         guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
         questionDataDict[Constants.QuestionFields.userID] = currentUserID
+        questionDataDict[Constants.QuestionFields.likeCount] = 0
         self.ref.child("questions").childByAutoId().setValue(questionDataDict)
     }
 
