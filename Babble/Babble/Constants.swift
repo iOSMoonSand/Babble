@@ -41,6 +41,7 @@ struct Constants {
         static let likeCount = "likeCount"
         static let displayName = "displayName"
         static let answerID = "answerID"
+        static let questionID = "questionID"
     }
     
     struct UserFields {//each user separated by userID child

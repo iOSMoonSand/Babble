@@ -46,8 +46,38 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
         _refHandle = self.ref.child("answers").child(questionRef!).observeEventType(.ChildAdded, withBlock: { (answerSnapshot) -> Void in
             let answerID = answerSnapshot.key
             var answer = answerSnapshot.value as! [String: AnyObject]
+            answer[Constants.AnswerFields.questionID] = self.questionRef
             answer[Constants.AnswerFields.answerID] = answerID
             let userID = answer[Constants.AnswerFields.userID] as! String
+            AppState.sharedInstance.likeCountAnswerID = answerID
+            
+            self.ref.child("likeCounts").child(AppState.sharedInstance.likeCountAnswerID).observeEventType(.ChildChanged, withBlock: {(likeCountSnapshot) in
+                let likeCount = likeCountSnapshot.value as! Int
+                
+                answer[Constants.AnswerFields.likeCount] = likeCount
+                
+                var indexesToReload = [NSIndexPath]()
+                var reload = false
+                for (index, var dict) in self.answersArray.enumerate() {
+                    guard let dictQuestionId = dict[Constants.AnswerFields.questionID] as? String else { continue }
+                    guard let newQuestionId = answer[Constants.AnswerFields.questionID] as? String else { continue }
+                    guard let dictAnswerId = dict[Constants.AnswerFields.answerID] as? String else { continue }
+                    guard let newAnswerId = answer[Constants.AnswerFields.answerID] as? String else { continue }
+                    if (dictQuestionId == newQuestionId) && (dictAnswerId == newAnswerId) {
+                        reload = true
+                        self.answersArray[index][Constants.AnswerFields.likeCount] = likeCount
+                        indexesToReload.append(NSIndexPath(forRow: index, inSection: 0))
+                    }
+                    
+                }
+                if reload {
+                    self.tableView.reloadRowsAtIndexPaths(indexesToReload, withRowAnimation: .None)
+                } else {
+                    self.answersArray.append(answer)
+                    self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: (self.answersArray.count)-1, inSection: 0)], withRowAnimation: .Automatic)
+                }
+
+            })
             
             let usersRef = self.ref.child("users")
             usersRef.child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
@@ -97,13 +127,19 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = self.tableView.dequeueReusableCellWithIdentifier("AnswerCell", forIndexPath: indexPath) as! AnswerCell
+        
+        cell.likeButton.tag = indexPath.row
+        cell.likeButton.addTarget(self, action: "tapFiredLikeButton:", forControlEvents: .TouchUpInside)
+        
         //unpack answer from local dict
         let answer: [String : AnyObject] = self.answersArray[indexPath.row]
         
         let answerText = answer[Constants.QuestionFields.text] as! String
         let displayName = answer[Constants.QuestionFields.displayName] as! String
+        let likeCount = answer[Constants.AnswerFields.likeCount] as! Int
         cell.answerTextLabel.text = answerText
         cell.displayNameLabel.text = displayName
+        cell.likeButtonCountLabel.text = String(likeCount)
         if let photoUrl = answer[Constants.QuestionFields.photoUrl] {
             FIRStorage.storage().referenceForURL(photoUrl as! String).dataWithMaxSize(INT64_MAX) { (data, error) in
                 if let error = error {
@@ -120,6 +156,21 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
         return cell
     }
+    
+    @IBAction func tapFiredLikeButton(sender: UIButton) {
+        
+        print("tap fired for like button")
+        var answer: [String : AnyObject] = self.answersArray[sender.tag]
+        let likeCount = answer[Constants.AnswerFields.likeCount] as! Int
+        answer[Constants.AnswerFields.likeCount] = likeCount + 1
+        let incrementedLikeCount = answer[Constants.AnswerFields.likeCount] as! Int
+        let questionID = answer[Constants.AnswerFields.questionID] as! String
+        let answerID = answer[Constants.AnswerFields.answerID] as! String
+        self.ref.child("likeCounts/\(answerID)/likeCount").setValue(incrementedLikeCount)
+        self.ref.child("answers/\(questionID)/\(answerID)/likeCount").setValue(incrementedLikeCount)
+        AppState.sharedInstance.likeCountAnswerID = answerID
+    }
+    
     // MARK:
     // MARK: - IBAction: Send Messages
     // MARK:
