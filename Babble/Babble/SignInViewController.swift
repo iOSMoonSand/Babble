@@ -15,28 +15,23 @@ import SDWebImage
 //MARK:
 class SignInViewController: UIViewController {
     //MARK:
-    //MARK: - Properties
+    //MARK: - Attributes
     //MARK:
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
-    var ref: FIRDatabaseReference!
-    var storageRef: FIRStorageReference!
     //MARK:
     //MARK: - UIViewController Methods
     //MARK:
     override func viewDidLoad() {
         super.viewDidLoad()
-//TODO: navigationItem.hidesBackButton = true
+        //TODO: navigationItem.hidesBackButton = true
     }
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
-        self.configureStorage()
-        if let user = FIRAuth.auth()?.currentUser {
-        self.signedIn(user)
-            ref = FIRDatabase.database().reference()
-            let usersRef = self.ref.child("users")
-            let userID = user.uid
+            self.signedIn(FirebaseConfigManager.sharedInstance.currentUser)
+            let usersRef = FirebaseConfigManager.sharedInstance.ref.child("users")
+            let userID = FirebaseConfigManager.sharedInstance.currentUser.uid
             usersRef.child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
                 var user = userSnapshot.value as! [String: AnyObject]
                 if let photoDownloadURL = user[Constants.UserFields.photoDownloadURL] as! String? {
@@ -48,17 +43,9 @@ class SignInViewController: UIViewController {
                         let image = UIImage(data: data!)
                         SDImageCache.sharedImageCache().storeImage(image, forKey: photoDownloadURL)
                         AppState.sharedInstance.profileImage = image
-                        
                     }
-
                 }
-                
             })
-            
-            //check if user has profileimage url in Firebase
-            // if so, download and cache profileImage
-            // set url on AppState
-        }
     }
     // MARK:
     // MARK: - Firebase Authentication Configuration
@@ -71,12 +58,6 @@ class SignInViewController: UIViewController {
 
         NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.SignedIn, object: nil, userInfo: nil)
         performSegueWithIdentifier(Constants.Segues.SignInToHome, sender: nil)
-    }
-    // MARK:
-    // MARK: - Firebase Storage Configuration
-    // MARK:
-    func configureStorage() {
-        storageRef = FIRStorage.storage().referenceForURL("gs://babble-8b668.appspot.com/")
     }
     // MARK:
     // MARK: - IBAction: Sign In
@@ -108,7 +89,6 @@ class SignInViewController: UIViewController {
     }
 
     func setDisplayName(user: FIRUser) {
-        self.configureStorage()
         let changeRequest = user.profileChangeRequest()
         changeRequest.displayName = user.email!.componentsSeparatedByString("@")[0]
         changeRequest.commitChangesWithCompletion() { [weak self] (error) in
@@ -116,21 +96,20 @@ class SignInViewController: UIViewController {
                 print(error.localizedDescription)
                 return
             }
-            guard let placeholderPhotoRef = self?.storageRef.child("Profile_avatar_placeholder_large.png") else { return }
+            let placeholderPhotoRef = FirebaseConfigManager.sharedInstance.storageRef.child("Profile_avatar_placeholder_large.png")
             let placeholderPhotoRefString = "gs://babble-8b668.appspot.com/" + placeholderPhotoRef.fullPath ?? ""
             let userDataDict = [Constants.UserFields.photoUrl: placeholderPhotoRefString]
             self?.createUserData(userDataDict)
-            self?.signedIn(FIRAuth.auth()?.currentUser)
+            self?.signedIn(FirebaseConfigManager.sharedInstance.currentUser)
         }
     }
     
     func createUserData(data: [String: String]) {
-        ref = FIRDatabase.database().reference()
         var userDataDict = data
-        let displayName = FIRAuth.auth()?.currentUser?.displayName
+        let displayName = FirebaseConfigManager.sharedInstance.currentUser?.displayName
         userDataDict[Constants.UserFields.displayName] = displayName
-        if let currentUserUID = FIRAuth.auth()?.currentUser?.uid {
-            self.ref.child("users").child(currentUserUID).setValue(userDataDict)
+        if let currentUserUID = FirebaseConfigManager.sharedInstance.currentUser?.uid {
+            FirebaseConfigManager.sharedInstance.ref.child("users").child(currentUserUID).setValue(userDataDict)
         }
     }
     // MARK:

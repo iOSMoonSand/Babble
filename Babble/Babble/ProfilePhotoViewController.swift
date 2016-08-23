@@ -10,11 +10,6 @@ import UIKit
 import Firebase
 import Photos
 import SDWebImage
-//
-//
-//TODO: update MeVC imageView when ProfilePhotoVC image view gets set
-//
-//
 
 //MARK: -
 //MARK: - ProfilePhotoViewController Class
@@ -27,8 +22,8 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
     @IBOutlet weak var fullScreenImageView: UIImageView!
     var imageFromMeVC: UIImage!
     var selectedImage: UIImage!
-    var ref: FIRDatabaseReference!
-    var storageRef: FIRStorageReference!
+    //var ref: FIRDatabaseReference! = FIRDatabase.database().reference()
+    //var storageRef: FIRStorageReference!
     var selectedImageURLString = String()
     //MARK: -
     //MARK: - UIViewController Methods
@@ -36,7 +31,6 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
     override func viewDidLoad() {
         super.viewDidLoad()
         fullScreenImageView.image = imageFromMeVC
-        configureStorage()
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -44,12 +38,6 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
             guard let destinationVC = segue.destinationViewController as? MeViewController else { return }
             destinationVC.imageFromProfilePhotoVC = self.selectedImage
         }
-    }
-    // MARK:
-    // MARK: - Firebase Storage Reference
-    // MARK:
-    func configureStorage() {
-        storageRef = FIRStorage.storage().referenceForURL("gs://babble-8b668.appspot.com/")
     }
     //MARK: -
     //MARK: - IBActions
@@ -106,29 +94,24 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
             let asset = assets.firstObject
             asset?.requestContentEditingInputWithOptions(nil, completionHandler: { (contentEditingInput, info) in
                 let imageFile = contentEditingInput?.fullSizeImageURL
-             let filePath = "\(FIRAuth.auth()!.currentUser!.uid)/\(Int(NSDate.timeIntervalSinceReferenceDate() * 1000))/\(selectedImageURL.lastPathComponent!)"
-                /*
-                1. image file is uploaded to storage bucket for later retreival
-                2. image file stored in cache to increase read performance
-                3. current user's photoURL is set to new photo URL so that question and answer objects can retreive it
-                */
-                self.storageRef.child(filePath).putFile(imageFile!, metadata: nil) { (metadata, error) in
+                let filePath = "\(FIRAuth.auth()!.currentUser!.uid)/\(Int(NSDate.timeIntervalSinceReferenceDate() * 1000))/\(selectedImageURL.lastPathComponent!)"
+                //1. Upload image to Firebase Storage
+                //2. Store image in cache
+                FirebaseConfigManager.sharedInstance.storageRef.child(filePath).putFile(imageFile!, metadata: nil) { (metadata, error) in
                     if let error = error {
                         print("Error uploading:\(error.localizedDescription)")
                         return
                     } else {
-                        self.ref = FIRDatabase.database().reference()
                         if let url = metadata?.downloadURL()?.absoluteString {
                             SDImageCache.sharedImageCache().storeImage(self.selectedImage, forKey: url)
                             AppState.sharedInstance.photoUrlString = url
-                            if let currentUserUID = FIRAuth.auth()?.currentUser?.uid {
-                                self.ref.child("users/\(currentUserUID)/photoDownloadURL").setValue(url)
+                            if let currentUserUID = FirebaseConfigManager.sharedInstance.currentUser?.uid {
+                                FirebaseConfigManager.sharedInstance.ref.child("users/\(currentUserUID)/photoDownloadURL").setValue(url)
                             }
                         }
-                        self.selectedImageURLString = self.storageRef.child((metadata?.path)!).description
-                        self.ref = FIRDatabase.database().reference()
-                        if let currentUserUID = FIRAuth.auth()?.currentUser?.uid {
-                            self.ref.child("users/\(currentUserUID)/photoURL").setValue(self.selectedImageURLString)
+                        self.selectedImageURLString = FirebaseConfigManager.sharedInstance.storageRef.child((metadata?.path)!).description
+                        if let currentUserUID = FirebaseConfigManager.sharedInstance.currentUser?.uid {
+                            FirebaseConfigManager.sharedInstance.ref.child("users/\(currentUserUID)/photoURL").setValue(self.selectedImageURLString)
                             self.setSelectedImageAsProfileImageView()
                         }
                     }
@@ -148,16 +131,9 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
                     return
                 }
                 self.fullScreenImageView.image = UIImage(data: data!)
-                
             }
         }
-//        else if let url = NSURL(string:self.selectedImageURLString), data = NSData(contentsOfURL: url) {
-//            self.fullScreenImageView.image = UIImage(data: data)
-//        } else {
-//            self.fullScreenImageView.image = UIImage(named: "ic_account_circle")
-//        }
     }
-
 
     @IBAction func didTapBackProfilePhotoVC(sender: UIBarButtonItem) {
         performSegueWithIdentifier(Constants.Segues.ProfilePhotoToMyProfile, sender: self)

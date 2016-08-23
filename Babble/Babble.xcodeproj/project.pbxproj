@@ -22,6 +22,8 @@
 		5E8BA9511D5E553000FB530E /* QuestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8BA9501D5E553000FB530E /* QuestionCell.swift */; };
 		5E8BA9531D5E5AAA00FB530E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5E8BA9521D5E5AAA00FB530E /* Assets.xcassets */; };
 		5E8BA9551D5E715000FB530E /* AnswerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8BA9541D5E715000FB530E /* AnswerCell.swift */; };
+		5EA2ED241D6B83760031003C /* FirebaseConfigManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA2ED231D6B83760031003C /* FirebaseConfigManager.swift */; };
+		5EA2ED261D6BDDF50031003C /* UserProfilesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA2ED251D6BDDF50031003C /* UserProfilesViewController.swift */; };
 		5ECC913B1D482B3E001221C4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5ECC913A1D482B3E001221C4 /* GoogleService-Info.plist */; };
 		89062636351A659F5583CF1A /* Pods_Babble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553BF0229359E709927D1DE1 /* Pods_Babble.framework */; };
 /* End PBXBuildFile section */
@@ -47,6 +49,8 @@
 		5E8BA9501D5E553000FB530E /* QuestionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuestionCell.swift; sourceTree = "<group>"; };
 		5E8BA9521D5E5AAA00FB530E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5E8BA9541D5E715000FB530E /* AnswerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnswerCell.swift; sourceTree = "<group>"; };
+		5EA2ED231D6B83760031003C /* FirebaseConfigManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseConfigManager.swift; sourceTree = "<group>"; };
+		5EA2ED251D6BDDF50031003C /* UserProfilesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfilesViewController.swift; sourceTree = "<group>"; };
 		5ECC913A1D482B3E001221C4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -114,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				5E3E77021D284421006E5EA4 /* View Controllers */,
+				5EA2ED231D6B83760031003C /* FirebaseConfigManager.swift */,
 				5E47756B1D2601B900A5E9B0 /* Constants.swift */,
 				5E753B091D493F72001D82B8 /* AppState.swift */,
 				5E2E6F231D25A794003588DC /* Main.storyboard */,
@@ -128,8 +133,9 @@
 				5E8BA9571D5E717E00FB530E /* Sign In */,
 				5E753B111D4FCBAE001D82B8 /* Home */,
 				5E753B121D4FCBCB001D82B8 /* Me */,
-				5E59CCDC1D518A9300708053 /* ProfileImageManager.swift */,
+				5EA2ED271D6CBD830031003C /* User Profiles */,
 				5E8BA9561D5E715600FB530E /* Table View Cells */,
+				5E59CCDC1D518A9300708053 /* ProfileImageManager.swift */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -168,6 +174,14 @@
 				5E3E77031D284CB5006E5EA4 /* SignInViewController.swift */,
 			);
 			name = "Sign In";
+			sourceTree = "<group>";
+		};
+		5EA2ED271D6CBD830031003C /* User Profiles */ = {
+			isa = PBXGroup;
+			children = (
+				5EA2ED251D6BDDF50031003C /* UserProfilesViewController.swift */,
+			);
+			name = "User Profiles";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -299,11 +313,13 @@
 				5E8BA9551D5E715000FB530E /* AnswerCell.swift in Sources */,
 				5E47756C1D2601B900A5E9B0 /* Constants.swift in Sources */,
 				5E753B0E1D4BD123001D82B8 /* MeViewController.swift in Sources */,
+				5EA2ED261D6BDDF50031003C /* UserProfilesViewController.swift in Sources */,
 				5E753B0A1D493F72001D82B8 /* AppState.swift in Sources */,
 				5E2E6F201D25A794003588DC /* AppDelegate.swift in Sources */,
 				5E8BA9511D5E553000FB530E /* QuestionCell.swift in Sources */,
 				5E3E77041D284CB5006E5EA4 /* SignInViewController.swift in Sources */,
 				5E753B0C1D498C54001D82B8 /* AddQuestionViewController.swift in Sources */,
+				5EA2ED241D6B83760031003C /* FirebaseConfigManager.swift in Sources */,
 				5E3E77011D2843B7006E5EA4 /* HomeScreenViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

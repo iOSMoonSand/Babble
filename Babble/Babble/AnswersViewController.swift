@@ -14,16 +14,14 @@ import Firebase
 // MARK:
 class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     // MARK:
-    // MARK: - Properties
+    // MARK: - Attributes
     // MARK:
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var sendButton: UIButton!
-    var ref: FIRDatabaseReference!
     private var _refHandle: FIRDatabaseHandle!
     var answersArray = [[String : AnyObject]]()
     var questionRef: String?
-    var storageRef: FIRStorageReference!
     var profilePhotoString: String?
     // MARK:
     // MARK: - UIViewController Methods
@@ -32,18 +30,16 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
         super.viewDidLoad()
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tableViewCell")
         self.configureDatabase()
-        self.configureStorage()
     }
     
     deinit {
-        self.ref.child("answers").child(questionRef!).removeObserverWithHandle(_refHandle)
+        FirebaseConfigManager.sharedInstance.ref.child("answers").child(questionRef!).removeObserverWithHandle(_refHandle)
     }
     // MARK:
     // MARK: - Firebase Database Configuration
     // MARK:
     func configureDatabase() {
-        self.ref = FIRDatabase.database().reference()
-        _refHandle = self.ref.child("answers").child(questionRef!).observeEventType(.ChildAdded, withBlock: { (answerSnapshot) -> Void in
+        _refHandle = FirebaseConfigManager.sharedInstance.ref.child("answers").child(questionRef!).observeEventType(.ChildAdded, withBlock: { (answerSnapshot) -> Void in
             let answerID = answerSnapshot.key
             var answer = answerSnapshot.value as! [String: AnyObject]
             answer[Constants.AnswerFields.questionID] = self.questionRef
@@ -51,7 +47,7 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
             let userID = answer[Constants.AnswerFields.userID] as! String
             AppState.sharedInstance.likeCountAnswerID = answerID
             
-            self.ref.child("likeCounts").child(AppState.sharedInstance.likeCountAnswerID).observeEventType(.ChildChanged, withBlock: {(likeCountSnapshot) in
+            FirebaseConfigManager.sharedInstance.ref.child("likeCounts").child(AppState.sharedInstance.likeCountAnswerID).observeEventType(.ChildChanged, withBlock: {(likeCountSnapshot) in
                 let likeCount = likeCountSnapshot.value as! Int
                 
                 answer[Constants.AnswerFields.likeCount] = likeCount
@@ -79,7 +75,7 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
 
             })
             
-            let usersRef = self.ref.child("users")
+            let usersRef = FirebaseConfigManager.sharedInstance.ref.child("users")
             usersRef.child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
                 var user = userSnapshot.value as! [String: AnyObject]
                 let photoURL = user[Constants.UserFields.photoUrl] as! String
@@ -111,12 +107,6 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
                 print(error.localizedDescription)
             }
         })
-    }
-    // MARK:
-    // MARK: - Firebase StorageConfiguration
-    // MARK:
-    func configureStorage() {
-        storageRef = FIRStorage.storage().referenceForURL("gs://babble-8b668.appspot.com/")
     }
     // MARK:
     // MARK: - UITableViewDataSource & UITableViewDelegate methods
@@ -166,8 +156,8 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
         let incrementedLikeCount = answer[Constants.AnswerFields.likeCount] as! Int
         let questionID = answer[Constants.AnswerFields.questionID] as! String
         let answerID = answer[Constants.AnswerFields.answerID] as! String
-        self.ref.child("likeCounts/\(answerID)/likeCount").setValue(incrementedLikeCount)
-        self.ref.child("answers/\(questionID)/\(answerID)/likeCount").setValue(incrementedLikeCount)
+        FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(answerID)/likeCount").setValue(incrementedLikeCount)
+        FirebaseConfigManager.sharedInstance.ref.child("answers/\(questionID)/\(answerID)/likeCount").setValue(incrementedLikeCount)
         AppState.sharedInstance.likeCountAnswerID = answerID
     }
     
@@ -192,9 +182,9 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
     // MARK:
     func sendAnswer(data: [String: String]) {
         var answerDataDict = data
-        guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
+        guard let currentUserID = FirebaseConfigManager.sharedInstance.currentUser?.uid else { return }
         answerDataDict[Constants.QuestionFields.userID] = currentUserID
-        self.ref.child("answers").child(questionRef!).childByAutoId().setValue(answerDataDict)
+        FirebaseConfigManager.sharedInstance.ref.child("answers").child(questionRef!).childByAutoId().setValue(answerDataDict)
     }
     
 }
