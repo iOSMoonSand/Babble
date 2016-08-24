@@ -29,9 +29,10 @@ class SignInViewController: UIViewController {
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
-            self.signedIn(FirebaseConfigManager.sharedInstance.currentUser)
-            let usersRef = FirebaseConfigManager.sharedInstance.ref.child("users")
-            let userID = FirebaseConfigManager.sharedInstance.currentUser.uid
+        guard let user = FirebaseConfigManager.sharedInstance.currentUser else { return }
+        self.signedIn(user)
+        let usersRef = FirebaseConfigManager.sharedInstance.ref.child("users")
+        let userID = user.uid
             usersRef.child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
                 var user = userSnapshot.value as! [String: AnyObject]
                 if let photoDownloadURL = user[Constants.UserFields.photoDownloadURL] as! String? {

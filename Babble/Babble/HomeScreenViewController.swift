@@ -65,9 +65,26 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     // MARK: - Firebase Database Configuration
     // MARK:
     func configureDatabase() {
-        _refHandle = FirebaseConfigManager.sharedInstance.ref.child("questions").observeEventType(.ChildAdded, withBlock: {/*[weak self]*/ (questionSnapshot) in
+        _refHandle = FirebaseConfigManager.sharedInstance.ref.child("questions").observeEventType(.Value, withBlock: {/*[weak self]*/ (questionSnapshot) in
             let questionID = questionSnapshot.key
-            var question = questionSnapshot.value as! [String: AnyObject]
+            
+            
+            
+            var questions = questionSnapshot.value as! [String: AnyObject]
+            
+            
+            for (key, obj) in question {
+                let test = obj as! [String : AnyObject]
+                NSLog("question", test)
+            }
+            re
+            
+            
+            
+            
+            
+            
+            
             question[Constants.QuestionFields.questionID] = questionID
             let likeCount = question[Constants.QuestionFields.likeCount] as! Int
             let userID = question[Constants.QuestionFields.userID] as! String
@@ -78,26 +95,28 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
                 
                 question[Constants.QuestionFields.likeCount] = likeCount
                 
-                var indexesToReload = [NSIndexPath]()
-                var reload = false
+//                var indexesToReload = [NSIndexPath]()
+//                var reload = false
                 for (index, var dict) in self.questionsArray.enumerate() {
                     guard let dictQuestionId = dict[Constants.QuestionFields.questionID] as? String else { continue }
                     guard let newQuestionId = question[Constants.QuestionFields.questionID] as? String else { continue }
                     if (dictQuestionId == newQuestionId) {
-                        reload = true
+                        //reload = true
                         self.questionsArray[index][Constants.QuestionFields.likeCount] = likeCount
-                        indexesToReload.append(NSIndexPath(forRow: index, inSection: 0))
+                        //indexesToReload.append(NSIndexPath(forRow: index, inSection: 0))
                     }
-                    
                 }
-                if reload {
-                    self.tableView.reloadRowsAtIndexPaths(indexesToReload, withRowAnimation: .None)
-                } else {
-                    self.questionsArray.append(question)
-                    self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: (self.questionsArray.count)-1, inSection: 0)], withRowAnimation: .Automatic)
+//                if reload {
+//                    self.tableView.reloadRowsAtIndexPaths(indexesToReload, withRowAnimation: .None)
+//                } else {
+//                    self.questionsArray.append(question)
+//                    self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: (self.questionsArray.count)-1, inSection: 0)], withRowAnimation: .Automatic)
+//                }
+                self.questionsArray.sortInPlace {
+                    (($0 as [String: AnyObject])["likeCount"] as? Int) > (($1 as [String: AnyObject])["likeCount"] as? Int)
                 }
+                self.tableView.reloadData()
             })
-            
             let usersRef = FirebaseConfigManager.sharedInstance.ref.child("users")
             usersRef.child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
                 var user = userSnapshot.value as! [String: AnyObject]
@@ -108,36 +127,17 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
                 question[Constants.QuestionFields.displayName] = displayName
                 
                 var indexesToReload = [NSIndexPath]()
-                
                 var reload = false
-                //guard let questionsArray = self.questionsArray else { return }
-                //                var i = 0
                 for (index, var dict) in self.questionsArray.enumerate() {
                     guard let dictQuestionId = dict[Constants.QuestionFields.questionID] as? String else { continue }
                     guard let newQuestionId = question[Constants.QuestionFields.questionID] as? String else { continue }
                     if (dictQuestionId == newQuestionId) {
-                        //change photo url of dictionary
                         reload = true
-                        //                        i = index
-                        
-                        //                        var questionToChange = self.questionsArray[i]
-                        //                        let photoURL = question[Constants.QuestionFields.photoUrl]
                         self.questionsArray[index][Constants.QuestionFields.photoUrl] = photoURL
-                        //                        print("Photo URL in for loop: \(photoURL)")
-                        //                        print("QuestionToChange Photo URL : \(questionToChange[Constants.QuestionFields.photoUrl])")
                         indexesToReload.append(NSIndexPath(forRow: index, inSection: 0))
                     }
-                    
                 }
-                // check to see if the newest questionId is in the questionsArray, if it is, go to that index in the questionArray and change the imageUrl
-                // if not, append the question to the questionsArray
                 if reload {
-                    //                    var questionToChange = self.questionsArray[i]
-                    //                    let photoURL = question[Constants.QuestionFields.photoUrl]
-                    //                    questionToChange[Constants.QuestionFields.photoUrl] = photoURL
-                    //                    print("Photo URL in for loop: \(photoURL)")
-                    //                    print("QuestionToChange Photo URL : \(questionToChange[Constants.QuestionFields.photoUrl])")
-                    //                    self.tableView.reloadData()
                     self.tableView.reloadRowsAtIndexPaths(indexesToReload, withRowAnimation: .None)
                 } else {
                     self.questionsArray.append(question)

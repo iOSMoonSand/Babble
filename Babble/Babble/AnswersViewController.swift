@@ -44,69 +44,65 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
             var answer = answerSnapshot.value as! [String: AnyObject]
             answer[Constants.AnswerFields.questionID] = self.questionRef
             answer[Constants.AnswerFields.answerID] = answerID
+//            answer[Constants.AnswerFields.photoUrl] = photoURL
+            answer[Constants.AnswerFields.displayName] = ""
             let userID = answer[Constants.AnswerFields.userID] as! String
             AppState.sharedInstance.likeCountAnswerID = answerID
             
-            FirebaseConfigManager.sharedInstance.ref.child("likeCounts").child(AppState.sharedInstance.likeCountAnswerID).observeEventType(.ChildChanged, withBlock: {(likeCountSnapshot) in
-                let likeCount = likeCountSnapshot.value as! Int
-                
-                answer[Constants.AnswerFields.likeCount] = likeCount
-                
-                var indexesToReload = [NSIndexPath]()
-                var reload = false
-                for (index, var dict) in self.answersArray.enumerate() {
-                    guard let dictQuestionId = dict[Constants.AnswerFields.questionID] as? String else { continue }
-                    guard let newQuestionId = answer[Constants.AnswerFields.questionID] as? String else { continue }
-                    guard let dictAnswerId = dict[Constants.AnswerFields.answerID] as? String else { continue }
-                    guard let newAnswerId = answer[Constants.AnswerFields.answerID] as? String else { continue }
-                    if (dictQuestionId == newQuestionId) && (dictAnswerId == newAnswerId) {
-                        reload = true
-                        self.answersArray[index][Constants.AnswerFields.likeCount] = likeCount
-                        indexesToReload.append(NSIndexPath(forRow: index, inSection: 0))
-                    }
-                    
-                }
-                if reload {
-                    self.tableView.reloadRowsAtIndexPaths(indexesToReload, withRowAnimation: .None)
-                } else {
-                    self.answersArray.append(answer)
-                    self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: (self.answersArray.count)-1, inSection: 0)], withRowAnimation: .Automatic)
-                }
-
-            })
+            //Observer Like
+            self.configureLikeObserver(answer)
+            
+            self.answersArray.append(answer)
+            self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.answersArray.count-1, inSection: 0)], withRowAnimation: .Automatic)
             
             let usersRef = FirebaseConfigManager.sharedInstance.ref.child("users")
             usersRef.child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
                 var user = userSnapshot.value as! [String: AnyObject]
                 let photoURL = user[Constants.UserFields.photoUrl] as! String
                 let displayName = user[Constants.UserFields.displayName] as! String
-                
                 answer[Constants.AnswerFields.photoUrl] = photoURL
                 answer[Constants.AnswerFields.displayName] = displayName
                 
-                var indexesToReload = [NSIndexPath]()
-                var reload = false
-                
-                for (index, var dict) in self.answersArray.enumerate() {
-                    guard let dictAnswerID = dict[Constants.AnswerFields.answerID] as? String else { continue }
-                    guard let newAnswerID = answer[Constants.AnswerFields.answerID] as? String else { continue }
-                    if dictAnswerID == newAnswerID {
-                        reload = true
-                        self.answersArray[index][Constants.AnswerFields.photoUrl] = photoURL
-                        indexesToReload.append(NSIndexPath(forRow: index, inSection: 0))
-                    }
-                }
-                if reload {
-                    self.tableView.reloadRowsAtIndexPaths(indexesToReload, withRowAnimation: .None)
-                } else {
-                    self.answersArray.append(answer)
-                    self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.answersArray.count-1, inSection: 0)], withRowAnimation: .Automatic)
-                }
+                self.updatePhotoUrlForAnswer(photoURL, answer: answer)
                 })
             { (error) in
                 print(error.localizedDescription)
             }
         })
+    }
+    func configureLikeObserver(answer : [String: AnyObject]) {
+        var answer = answer
+        FirebaseConfigManager.sharedInstance.ref.child("likeCounts").child(AppState.sharedInstance.likeCountAnswerID).observeEventType(.ChildChanged, withBlock: {(likeCountSnapshot) in
+            let likeCount = likeCountSnapshot.value as! Int
+            answer[Constants.AnswerFields.likeCount] = likeCount
+            for (index, var dict) in self.answersArray.enumerate() {
+                guard let dictQuestionId = dict[Constants.AnswerFields.questionID] as? String else { continue }
+                guard let newQuestionId = answer[Constants.AnswerFields.questionID] as? String else { continue }
+                guard let dictAnswerId = dict[Constants.AnswerFields.answerID] as? String else { continue }
+                guard let newAnswerId = answer[Constants.AnswerFields.answerID] as? String else { continue }
+                if (dictQuestionId == newQuestionId) && (dictAnswerId == newAnswerId) {
+                    self.answersArray[index][Constants.AnswerFields.likeCount] = likeCount
+                }
+            }
+            self.answersArray.sortInPlace {
+                (($0 as [String: AnyObject])["likeCount"] as? Int) > (($1 as [String: AnyObject])["likeCount"] as? Int)
+            }
+            self.tableView.reloadData()
+        })
+    }
+    func updatePhotoUrlForAnswer(photoURL: String, answer : [String: AnyObject]) {
+        var indexesToReload = [NSIndexPath]()
+        for (index, var dict) in self.answersArray.enumerate() {
+            guard let dictAnswerID = dict[Constants.AnswerFields.answerID] as? String else { continue }
+            guard let newAnswerID = answer[Constants.AnswerFields.answerID] as? String else { continue }
+            if dictAnswerID == newAnswerID {
+                self.answersArray[index][Constants.AnswerFields.photoUrl] = photoURL
+                indexesToReload.append(NSIndexPath(forRow: index, inSection: 0))
+            }
+        }
+        if indexesToReload.count > 0 {
+            self.tableView.reloadRowsAtIndexPaths(indexesToReload, withRowAnimation: .None)
+        }
     }
     // MARK:
     // MARK: - UITableViewDataSource & UITableViewDelegate methods
