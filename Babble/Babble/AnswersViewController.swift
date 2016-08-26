@@ -47,7 +47,7 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
 //            answer[Constants.AnswerFields.photoUrl] = photoURL
             answer[Constants.AnswerFields.displayName] = ""
             let userID = answer[Constants.AnswerFields.userID] as! String
-            AppState.sharedInstance.likeCountAnswerID = answerID
+            //AppState.sharedInstance.likeCountAnswerID = answerID
             
             //Observer Like
             self.configureLikeObserver(answer)
@@ -72,7 +72,7 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     func configureLikeObserver(answer : [String: AnyObject]) {
         var answer = answer
-        FirebaseConfigManager.sharedInstance.ref.child("likeCounts").child(AppState.sharedInstance.likeCountAnswerID).observeEventType(.ChildChanged, withBlock: {(likeCountSnapshot) in
+        FirebaseConfigManager.sharedInstance.ref.child("likeCounts").child("blah").observeEventType(.ChildChanged, withBlock: {(likeCountSnapshot) in
             let likeCount = likeCountSnapshot.value as! Int
             answer[Constants.AnswerFields.likeCount] = likeCount
             for (index, var dict) in self.answersArray.enumerate() {
@@ -154,7 +154,7 @@ class AnswersViewController: UIViewController, UITableViewDelegate, UITableViewD
         let answerID = answer[Constants.AnswerFields.answerID] as! String
         FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(answerID)/likeCount").setValue(incrementedLikeCount)
         FirebaseConfigManager.sharedInstance.ref.child("answers/\(questionID)/\(answerID)/likeCount").setValue(incrementedLikeCount)
-        AppState.sharedInstance.likeCountAnswerID = answerID
+        //AppState.sharedInstance.likeCountAnswerID = answerID
     }
     
     // MARK:

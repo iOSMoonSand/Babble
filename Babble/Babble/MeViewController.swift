@@ -46,7 +46,6 @@ class MeViewController: UITableViewController, UITextViewDelegate {
         if imageFromProfilePhotoVC != nil {
             imageView.image = imageFromProfilePhotoVC
         }
-        
     }
     
     override func viewWillAppear(animated: Bool) {

@@ -17,7 +17,5 @@ class AppState: NSObject {
     var displayName: String?
     var photoUrlString: String = ""
     var profileImage: UIImage?
-    var likeCountQuestionID = String()
-    var likeCountAnswerID = String()
 }
 

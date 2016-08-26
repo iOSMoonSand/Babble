@@ -12,7 +12,7 @@ import Firebase
 //MARK: -
 //MARK: - HomeScreenViewController Class
 //MARK: -
-class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIGestureRecognizerDelegate {
+class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     //MARK: -
     //MARK: - Properties
     //MARK: -
@@ -64,89 +64,24 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     // MARK:
     // MARK: - Firebase Database Configuration
     // MARK:
+    
+    //configure question elements here and other elements directly in QuestionCell
     func configureDatabase() {
-        _refHandle = FirebaseConfigManager.sharedInstance.ref.child("questions").observeEventType(.Value, withBlock: {/*[weak self]*/ (questionSnapshot) in
-            let questionID = questionSnapshot.key
-            
-            
-            
-            var questions = questionSnapshot.value as! [String: AnyObject]
-            
-            
-            for (key, obj) in question {
-                let test = obj as! [String : AnyObject]
-                NSLog("question", test)
+        //TODO: why use [weak self] in closure
+        _refHandle = FirebaseConfigManager.sharedInstance.ref.child("questions").observeEventType(.Value, withBlock: { (questionSnapshot) in
+            self.questionsArray = [[String : AnyObject]]()//making a new clean array
+            let questions = questionSnapshot.value as! [String: [String: AnyObject]]
+            var question = [String: AnyObject]()
+            for (key, value) in questions {
+                question = value
+                question[Constants.QuestionFields.questionID] = key
+                // question object includes: text, userID, questionID
+                self.questionsArray.append(question)
             }
-            re
-            
-            
-            
-            
-            
-            
-            
-            question[Constants.QuestionFields.questionID] = questionID
-            let likeCount = question[Constants.QuestionFields.likeCount] as! Int
-            let userID = question[Constants.QuestionFields.userID] as! String
-            AppState.sharedInstance.likeCountQuestionID = questionID
-            
-            FirebaseConfigManager.sharedInstance.ref.child("likeCounts").child(AppState.sharedInstance.likeCountQuestionID).observeEventType(.ChildChanged, withBlock: {(likeCountSnapshot) in
-                let likeCount = likeCountSnapshot.value as! Int
-                
-                question[Constants.QuestionFields.likeCount] = likeCount
-                
-//                var indexesToReload = [NSIndexPath]()
-//                var reload = false
-                for (index, var dict) in self.questionsArray.enumerate() {
-                    guard let dictQuestionId = dict[Constants.QuestionFields.questionID] as? String else { continue }
-                    guard let newQuestionId = question[Constants.QuestionFields.questionID] as? String else { continue }
-                    if (dictQuestionId == newQuestionId) {
-                        //reload = true
-                        self.questionsArray[index][Constants.QuestionFields.likeCount] = likeCount
-                        //indexesToReload.append(NSIndexPath(forRow: index, inSection: 0))
-                    }
-                }
-//                if reload {
-//                    self.tableView.reloadRowsAtIndexPaths(indexesToReload, withRowAnimation: .None)
-//                } else {
-//                    self.questionsArray.append(question)
-//                    self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: (self.questionsArray.count)-1, inSection: 0)], withRowAnimation: .Automatic)
-//                }
-                self.questionsArray.sortInPlace {
-                    (($0 as [String: AnyObject])["likeCount"] as? Int) > (($1 as [String: AnyObject])["likeCount"] as? Int)
-                }
-                self.tableView.reloadData()
-            })
-            let usersRef = FirebaseConfigManager.sharedInstance.ref.child("users")
-            usersRef.child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
-                var user = userSnapshot.value as! [String: AnyObject]
-                let photoURL = user[Constants.UserFields.photoUrl] as! String
-                let displayName = user[Constants.UserFields.displayName] as! String
-                
-                question[Constants.QuestionFields.photoUrl] = photoURL
-                question[Constants.QuestionFields.displayName] = displayName
-                
-                var indexesToReload = [NSIndexPath]()
-                var reload = false
-                for (index, var dict) in self.questionsArray.enumerate() {
-                    guard let dictQuestionId = dict[Constants.QuestionFields.questionID] as? String else { continue }
-                    guard let newQuestionId = question[Constants.QuestionFields.questionID] as? String else { continue }
-                    if (dictQuestionId == newQuestionId) {
-                        reload = true
-                        self.questionsArray[index][Constants.QuestionFields.photoUrl] = photoURL
-                        indexesToReload.append(NSIndexPath(forRow: index, inSection: 0))
-                    }
-                }
-                if reload {
-                    self.tableView.reloadRowsAtIndexPaths(indexesToReload, withRowAnimation: .None)
-                } else {
-                    self.questionsArray.append(question)
-                    self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: (self.questionsArray.count)-1, inSection: 0)], withRowAnimation: .Automatic)
-                }
-                })
-            { (error) in
-                print(error.localizedDescription)
+            self.questionsArray.sortInPlace {
+                (($0 as [String: AnyObject])["likeCount"] as? Int) > (($1 as [String: AnyObject])["likeCount"] as? Int)
             }
+            self.tableView.reloadData()
         })
     }
     // MARK:
@@ -158,60 +93,16 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = self.tableView.dequeueReusableCellWithIdentifier("QuestionCell", forIndexPath: indexPath) as! QuestionCell
-        
         cell.delegate = self
         cell.row = indexPath.row
-        
-        cell.likeButton.tag = indexPath.row
-        cell.likeButton.addTarget(self, action: "tapFiredLikeButton:", forControlEvents: .TouchUpInside)
-        
-        //unpack question from local dict
         let question: [String : AnyObject] = self.questionsArray[indexPath.row]
-        let questionText = question[Constants.QuestionFields.text] as! String
-        let displayName = question[Constants.QuestionFields.displayName] as! String
-        let likeCount = question[Constants.QuestionFields.likeCount] as! Int
-        cell.questionTextLabel.text = questionText
-        cell.displayNameLabel.text = displayName
-        cell.likeButtonCountLabel.text = String(likeCount)
-        cell.profilePhotoImageButton.setBackgroundImage(nil, forState: .Normal)
-        if let photoUrl = question[Constants.QuestionFields.photoUrl] {
-            FIRStorage.storage().referenceForURL(photoUrl as! String).dataWithMaxSize(INT64_MAX) { (data, error) in
-                if error != nil {
-                    print("Error downloading: \(error)")
-                    return
-                } else {
-                    let image = UIImage(data: data!)
-                    cell.profilePhotoImageButton.setBackgroundImage(image, forState: .Normal)
-                }
-            }
-        } else if let photoUrl = question[Constants.QuestionFields.photoUrl], url = NSURL(string:photoUrl as! String), data = NSData(contentsOfURL: url) {
-            let image = UIImage(data: data)
-            cell.profilePhotoImageButton.setBackgroundImage(image, forState: .Normal)
-            
-        } else {
-            let image = UIImage(named: "ic_account_circle")
-            cell.profilePhotoImageButton.setBackgroundImage(image, forState: .Normal)
-        }
+        cell.performWithQuestion(question)
         return cell
-    }
-    
-    @IBAction func tapFiredLikeButton(sender: UIButton) {
-        
-        print("tap fired for like button")
-        var question: [String : AnyObject] = self.questionsArray[sender.tag]
-        let likeCount = question[Constants.QuestionFields.likeCount] as! Int
-        question[Constants.QuestionFields.likeCount] = likeCount + 1
-        let incrementedLikeCount = question[Constants.QuestionFields.likeCount] as! Int
-        let questionID = question[Constants.QuestionFields.questionID] as! String
-        FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(questionID)/likeCount").setValue(incrementedLikeCount)
-        FirebaseConfigManager.sharedInstance.ref.child("questions/\(questionID)/likeCount").setValue(incrementedLikeCount)
-        AppState.sharedInstance.likeCountQuestionID = questionID
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         performSegueWithIdentifier(Constants.Segues.HomeToAnswers, sender: self)
     }
-    
     // MARK:
     // MARK: - IBActions
     // MARK:
@@ -248,22 +139,40 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func postQuestion(data: [String: AnyObject]) {
-        
         var questionDataDict = data
-        guard let currentUserID = FirebaseConfigManager.sharedInstance.currentUser?.uid else { return }
+        let currentUserID = FirebaseConfigManager.sharedInstance.currentUser?.uid
         questionDataDict[Constants.QuestionFields.userID] = currentUserID
-        questionDataDict[Constants.QuestionFields.likeCount] = 0
-        FirebaseConfigManager.sharedInstance.ref.child("questions").childByAutoId().setValue(questionDataDict)
+        let key = FirebaseConfigManager.sharedInstance.ref.child("questions").childByAutoId().key
+        
+        let childUpdates = ["questions/\(key)": questionDataDict,
+                            "likeCounts/\(key)/likeCount": 0]
+        
+        FirebaseConfigManager.sharedInstance.ref.updateChildValues(childUpdates as! [String : AnyObject])
+        
+    }
+}
+// MARK:
+// MARK: - QuestionCellDelegate Protocol
+// MARK:
+extension HomeScreenViewController: QuestionCellDelegate {
+    //MARK:
+    //MARK: - QuestionCellDelegate Methods
+    //MARK:
+    func handleProfileImageButtonTapOn(row: Int) {
+        self.selectedIndexRow = row
+        performSegueWithIdentifier(Constants.Segues.HomeToProfile, sender: self)
     }
     
-    
-}
-
-extension HomeScreenViewController: QuestionCellDelegate {
-    
-    func handleButtonTapOn(row: Int) {
-        selectedIndexRow = row
-        performSegueWithIdentifier(Constants.Segues.HomeToProfile, sender: self)
+    func handleLikeButtonTapOn(row: Int) {
+        let question = self.questionsArray[row]
+        let questionID = question[Constants.QuestionFields.questionID] as! String
+        //increment question likeCount
+        FirebaseConfigManager.sharedInstance.ref.child("likeCounts").child(questionID).observeSingleEventOfType(.Value, withBlock: { (likeCountSnapshot) in
+            let likeCountDict = likeCountSnapshot.value as! [String: Int]
+            guard let currentLikeCount = likeCountDict[Constants.LikeCountFields.likeCount] else { return }
+            let incrementedLikeCount = currentLikeCount + 1
+            FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(questionID)/likeCount").setValue(incrementedLikeCount)
+        })
     }
 }
 

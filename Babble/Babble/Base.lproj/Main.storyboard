@@ -134,6 +134,9 @@
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="k5k-4a-3wV">
                                                     <rect key="frame" x="559" y="37" width="23" height="23"/>
                                                     <state key="normal" title="Like Button" image="heart-empty"/>
+                                                    <connections>
+                                                        <action selector="likeButtonTapped:" destination="1cG-af-NgH" eventType="touchUpInside" id="sFi-Hg-Oyg"/>
+                                                    </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="taV-8M-Y9O">
                                                     <rect key="frame" x="8" y="8" width="80" height="74"/>
@@ -141,7 +144,7 @@
                                                         <constraint firstAttribute="width" constant="80" id="7dY-nb-mTr"/>
                                                     </constraints>
                                                     <connections>
-                                                        <action selector="buttonTapped:" destination="1cG-af-NgH" eventType="touchUpInside" id="7Pt-Wc-JTg"/>
+                                                        <action selector="profileImageButtonTapped:" destination="1cG-af-NgH" eventType="touchUpInside" id="2sB-UV-WWH"/>
                                                     </connections>
                                                 </button>
                                             </subviews>
