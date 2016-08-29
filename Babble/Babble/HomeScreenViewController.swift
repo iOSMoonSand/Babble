@@ -12,15 +12,13 @@ import Firebase
 //MARK: -
 //MARK: - HomeScreenViewController Class
 //MARK: -
-class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+class HomeScreenViewController: UIViewController {
     //MARK: -
     //MARK: - Properties
     //MARK: -
     @IBOutlet weak var tableView: UITableView!
     private var _refHandle: FIRDatabaseHandle!
-    private var _photoURLrefHandle: FIRDatabaseHandle!
     var questionsArray = [[String : AnyObject]]()
-    var profilePhotoString: String?
     var newQuestion: String?
     var userArray = [String]()
     var selectedIndexRow: Int?
@@ -64,8 +62,6 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     // MARK:
     // MARK: - Firebase Database Configuration
     // MARK:
-    
-    //configure question elements here and other elements directly in QuestionCell
     func configureDatabase() {
         //TODO: why use [weak self] in closure
         _refHandle = FirebaseConfigManager.sharedInstance.ref.child("questions").observeEventType(.Value, withBlock: { (questionSnapshot) in
@@ -85,7 +81,43 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
         })
     }
     // MARK:
-    // MARK: - UITableViewDataSource & UITableViewDelegate methods
+    // MARK: - Button Actions
+    // MARK:
+    @IBAction func didTapPostAddQuestion(segue:UIStoryboardSegue) {
+        //Unwind segue from AddQuestion to HomeScreen
+        //Identifier: PostNewQuestionToHome
+        let data = [Constants.QuestionFields.text: newQuestion! as String]
+        postQuestion(data)
+    }
+    
+    func postQuestion(data: [String: AnyObject]) {
+        var questionDataDict = data
+        let currentUserID = FirebaseConfigManager.sharedInstance.currentUser?.uid
+        questionDataDict[Constants.QuestionFields.userID] = currentUserID
+        let key = FirebaseConfigManager.sharedInstance.ref.child("questions").childByAutoId().key
+        let childUpdates = ["questions/\(key)": questionDataDict,
+                            "likeCounts/\(key)/likeCount": 0]
+        FirebaseConfigManager.sharedInstance.ref.updateChildValues(childUpdates as! [String : AnyObject])
+    }
+    // MARK:
+    // MARK: - Unwind Segues
+    // MARK:
+    @IBAction func didTapBackAnswers(segue:UIStoryboardSegue) {
+        //From AddQuestion to HomeScreen
+    }
+    @IBAction func didTapCancelAddQuestion(segue:UIStoryboardSegue) {
+        //From AddQuestion to HomeScreen
+    }
+    @IBAction func didTapBackProfiles(segue:UIStoryboardSegue) {
+        //From UserProfiles to HomeScreen
+    }
+}
+// MARK:
+// MARK: - UITableViewDelegate & UITableViewDataSource Protocols
+// MARK:
+extension HomeScreenViewController: UITableViewDelegate, UITableViewDataSource {
+    // MARK:
+    // MARK: - UITableViewDataSource & UITableViewDelegate Methods
     // MARK:
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return questionsArray.count
@@ -102,53 +134,6 @@ class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         performSegueWithIdentifier(Constants.Segues.HomeToAnswers, sender: self)
-    }
-    // MARK:
-    // MARK: - IBActions
-    // MARK:
-    @IBAction func didTapSignOut(sender: AnyObject) {
-        let firebaseAuth = FIRAuth.auth()
-        do {
-            try firebaseAuth?.signOut()
-            AppState.sharedInstance.signedIn = false
-            performSegueWithIdentifier(Constants.Segues.HomeToSignIn, sender: nil)
-        } catch let signOutError as NSError {
-            print ("Error signing out: \(signOutError)")
-        }
-    }
-    
-    @IBAction func didTapBackAnswers(segue:UIStoryboardSegue) {
-        //unwind segue from AddQuestion to HomeScreen
-        
-    }
-    
-    @IBAction func didTapCancelAddQuestion(segue:UIStoryboardSegue) {
-        //unwind segue from AddQuestion to HomeScreen
-        
-    }
-    
-    @IBAction func didTapPostAddQuestion(segue:UIStoryboardSegue) {
-        //unwind segue from AddQuestion to HomeScreen
-        let data = [Constants.QuestionFields.text: newQuestion! as String]
-        postQuestion(data)
-    }
-    
-    @IBAction func didTapBackProfiles(segue:UIStoryboardSegue) {
-        //unwind segue from UserProfiles to HomeScreen
-        
-    }
-    
-    func postQuestion(data: [String: AnyObject]) {
-        var questionDataDict = data
-        let currentUserID = FirebaseConfigManager.sharedInstance.currentUser?.uid
-        questionDataDict[Constants.QuestionFields.userID] = currentUserID
-        let key = FirebaseConfigManager.sharedInstance.ref.child("questions").childByAutoId().key
-        
-        let childUpdates = ["questions/\(key)": questionDataDict,
-                            "likeCounts/\(key)/likeCount": 0]
-        
-        FirebaseConfigManager.sharedInstance.ref.updateChildValues(childUpdates as! [String : AnyObject])
-        
     }
 }
 // MARK:
@@ -175,8 +160,6 @@ extension HomeScreenViewController: QuestionCellDelegate {
         })
     }
 }
-
-
 
 
 

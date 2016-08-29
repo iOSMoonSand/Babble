@@ -12,13 +12,12 @@ import UIKit
 import Firebase
 import SDWebImage
 
-
 //MARK:
-//MARK: - MeViewControllerClass
+//MARK: - MeViewController Class
 //MARK:
-class MeViewController: UITableViewController, UITextViewDelegate {
+class MeViewController: UITableViewController {
     //MARK:
-    //MARK: - Properties
+    //MARK: - Attributes
     //MARK:
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var textLabel: UILabel!
@@ -39,10 +38,7 @@ class MeViewController: UITableViewController, UITextViewDelegate {
             } else {
                 self?.textView.text = "Write your bio here!"
             }
-            
             })
-        
-        navigationItem.hidesBackButton = true
         if imageFromProfilePhotoVC != nil {
             imageView.image = imageFromProfilePhotoVC
         }
@@ -67,17 +63,27 @@ class MeViewController: UITableViewController, UITextViewDelegate {
         if let profileImage = AppState.sharedInstance.profileImage {
             self.imageView.image = profileImage
         } else {
-            
             let url = NSURL(string: AppState.sharedInstance.photoUrlString)
             print("Photo URL: \(url?.absoluteString)")
             self.imageView.sd_setImageWithURL(url, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"))
         }
     }
     
-    
     @IBAction func didTapProfilePhotoImageView(sender: UITapGestureRecognizer) {
         performSegueWithIdentifier(Constants.Segues.MyProfileToProfilePhoto, sender: self)
     }
+    //MARK:
+    //MARK: - Unwind Segues
+    //MARK:
+    @IBAction func didTapBackProfilePhotoVC(sender: UIStoryboardSegue) {
+        //unwind segue from ProfilePhotoVC to MeVC
+        //Identifier: ProfilePhotoToMyProfile
+    }
+}
+//MARK:
+//MARK: - UITextViewDelegate Protocol
+//MARK:
+extension MeViewController: UITextViewDelegate {
     //MARK:
     //MARK: - UITextViewDelegate Methods
     //MARK:
@@ -100,9 +106,7 @@ class MeViewController: UITableViewController, UITextViewDelegate {
         guard let userID = FirebaseConfigManager.sharedInstance.currentUser?.uid else { return }
         FirebaseConfigManager.sharedInstance.ref.child("users/\(userID)/userBio").setValue(userBioText)
     }
-    
 }
-
 
 
 

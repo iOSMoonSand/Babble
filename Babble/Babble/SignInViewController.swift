@@ -134,4 +134,15 @@ class SignInViewController: UIViewController {
         prompt.addAction(okAction)
         presentViewController(prompt, animated: true, completion: nil);
     }
+    
+    @IBAction func didTapSignOutHomeScreen(segue:UIStoryboardSegue) {
+        let firebaseAuth = FIRAuth.auth()
+        do {
+            try firebaseAuth?.signOut()
+            AppState.sharedInstance.signedIn = false
+        } catch let signOutError as NSError {
+            print ("Error signing out: \(signOutError)")
+        }
+    }
+    
 }

@@ -35,7 +35,7 @@
                                     <action selector="didTapSignIn:" destination="gr6-q9-TAC" eventType="touchUpInside" id="UQ2-z9-jWe"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Sign In" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BCD-Qo-xjv">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sign In" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BCD-Qo-xjv">
                                 <rect key="frame" x="271" y="69" width="52" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="52" id="2hl-Rk-luW"/>
@@ -194,7 +194,7 @@
                     <navigationItem key="navigationItem" id="pei-9j-Pkn">
                         <barButtonItem key="leftBarButtonItem" title="Sign Out" id="53E-RT-VP0">
                             <connections>
-                                <action selector="didTapSignOut:" destination="D7w-iU-d5k" id="kpW-X8-KAc"/>
+                                <segue destination="90o-iE-alw" kind="unwind" unwindAction="didTapSignOutHomeScreen:" id="KbZ-AA-AVV"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="W2o-NG-sre">
@@ -207,7 +207,6 @@
                     </navigationItem>
                     <connections>
                         <outlet property="tableView" destination="q6J-fg-ivJ" id="J9a-z2-HB0"/>
-                        <segue destination="gr6-q9-TAC" kind="show" identifier="HomeToSignIn" id="msV-Om-w4h"/>
                         <segue destination="F5c-1Y-CZQ" kind="show" identifier="HomeToAnswers" id="xTZ-kl-ROu"/>
                         <segue destination="mDI-Ad-FlD" kind="show" identifier="HomeToProfile" id="knU-bX-ujx"/>
                     </connections>
@@ -268,7 +267,7 @@
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Post" id="BqX-x2-fgR">
                             <connections>
-                                <segue destination="90o-iE-alw" kind="unwind" identifier="PostNewQuestionToHome" unwindAction="didTapPostAddQuestion:" id="ngd-X8-eY7"/>
+                                <segue destination="LGN-m6-g4H" kind="unwind" identifier="PostNewQuestionToHome" unwindAction="didTapPostAddQuestion:" id="kmF-d5-lDy"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -278,6 +277,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1CZ-pa-NGT" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="LGN-m6-g4H" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="3787" y="30"/>
         </scene>
@@ -433,7 +433,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MRU-hM-nUL">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="MRU-hM-nUL">
                                 <rect key="frame" x="100" y="100" width="400" height="400"/>
                             </imageView>
                         </subviews>
@@ -449,8 +449,7 @@
                     <navigationItem key="navigationItem" title="Profile Photo" id="aLe-el-8jq">
                         <barButtonItem key="leftBarButtonItem" title="Back" id="MKc-Go-lC5">
                             <connections>
-                                <action selector="didTapBackProfilePhotoVC:" destination="tIN-zK-ffY" id="aDB-Zj-MQj"/>
-                                <segue destination="lPD-CE-k35" kind="show" identifier="ProfilePhotoToMyProfile" id="4O1-d8-E5f"/>
+                                <segue destination="N6S-Ps-rmL" kind="unwind" identifier="ProfilePhotoToMyProfile" unwindAction="didTapBackProfilePhotoVC:" id="0C7-a7-514"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Edit" id="XKg-h1-KH3">
@@ -465,6 +464,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ukO-gJ-sNX" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="N6S-Ps-rmL" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="2979" y="2470"/>
         </scene>
@@ -666,7 +666,7 @@
                             <tableViewSection id="wZ3-P6-C2T">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="288" id="Qkh-ma-VcN">
-                                        <rect key="frame" x="0.0" y="0.0" width="600" height="288"/>
+                                        <rect key="frame" x="0.0" y="64" width="600" height="288"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Qkh-ma-VcN" id="zFH-ST-bJ3">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="287.5"/>
@@ -706,7 +706,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="199" id="dSY-16-M6e">
-                                        <rect key="frame" x="0.0" y="288" width="600" height="199"/>
+                                        <rect key="frame" x="0.0" y="352" width="600" height="199"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="dSY-16-M6e" id="5yt-t3-1ot">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="198.5"/>
@@ -792,7 +792,4 @@
     <resources>
         <image name="heart-empty" width="28" height="27"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="4O1-d8-E5f"/>
-    </inferredMetricsTieBreakers>
 </document>

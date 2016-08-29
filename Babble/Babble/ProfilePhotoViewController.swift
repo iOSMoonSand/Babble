@@ -134,11 +134,6 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
             }
         }
     }
-
-    @IBAction func didTapBackProfilePhotoVC(sender: UIBarButtonItem) {
-        performSegueWithIdentifier(Constants.Segues.ProfilePhotoToMyProfile, sender: self)
-    }
-    
 }
 
 

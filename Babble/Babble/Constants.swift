@@ -16,7 +16,6 @@ struct Constants {
     
     struct Segues {
         static let SignInToHome = "SignInToHome"
-        static let HomeToSignIn = "HomeToSignIn"
         static let HomeToAnswers = "HomeToAnswers"
         static let HomeToAddQuestion = "HomeToAddQuestion"
         static let PostNewQuestionToHome = "PostNewQuestionToHome"
