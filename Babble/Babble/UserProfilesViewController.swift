@@ -19,10 +19,17 @@ class UserProfilesViewController: UITableViewController {
     @IBOutlet weak var userProfileImageView: UIImageView!
     @IBOutlet weak var userProfileTextView: UITextView!
     var userIDRef: String?
-    
+    //MARK:
+    //MARK: - UIViewController Methods
+    //MARK:
     override func viewDidLoad() {
         super.viewDidLoad()
         self.getAndSetUserData()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        self.userProfileImageView.layer.cornerRadius = self.userProfileImageView.bounds.width / 2
+        self.userProfileImageView.clipsToBounds = true
     }
     
     func getAndSetUserData() {

@@ -47,9 +47,19 @@ class QuestionCell: UITableViewCell {
         self.questionTextLabel.text = questionText
         //retrieve likeCount from Firebase
         FirebaseConfigManager.sharedInstance.ref.child("likeCounts").child(questionID).observeEventType(.Value, withBlock: {(likeCountSnapshot) in
-            let likeCountDict = likeCountSnapshot.value as! [String: Int]
+            let likeCountDict = likeCountSnapshot.value as! [String: AnyObject]
             if self.question[Constants.QuestionFields.questionID] as! String == likeCountSnapshot.key {
                 guard let likeCount = likeCountDict[Constants.LikeCountFields.likeCount] else { return }
+                guard let likeStatus = likeCountDict[Constants.LikeCountFields.likeStatus] as! Int? else { return }
+                
+                if likeStatus == 0 {
+                    let fullHeartImage = UIImage(named: "heart-full")
+                    self.likeButton.setBackgroundImage(fullHeartImage, forState: .Normal)
+                } else if likeStatus == 1 {
+                    let emptyHeartImage = UIImage(named: "heart-empty")
+                    self.likeButton.setBackgroundImage(emptyHeartImage, forState: .Normal)
+                }
+                
                 self.question[Constants.QuestionFields.likeCount] = likeCount
                 self.likeButtonCountLabel.text = String(likeCount)
             }
@@ -94,7 +104,6 @@ class QuestionCell: UITableViewCell {
     }
     
     @IBAction func likeButtonTapped(sender: UIButton) {
-        print("tap fired like button")
         guard let row = self.row else { return }
         delegate?.handleLikeButtonTapOn(row)
     }

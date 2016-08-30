@@ -14,13 +14,12 @@ import Firebase
 //MARK: -
 class HomeScreenViewController: UIViewController {
     //MARK: -
-    //MARK: - Properties
+    //MARK: - Attributes
     //MARK: -
     @IBOutlet weak var tableView: UITableView!
     private var _refHandle: FIRDatabaseHandle!
     var questionsArray = [[String : AnyObject]]()
     var newQuestion: String?
-    var userArray = [String]()
     var selectedIndexRow: Int?
     //MARK: -
     //MARK: - UIViewController Methods
@@ -28,7 +27,7 @@ class HomeScreenViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tableViewCell")
-        self.configureDatabase()
+        self.retrieveQuestionData()
     }
     
     deinit {
@@ -60,12 +59,12 @@ class HomeScreenViewController: UIViewController {
         }
     }
     // MARK:
-    // MARK: - Firebase Database Configuration
+    // MARK: - Firebase Database Retrieval
     // MARK:
-    func configureDatabase() {
+    func retrieveQuestionData() {
         //TODO: why use [weak self] in closure
         _refHandle = FirebaseConfigManager.sharedInstance.ref.child("questions").observeEventType(.Value, withBlock: { (questionSnapshot) in
-            self.questionsArray = [[String : AnyObject]]()//making a new clean array
+            self.questionsArray = [[String : AnyObject]]()//make a new clean array
             let questions = questionSnapshot.value as! [String: [String: AnyObject]]
             var question = [String: AnyObject]()
             for (key, value) in questions {
@@ -96,7 +95,8 @@ class HomeScreenViewController: UIViewController {
         questionDataDict[Constants.QuestionFields.userID] = currentUserID
         let key = FirebaseConfigManager.sharedInstance.ref.child("questions").childByAutoId().key
         let childUpdates = ["questions/\(key)": questionDataDict,
-                            "likeCounts/\(key)/likeCount": 0]
+                            "likeCounts/\(key)/likeCount": 0,
+                            "likeCounts/\(key)/likeStatus": 1]
         FirebaseConfigManager.sharedInstance.ref.updateChildValues(childUpdates as! [String : AnyObject])
     }
     // MARK:
@@ -155,11 +155,34 @@ extension HomeScreenViewController: QuestionCellDelegate {
         FirebaseConfigManager.sharedInstance.ref.child("likeCounts").child(questionID).observeSingleEventOfType(.Value, withBlock: { (likeCountSnapshot) in
             let likeCountDict = likeCountSnapshot.value as! [String: Int]
             guard let currentLikeCount = likeCountDict[Constants.LikeCountFields.likeCount] else { return }
-            let incrementedLikeCount = currentLikeCount + 1
-            FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(questionID)/likeCount").setValue(incrementedLikeCount)
+            guard let currentLikeStatus = likeCountDict[Constants.LikeCountFields.likeStatus] else { return }
+            
+            if currentLikeStatus == 0 {
+                let decrementedLikeCount = (currentLikeCount) - 1
+                FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(questionID)/likeCount").setValue(decrementedLikeCount)
+                FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(questionID)/likeStatus").setValue(1)
+            } else if currentLikeStatus == 1 {
+                let incrementedLikeCount = (currentLikeCount) + 1
+                FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(questionID)/likeCount").setValue(incrementedLikeCount)
+                FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(questionID)/likeStatus").setValue(0)
+            }
         })
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

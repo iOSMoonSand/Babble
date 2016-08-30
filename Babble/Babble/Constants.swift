@@ -53,6 +53,7 @@ struct Constants {
     
     struct LikeCountFields {//each LikeCount separated by likeCountID child
         static let likeCount = "likeCount"
+        static let likeStatus = "likeStatus"
     }
 
 }
