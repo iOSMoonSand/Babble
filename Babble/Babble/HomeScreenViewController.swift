@@ -127,7 +127,7 @@ extension HomeScreenViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = self.tableView.dequeueReusableCellWithIdentifier("QuestionCell", forIndexPath: indexPath) as! QuestionCell
         cell.delegate = self
         cell.row = indexPath.row
-        let question: [String : AnyObject] = self.questionsArray[indexPath.row]
+        let question: [String: AnyObject] = self.questionsArray[indexPath.row]
         cell.performWithQuestion(question)
         return cell
     }

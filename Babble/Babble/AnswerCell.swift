@@ -52,7 +52,6 @@ class AnswerCell: UITableViewCell {
             if self.answer[Constants.AnswerFields.answerID] as! String == likeCountSnapshot.key {
                 guard let likeCount = likeCountDict[Constants.LikeCountFields.likeCount] else { return }
                 guard let likeStatus = likeCountDict[Constants.LikeCountFields.likeStatus] as! Int? else { return }
-                
                 if likeStatus == 0 {
                     let fullHeartImage = UIImage(named: "heart-full")
                     self.likeButton.setBackgroundImage(fullHeartImage, forState: .Normal)
@@ -60,7 +59,6 @@ class AnswerCell: UITableViewCell {
                     let emptyHeartImage = UIImage(named: "heart-empty")
                     self.likeButton.setBackgroundImage(emptyHeartImage, forState: .Normal)
                 }
-                
                 self.answer[Constants.QuestionFields.likeCount] = likeCount
                 self.likeButtonCountLabel.text = String(likeCount)
             }
@@ -105,6 +103,7 @@ class AnswerCell: UITableViewCell {
     }
     
     @IBAction func likeButtonTapped(sender: UIButton) {
+        print("tap fired like button answers")
         guard let row = self.row else { return }
         delegate?.handleLikeButtonTapOn(row)
     }
