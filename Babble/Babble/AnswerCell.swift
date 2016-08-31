@@ -103,7 +103,6 @@ class AnswerCell: UITableViewCell {
     }
     
     @IBAction func likeButtonTapped(sender: UIButton) {
-        print("tap fired like button answers")
         guard let row = self.row else { return }
         delegate?.handleLikeButtonTapOn(row)
     }

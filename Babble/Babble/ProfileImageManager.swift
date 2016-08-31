@@ -10,7 +10,7 @@ import UIKit
 
 class ProfileImageManager {
 
-    static let sharedManager = ProfileImageManager()
+    static let sharedInsance = ProfileImageManager()
     static let profileImageName = "profileImageName"
     var localImagePath: String?
     

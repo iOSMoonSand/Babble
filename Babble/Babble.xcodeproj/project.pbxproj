@@ -118,7 +118,9 @@
 			isa = PBXGroup;
 			children = (
 				5E3E77021D284421006E5EA4 /* View Controllers */,
+				5E8BA9561D5E715600FB530E /* Table View Cells */,
 				5EA2ED231D6B83760031003C /* FirebaseConfigManager.swift */,
+				5E59CCDC1D518A9300708053 /* ProfileImageManager.swift */,
 				5E47756B1D2601B900A5E9B0 /* Constants.swift */,
 				5E753B091D493F72001D82B8 /* AppState.swift */,
 				5E2E6F231D25A794003588DC /* Main.storyboard */,
@@ -134,8 +136,6 @@
 				5E753B111D4FCBAE001D82B8 /* Home */,
 				5E753B121D4FCBCB001D82B8 /* Me */,
 				5EA2ED271D6CBD830031003C /* User Profiles */,
-				5E8BA9561D5E715600FB530E /* Table View Cells */,
-				5E59CCDC1D518A9300708053 /* ProfileImageManager.swift */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
