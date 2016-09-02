@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import Kingfisher
 
 //MARK:
 //MARK: - QuestionCellDelegate Class Protocol
@@ -47,19 +48,31 @@ class QuestionCell: UITableViewCell {
         self.questionTextLabel.text = questionText
         //retrieve likeCount from Firebase
         FirebaseConfigManager.sharedInstance.ref.child("likeCounts").child(questionID).observeEventType(.Value, withBlock: {(likeCountSnapshot) in
-            let likeCountDict = likeCountSnapshot.value as! [String: AnyObject]
+            let likeCountDict = likeCountSnapshot.value as! [String: Int]
             if self.question[Constants.QuestionFields.questionID] as! String == likeCountSnapshot.key {
-                guard let likeCount = likeCountDict[Constants.LikeCountFields.likeCount] else { return }
-                guard let likeStatus = likeCountDict[Constants.LikeCountFields.likeStatus] as! Int? else { return }
-                if likeStatus == 0 {
-                    let fullHeartImage = UIImage(named: "heart-full")
-                    self.likeButton.setBackgroundImage(fullHeartImage, forState: .Normal)
-                } else if likeStatus == 1 {
-                    let emptyHeartImage = UIImage(named: "heart-empty")
-                    self.likeButton.setBackgroundImage(emptyHeartImage, forState: .Normal)
+                guard let currentLikeCount = likeCountDict[Constants.LikeCountFields.likeCount] else { return }
+                self.question[Constants.QuestionFields.likeCount] = currentLikeCount
+                self.likeButtonCountLabel.text = String(currentLikeCount)
+            }
+        })
+        //retrieve or create likeStatus from/in Firebase
+        FirebaseConfigManager.sharedInstance.ref.child("likeStatuses").child(questionID).observeEventType(.Value, withBlock: { (likeStatusSnapshot) in
+            let likeStatusForUserDict = likeStatusSnapshot.value as! [String: [String: Int]]
+            if self.question[Constants.QuestionFields.questionID] as! String == likeStatusSnapshot.key {
+                for (key, value) in likeStatusForUserDict {
+                    if key == FirebaseConfigManager.sharedInstance.currentUser?.uid {
+                        print("\(FirebaseConfigManager.sharedInstance.currentUser?.displayName): \(key)")
+                        let likeStatusForUser = value
+                        let likeStatus = likeStatusForUser[Constants.LikeStatusFields.likeStatus]
+                        if likeStatus == 1 {
+                            let fullHeartImage = UIImage(named: "heart-full")
+                            self.likeButton.setBackgroundImage(fullHeartImage, forState: .Normal)
+                        } else if likeStatus == 0 {
+                            let emptyHeartImage = UIImage(named: "heart-empty")
+                            self.likeButton.setBackgroundImage(emptyHeartImage, forState: .Normal)
+                        }
+                    }
                 }
-                self.question[Constants.QuestionFields.likeCount] = likeCount
-                self.likeButtonCountLabel.text = String(likeCount)
             }
         })
         //retrieve photoURL and displayName from Firebase
@@ -68,10 +81,18 @@ class QuestionCell: UITableViewCell {
             if self.question[Constants.QuestionFields.userID] as! String == userSnapshot.key {
                 let photoURL = user[Constants.UserFields.photoUrl] as! String
                 let displayName = user[Constants.UserFields.displayName] as! String
+                if let photoDownloadURL = user[Constants.UserFields.photoDownloadURL] {
+                    self.question[Constants.QuestionFields.photoDownloadURL] = photoDownloadURL
+                }
                 self.question[Constants.QuestionFields.photoUrl] = photoURL
                 self.question[Constants.QuestionFields.displayName] = displayName
                 self.displayNameLabel.text = displayName
-                if let photoUrl = self.question[Constants.QuestionFields.photoUrl] {
+                
+                if let photoDownloadURL = self.question[Constants.QuestionFields.photoDownloadURL] as! String? {
+                    let url = NSURL(string: photoDownloadURL)
+                    print("photoDownloadURL exists for \(displayName)")
+                    self.profilePhotoImageButton.kf_setBackgroundImageWithURL(url, forState: .Normal, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"))
+                } else if let photoUrl = self.question[Constants.QuestionFields.photoUrl] {
                     FIRStorage.storage().referenceForURL(photoUrl as! String).dataWithMaxSize(INT64_MAX) { (data, error) in
                         self.profilePhotoImageButton.setBackgroundImage(nil, forState: .Normal)
                         if error != nil {

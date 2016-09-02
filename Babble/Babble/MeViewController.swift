@@ -10,7 +10,7 @@
 
 import UIKit
 import Firebase
-import SDWebImage
+//import SDWebImage
 
 //MARK:
 //MARK: - MeViewController Class
@@ -64,8 +64,9 @@ class MeViewController: UITableViewController {
             self.imageView.image = profileImage
         } else {
             let url = NSURL(string: AppState.sharedInstance.photoUrlString)
-            print("Photo URL: \(url?.absoluteString)")
-            self.imageView.sd_setImageWithURL(url, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"))
+            //
+            //self.imageView.sd_setImageWithURL(url, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"))
+            //
         }
     }
     

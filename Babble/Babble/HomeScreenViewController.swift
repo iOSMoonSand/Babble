@@ -85,18 +85,18 @@ class HomeScreenViewController: UIViewController {
     @IBAction func didTapPostAddQuestion(segue:UIStoryboardSegue) {
         //Unwind segue from AddQuestion to HomeScreen
         //Identifier: PostNewQuestionToHome
-        let data = [Constants.QuestionFields.text: newQuestion! as String]
+        let data = [Constants.QuestionFields.text: self.newQuestion! as String]
         postQuestion(data)
     }
     
     func postQuestion(data: [String: AnyObject]) {
         var questionDataDict = data
-        let currentUserID = FirebaseConfigManager.sharedInstance.currentUser?.uid
+        guard let currentUserID = FirebaseConfigManager.sharedInstance.currentUser?.uid else { return }
         questionDataDict[Constants.QuestionFields.userID] = currentUserID
         let key = FirebaseConfigManager.sharedInstance.ref.child("questions").childByAutoId().key
         let childUpdates = ["questions/\(key)": questionDataDict,
                             "likeCounts/\(key)/likeCount": 0,
-                            "likeCounts/\(key)/likeStatus": 1]
+                            "likeStatuses/\(key)/\(currentUserID)/likeStatus": 0]
         FirebaseConfigManager.sharedInstance.ref.updateChildValues(childUpdates as! [String : AnyObject])
     }
     // MARK:
@@ -151,21 +151,28 @@ extension HomeScreenViewController: QuestionCellDelegate {
     func handleLikeButtonTapOn(row: Int) {
         let question = self.questionsArray[row]
         let questionID = question[Constants.QuestionFields.questionID] as! String
+        let userID = question[Constants.QuestionFields.userID] as! String
         //increment question likeCount
         FirebaseConfigManager.sharedInstance.ref.child("likeCounts").child(questionID).observeSingleEventOfType(.Value, withBlock: { (likeCountSnapshot) in
-            let likeCountDict = likeCountSnapshot.value as! [String: Int]
-            guard let currentLikeCount = likeCountDict[Constants.LikeCountFields.likeCount] else { return }
-            guard let currentLikeStatus = likeCountDict[Constants.LikeCountFields.likeStatus] else { return }
+            let likeCountDict = likeCountSnapshot.value as! [String: AnyObject]
+            guard let currentLikeCount = likeCountDict[Constants.LikeCountFields.likeCount] as! Int? else { return }
             
-            if currentLikeStatus == 0 {
-                let decrementedLikeCount = (currentLikeCount) - 1
-                FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(questionID)/likeCount").setValue(decrementedLikeCount)
-                FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(questionID)/likeStatus").setValue(1)
-            } else if currentLikeStatus == 1 {
-                let incrementedLikeCount = (currentLikeCount) + 1
-                FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(questionID)/likeCount").setValue(incrementedLikeCount)
-                FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(questionID)/likeStatus").setValue(0)
-            }
+            guard let currentUserID = FirebaseConfigManager.sharedInstance.currentUser?.uid else { return }
+            
+            FirebaseConfigManager.sharedInstance.ref.child("likeStatuses").child(questionID).child(currentUserID).observeSingleEventOfType(.Value, withBlock: {
+                (likeStatusSnapshot) in
+                let likeStatusDict = likeStatusSnapshot.value as! [String: Int]
+                guard let likeStatus = likeStatusDict[Constants.LikeStatusFields.likeStatus] else { return }
+                if likeStatus == 0 {
+                    let incrementedLikeCount = (currentLikeCount) + 1
+                    FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(questionID)/likeCount").setValue(incrementedLikeCount)
+                    FirebaseConfigManager.sharedInstance.ref.child("likeStatuses/\(questionID)/\(currentUserID)/likeStatus").setValue(1)
+                } else if likeStatus == 1 {
+                    let decrementedLikeCount = (currentLikeCount) - 1
+                    FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(questionID)/likeCount").setValue(decrementedLikeCount)
+                    FirebaseConfigManager.sharedInstance.ref.child("likeStatuses/\(questionID)/\(currentUserID)/likeStatus").setValue(0)
+                }
+                })
         })
     }
 }

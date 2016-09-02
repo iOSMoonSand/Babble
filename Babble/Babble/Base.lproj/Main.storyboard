@@ -222,10 +222,10 @@
             </objects>
             <point key="canvasLocation" x="2217" y="30"/>
         </scene>
-        <!--Add Question-->
+        <!--Add Question View Controller-->
         <scene sceneID="ttX-UU-QUB">
             <objects>
-                <viewController id="XnU-6P-37U" customClass="AddQuestionViewController" customModule="Babble" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Add Question View Controller" id="XnU-6P-37U" customClass="AddQuestionViewController" customModule="Babble" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="HQT-8z-iGa"/>
                         <viewControllerLayoutGuide type="bottom" id="nNu-ky-7Hr"/>
@@ -282,10 +282,10 @@
             </objects>
             <point key="canvasLocation" x="3787" y="30"/>
         </scene>
-        <!--Answers-->
+        <!--Answers View Controller-->
         <scene sceneID="kZt-fK-PLs">
             <objects>
-                <viewController id="poZ-ay-L4x" customClass="AnswersViewController" customModule="Babble" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Answers View Controller" id="poZ-ay-L4x" customClass="AnswersViewController" customModule="Babble" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="b3b-w9-6Ff"/>
                         <viewControllerLayoutGuide type="bottom" id="PCc-e9-ZPL"/>
@@ -423,10 +423,10 @@
             </objects>
             <point key="canvasLocation" x="3005" y="875"/>
         </scene>
-        <!--Profile Photo-->
+        <!--Profile Photo View Controller-->
         <scene sceneID="3jK-yR-Mzg">
             <objects>
-                <viewController modalTransitionStyle="flipHorizontal" id="tIN-zK-ffY" customClass="ProfilePhotoViewController" sceneMemberID="viewController">
+                <viewController title="Profile Photo View Controller" modalTransitionStyle="flipHorizontal" id="tIN-zK-ffY" customClass="ProfilePhotoViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="pbV-Bd-1nh"/>
                         <viewControllerLayoutGuide type="bottom" id="fDA-dJ-BPZ"/>
@@ -470,10 +470,10 @@
             </objects>
             <point key="canvasLocation" x="2979" y="2470"/>
         </scene>
-        <!--Home-->
+        <!--Home Screen Nav Controller-->
         <scene sceneID="8Pp-gF-lBE">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="3SC-o7-hNK" sceneMemberID="viewController">
+                <navigationController title="Home Screen Nav Controller" automaticallyAdjustsScrollViewInsets="NO" id="3SC-o7-hNK" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Home" id="EHK-Rg-rp1"/>
                     <toolbarItems/>
                     <keyCommands/>
@@ -600,10 +600,10 @@
             </objects>
             <point key="canvasLocation" x="3755" y="-769"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Add Question Nav Controller-->
         <scene sceneID="RI3-0a-mgi">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="tbe-LJ-qw2" sceneMemberID="viewController">
+                <navigationController title="Add Question Nav Controller" automaticallyAdjustsScrollViewInsets="NO" id="tbe-LJ-qw2" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="hTs-Ri-JJn">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -637,10 +637,10 @@
             </objects>
             <point key="canvasLocation" x="556" y="1158"/>
         </scene>
-        <!--Me-->
+        <!--Me Nav Controller-->
         <scene sceneID="bnS-rr-TYZ">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="YAS-QA-Oxe" sceneMemberID="viewController">
+                <navigationController title="Me Nav Controller" automaticallyAdjustsScrollViewInsets="NO" id="YAS-QA-Oxe" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Me" id="LKl-LW-3eW"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="RQo-ul-4Wv">
@@ -656,10 +656,10 @@
             </objects>
             <point key="canvasLocation" x="1364" y="1688"/>
         </scene>
-        <!--Me-->
+        <!--Me View Controller-->
         <scene sceneID="10M-dq-1vg">
             <objects>
-                <tableViewController id="lPD-CE-k35" customClass="MeViewController" customModule="Babble" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="Me View Controller" id="lPD-CE-k35" customClass="MeViewController" customModule="Babble" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="xf8-kE-cF7">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -754,10 +754,10 @@
             </objects>
             <point key="canvasLocation" x="2173" y="2470"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Answers Nav Controller-->
         <scene sceneID="FRj-6b-yBs">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="F5c-1Y-CZQ" sceneMemberID="viewController">
+                <navigationController title="Answers Nav Controller" automaticallyAdjustsScrollViewInsets="NO" id="F5c-1Y-CZQ" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="ozU-28-LC9">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -772,10 +772,10 @@
             </objects>
             <point key="canvasLocation" x="2217" y="875"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--User Profiles Nav Controller-->
         <scene sceneID="aL6-Uc-3TU">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="mDI-Ad-FlD" sceneMemberID="viewController">
+                <navigationController title="User Profiles Nav Controller" automaticallyAdjustsScrollViewInsets="NO" id="mDI-Ad-FlD" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="hPn-5e-wiq">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>

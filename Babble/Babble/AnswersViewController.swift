@@ -124,16 +124,16 @@ extension AnswersViewController: AnswerCellDelegate {
         FirebaseConfigManager.sharedInstance.ref.child("likeCounts").child(answerID).observeSingleEventOfType(.Value, withBlock: { (likeCountSnapshot) in
             let likeCountDict = likeCountSnapshot.value as! [String: Int]
             guard let currentLikeCount = likeCountDict[Constants.LikeCountFields.likeCount] else { return }
-            guard let currentLikeStatus = likeCountDict[Constants.LikeCountFields.likeStatus] else { return }
-            if currentLikeStatus == 0 {
-                let decrementedLikeCount = (currentLikeCount) - 1
-                FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(answerID)/likeCount").setValue(decrementedLikeCount)
-                FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(answerID)/likeStatus").setValue(1)
-            } else if currentLikeStatus == 1 {
-                let incrementedLikeCount = (currentLikeCount) + 1
-                FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(answerID)/likeCount").setValue(incrementedLikeCount)
-                FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(answerID)/likeStatus").setValue(0)
-            }
+//            guard let currentLikeStatus = likeCountDict[Constants.LikeCountFields.likeStatus] else { return }
+//            if currentLikeStatus == 0 {
+//                let decrementedLikeCount = (currentLikeCount) - 1
+//                FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(answerID)/likeCount").setValue(decrementedLikeCount)
+//                FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(answerID)/likeStatus").setValue(1)
+//            } else if currentLikeStatus == 1 {
+//                let incrementedLikeCount = (currentLikeCount) + 1
+//                FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(answerID)/likeCount").setValue(incrementedLikeCount)
+//                FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(answerID)/likeStatus").setValue(0)
+//            }
         })
     }
 }

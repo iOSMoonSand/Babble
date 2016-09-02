@@ -29,6 +29,7 @@ struct Constants {
         static let text = "text"
         static let userID = "userID"
         static let photoUrl = "photoURL"
+        static let photoDownloadURL = "photoDownloadURL"
         static let displayName = "displayName"
         static let likeCountID = "likeCountID"
         static let likeCount = "likeCount"
@@ -38,6 +39,7 @@ struct Constants {
         static let text = "text"
         static let userID = "userID"
         static let photoUrl = "photoURL"
+        static let photoDownloadURL = "photoDownloadURL"
         static let likeCount = "likeCount"
         static let displayName = "displayName"
         static let answerID = "answerID"
@@ -53,7 +55,9 @@ struct Constants {
     
     struct LikeCountFields {//each LikeCount separated by likeCountID child
         static let likeCount = "likeCount"
+    }
+    
+    struct LikeStatusFields {//each question has users who each have an individual like status
         static let likeStatus = "likeStatus"
     }
-
 }

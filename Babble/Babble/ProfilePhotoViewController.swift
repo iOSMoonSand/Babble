@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 import Photos
-import SDWebImage
+//import SDWebImage
 
 //MARK: -
 //MARK: - ProfilePhotoViewController Class
@@ -107,7 +107,7 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
                         //store the downloadURL in AppState singleton
                         //set the downloadURL as a child value for the current user
                         if let url = metadata?.downloadURL()?.absoluteString {
-                            SDImageCache.sharedImageCache().storeImage(self.selectedImage, forKey: url)
+                            //SDImageCache.sharedImageCache().storeImage(self.selectedImage, forKey: url)
                             AppState.sharedInstance.photoUrlString = url
                             if let currentUserUID = FirebaseConfigManager.sharedInstance.currentUser?.uid {
                                 FirebaseConfigManager.sharedInstance.ref.child("users/\(currentUserUID)/photoDownloadURL").setValue(url)

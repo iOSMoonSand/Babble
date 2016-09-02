@@ -3,9 +3,9 @@ use_frameworks!
 
 target "Babble" do
 	pod 'Firebase', '>= 2.5.0'
-	pod 'Firebase/Auth'
+	pod 'FirebaseAuth'
 	pod 'Firebase/Database'
 	pod 'Firebase/Storage'
 	pod 'FirebaseUI', '~> 0.4'
-	pod 'SDWebImage', '~>3.8'
+	pod 'Kingfisher', '~> 2.4'
 end

@@ -8,7 +8,8 @@
 
 import UIKit
 import Firebase
-import SDWebImage
+import Fi
+//import SDWebImage
 
 //MARK:
 //MARK: - SignInViewController Class
@@ -29,10 +30,10 @@ class SignInViewController: UIViewController {
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
-        guard let user = FirebaseConfigManager.sharedInstance.currentUser else { return }
-        self.signedIn(user)
-        let usersRef = FirebaseConfigManager.sharedInstance.ref.child("users")
-        let userID = user.uid
+        if let user = FirebaseConfigManager.sharedInstance.currentUser {
+            self.signedIn(user)
+            let usersRef = FirebaseConfigManager.sharedInstance.ref.child("users")
+            let userID = user.uid
             usersRef.child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
                 var user = userSnapshot.value as! [String: AnyObject]
                 if let photoDownloadURL = user[Constants.UserFields.photoDownloadURL] as! String? {
@@ -42,11 +43,12 @@ class SignInViewController: UIViewController {
                             return
                         }
                         let image = UIImage(data: data!)
-                        SDImageCache.sharedImageCache().storeImage(image, forKey: photoDownloadURL)
+                        //SDImageCache.sharedImageCache().storeImage(image, forKey: photoDownloadURL)
                         AppState.sharedInstance.profileImage = image
                     }
                 }
             })
+        }
     }
     // MARK:
     // MARK: - Firebase Authentication Configuration
