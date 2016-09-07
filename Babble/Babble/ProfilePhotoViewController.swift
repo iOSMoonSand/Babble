@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 import Photos
-//import SDWebImage
+import Kingfisher
 
 //MARK: -
 //MARK: - ProfilePhotoViewController Class
@@ -83,48 +83,95 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        self.selectedImage = info[UIImagePickerControllerOriginalImage] as! UIImage
-        self.fullScreenImageView.image = self.selectedImage
-        AppState.sharedInstance.profileImage = self.selectedImage
-        //
-        // if it's a photo from the library, not an image from the camera
-        //
-        if let selectedImageURL = info[UIImagePickerControllerReferenceURL] {
-            //get selected image URL
-            let assets = PHAsset.fetchAssetsWithALAssetURLs([selectedImageURL as! NSURL], options: nil)
-            let asset = assets.firstObject
-            asset?.requestContentEditingInputWithOptions(nil, completionHandler: { (contentEditingInput, info) in
-                let imageFile = contentEditingInput?.fullSizeImageURL
-                //create a new gs unique file name fir the selected photo
-                let filePath = "\(FIRAuth.auth()!.currentUser!.uid)/\(Int(NSDate.timeIntervalSinceReferenceDate() * 1000))/\(selectedImageURL.lastPathComponent!)"
-                //add the image file to the newly create filePath with completion...
-                FirebaseConfigManager.sharedInstance.storageRef.child(filePath).putFile(imageFile!, metadata: nil) { (metadata, error) in
-                    if let error = error {
-                        print("Error uploading:\(error.localizedDescription)")
-                        return
-                    } else {
-                        //store the image in cache using the downloadURL
-                        //store the downloadURL in AppState singleton
-                        //set the downloadURL as a child value for the current user
-                        if let url = metadata?.downloadURL()?.absoluteString {
-                            //SDImageCache.sharedImageCache().storeImage(self.selectedImage, forKey: url)
-                            AppState.sharedInstance.photoDownloadURL = url
-                            if let currentUserUID = FIRAuth.auth()?.currentUser?.uid {
-                                FirebaseConfigManager.sharedInstance.ref.child("users/\(currentUserUID)/photoDownloadURL").setValue(url)
-                            }
-                        }
-                        //update the current user's photoURL as well
-                        self.selectedImageURLString = FirebaseConfigManager.sharedInstance.storageRef.child((metadata?.path)!).description
-                        if let currentUserUID = FIRAuth.auth()?.currentUser?.uid {
-                            FirebaseConfigManager.sharedInstance.ref.child("users/\(currentUserUID)/photoURL").setValue(self.selectedImageURLString)
-                            //this sets the full screen image of the ProfilePhotoVC
-                            self.setSelectedImageAsProfileImageView()
-                        }
-                    }
+        
+        guard let image: UIImage = info[UIImagePickerControllerOriginalImage] as! UIImage else { return }
+        self.fullScreenImageView.image = image
+        AppState.sharedInstance.profileImage = image
+        let profileImageName = "profileImageName.png"
+        let imageData = UIImagePNGRepresentation(image)!
+        let filePath = "\(FIRAuth.auth()!.currentUser!.uid)/\(Int(NSDate.timeIntervalSinceReferenceDate() * 1000))"
+        
+        let photoStorageRef = FirebaseConfigManager.sharedInstance.storageRef.child(filePath)
+        let photoRef = photoStorageRef.child("\(profileImageName)")
+        
+        let metadata = FIRStorageMetadata()
+        metadata.contentType = "image/png"
+        
+        photoRef.putData(imageData, metadata: metadata) { metadata, error in
+            if let error = error {
+                print("Error uploading:\(error.localizedDescription)")
+                return
+            } else {
+                guard let downloadURL = metadata!.downloadURL() else { return }
+                guard let downloadURLString = metadata!.downloadURL()?.absoluteString else { return }
+                self.fullScreenImageView.kf_setImageWithURL(downloadURL, placeholderImage: nil, optionsInfo: nil)
+                AppState.sharedInstance.photoDownloadURL = downloadURLString
+                
+                if let currentUserUID = FIRAuth.auth()?.currentUser?.uid {
+                    FirebaseConfigManager.sharedInstance.ref.child("users/\(currentUserUID)/photoDownloadURL").setValue(downloadURLString)
                 }
-                //once completion ends, the imageFile is in gs
-            })
+                
+                let prefetchPhotoDownloadURL = [downloadURLString].map { NSURL(string: $0)! }
+                let prefetcher = ImagePrefetcher(urls: prefetchPhotoDownloadURL, optionsInfo: nil, progressBlock: nil, completionHandler: {
+                    (skippedResources, failedResources, completedResources) -> () in
+                    print("These resources are prefetched: \(completedResources)")
+                })
+                prefetcher.start()
+                
+                
+            }
         }
+        
+        
+        
+//        self.selectedImage = info[UIImagePickerControllerOriginalImage] as! UIImage
+//        self.fullScreenImageView.image = self.selectedImage
+//        AppState.sharedInstance.profileImage = self.selectedImage
+//        //
+//        // if it's a photo from the library, not an image from the camera
+//        //
+//        
+//        if let selectedImageURL = info[UIImagePickerControllerReferenceURL] {
+//            //get selected image URL
+//            let assets = PHAsset.fetchAssetsWithALAssetURLs([selectedImageURL as! NSURL], options: nil)
+//            let asset = assets.firstObject
+//            asset?.requestContentEditingInputWithOptions(nil, completionHandler: { (contentEditingInput, info) in
+//                
+//                
+//                let imageFile = contentEditingInput?.fullSizeImageURL
+//                
+//                //create a new gs unique file name fir the selected photo
+//                let filePath = "\(FIRAuth.auth()!.currentUser!.uid)/\(Int(NSDate.timeIntervalSinceReferenceDate() * 1000))/\(selectedImageURL.lastPathComponent!)"
+//                //add the image file to the newly create filePath with completion...
+//                FirebaseConfigManager.sharedInstance.storageRef.child(filePath).putFile(imageFile!, metadata: nil) { (metadata, error) in
+//                    if let error = error {
+//                        print("Error uploading:\(error.localizedDescription)")
+//                        return
+        
+        
+//                    } else {
+//                        //store the image in cache using the downloadURL
+//                        //store the downloadURL in AppState singleton
+//                        //set the downloadURL as a child value for the current user
+//                        if let url = metadata?.downloadURL()?.absoluteString {
+//                            //SDImageCache.sharedImageCache().storeImage(self.selectedImage, forKey: url)
+//                            AppState.sharedInstance.photoDownloadURL = url
+//                            if let currentUserUID = FIRAuth.auth()?.currentUser?.uid {
+//                                FirebaseConfigManager.sharedInstance.ref.child("users/\(currentUserUID)/photoDownloadURL").setValue(url)
+//                            }
+//                        }
+//                        //update the current user's photoURL as well
+//                        self.selectedImageURLString = FirebaseConfigManager.sharedInstance.storageRef.child((metadata?.path)!).description
+//                        if let currentUserUID = FIRAuth.auth()?.currentUser?.uid {
+//                            FirebaseConfigManager.sharedInstance.ref.child("users/\(currentUserUID)/photoURL").setValue(self.selectedImageURLString)
+//                            //this sets the full screen image of the ProfilePhotoVC
+//                            self.setSelectedImageAsProfileImageView()
+//                        }
+//                    }
+//                }
+//                //once completion ends, the imageFile is in gs
+//            })
+//        }
         dismissViewControllerAnimated(true, completion: nil)
     }
     

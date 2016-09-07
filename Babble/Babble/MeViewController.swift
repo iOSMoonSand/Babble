@@ -64,7 +64,7 @@ class MeViewController: UITableViewController {
             self.imageView.image = profileImage
         } else {
             guard let photoDownloadURL = AppState.sharedInstance.photoDownloadURL else { return }
-            imageView.kf_setImageWithURL(NSURL(string: photoDownloadURL)!,
+            self.imageView.kf_setImageWithURL(NSURL(string: photoDownloadURL)!,
                                          placeholderImage: nil,
                                          optionsInfo: nil)
         }

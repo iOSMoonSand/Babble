@@ -14,7 +14,6 @@ class ProfileImageManager {
     static let profileImageName = "profileImageName"
     var localImagePath: String?
     
-    //add methods for saving and loading image
     func getDocumentsURL() -> NSURL {
         let documentsURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0]
         return documentsURL
