@@ -8,4 +8,5 @@ target "Babble" do
 	pod 'Firebase/Storage'
 	pod 'FirebaseUI', '~> 0.4'
 	pod 'Kingfisher', '~> 2.4'
+	pod 'FirebaseAuth'
 end

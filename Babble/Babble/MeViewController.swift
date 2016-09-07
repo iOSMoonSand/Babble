@@ -29,7 +29,7 @@ class MeViewController: UITableViewController {
     //MARK:
     override func viewDidLoad() {
         textView.delegate = self
-        guard let userID = FirebaseConfigManager.sharedInstance.currentUser?.uid else { return }
+        guard let userID = FIRAuth.auth()?.currentUser?.uid else { return }
         let usersRef = FirebaseConfigManager.sharedInstance.ref.child("users")
         usersRef.child(userID).observeSingleEventOfType(.Value, withBlock: { [weak self] (userSnapshot) in
             guard let user = userSnapshot.value as? [String: AnyObject] else { return }
@@ -63,10 +63,10 @@ class MeViewController: UITableViewController {
         if let profileImage = AppState.sharedInstance.profileImage {
             self.imageView.image = profileImage
         } else {
-            let url = NSURL(string: AppState.sharedInstance.photoUrlString)
-            //
-            //self.imageView.sd_setImageWithURL(url, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"))
-            //
+            guard let photoDownloadURL = AppState.sharedInstance.photoDownloadURL else { return }
+            imageView.kf_setImageWithURL(NSURL(string: photoDownloadURL)!,
+                                         placeholderImage: nil,
+                                         optionsInfo: nil)
         }
     }
     
@@ -104,7 +104,7 @@ extension MeViewController: UITextViewDelegate {
         self.tableView.allowsSelection = true
         self.view.removeGestureRecognizer(tapOutsideTextView)
         let userBioText = self.textView.text
-        guard let userID = FirebaseConfigManager.sharedInstance.currentUser?.uid else { return }
+        guard let userID = FIRAuth.auth()?.currentUser?.uid else { return }
         FirebaseConfigManager.sharedInstance.ref.child("users/\(userID)/userBio").setValue(userBioText)
     }
 }

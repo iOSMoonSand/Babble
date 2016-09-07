@@ -108,14 +108,14 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
                         //set the downloadURL as a child value for the current user
                         if let url = metadata?.downloadURL()?.absoluteString {
                             //SDImageCache.sharedImageCache().storeImage(self.selectedImage, forKey: url)
-                            AppState.sharedInstance.photoUrlString = url
-                            if let currentUserUID = FirebaseConfigManager.sharedInstance.currentUser?.uid {
+                            AppState.sharedInstance.photoDownloadURL = url
+                            if let currentUserUID = FIRAuth.auth()?.currentUser?.uid {
                                 FirebaseConfigManager.sharedInstance.ref.child("users/\(currentUserUID)/photoDownloadURL").setValue(url)
                             }
                         }
                         //update the current user's photoURL as well
                         self.selectedImageURLString = FirebaseConfigManager.sharedInstance.storageRef.child((metadata?.path)!).description
-                        if let currentUserUID = FirebaseConfigManager.sharedInstance.currentUser?.uid {
+                        if let currentUserUID = FIRAuth.auth()?.currentUser?.uid {
                             FirebaseConfigManager.sharedInstance.ref.child("users/\(currentUserUID)/photoURL").setValue(self.selectedImageURLString)
                             //this sets the full screen image of the ProfilePhotoVC
                             self.setSelectedImageAsProfileImageView()

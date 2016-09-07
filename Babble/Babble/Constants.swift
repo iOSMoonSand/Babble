@@ -21,7 +21,8 @@ struct Constants {
         static let PostNewQuestionToHome = "PostNewQuestionToHome"
         static let MyProfileToProfilePhoto = "MyProfileToProfilePhoto"
         static let ProfilePhotoToMyProfile = "ProfilePhotoToMyProfile"
-        static let HomeToProfile = "HomeToProfile"
+        static let HomeToProfiles = "HomeToProfiles"
+        static let AnswersToProfiles = "AnswersToProfiles"
     }
     
     struct QuestionFields {

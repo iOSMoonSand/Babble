@@ -31,6 +31,21 @@ class AnswersViewController: UIViewController {
         self.retrieveAnswerData()
     }
     
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        if segue.identifier == Constants.Segues.AnswersToProfiles {
+            guard let selectedIndexRow = selectedIndexRow else { return }
+            var answer: [String : AnyObject] = self.answersArray[selectedIndexRow]
+            let userID = answer[Constants.QuestionFields.userID]
+            guard let nav = segue.destinationViewController as? UINavigationController else { return }
+            guard let UserProfilesVC = nav.topViewController as? AnswersToProfilesViewController else { return }
+            UserProfilesVC.userIDRef = userID as? String
+            guard let destinationVC = segue.destinationViewController as? AnswersToProfilesViewController else { return }
+            destinationVC.userIDRef = userID as? String
+        }
+    }
+
+    
     deinit {
         FirebaseConfigManager.sharedInstance.ref.child("answers").child(questionRef!).removeObserverWithHandle(_refHandle)
     }
@@ -51,6 +66,9 @@ class AnswersViewController: UIViewController {
                     self.answersArray.append(answer)
                 }
             }
+            self.answersArray.sortInPlace {
+                (($0 as [String: AnyObject])["likeCount"] as? Int) > (($1 as [String: AnyObject])["likeCount"] as? Int)
+            }
             self.tableView.reloadData()
         })
     }
@@ -59,6 +77,12 @@ class AnswersViewController: UIViewController {
     // MARK:
     @IBAction func didTapSendAnswerButton(sender: UIButton) {
         textFieldShouldReturn(self.textField)
+    }
+    // MARK:
+    // MARK: - Unwind Segues
+    // MARK:
+    @IBAction func didTapBackProfilesToAnswers(segue:UIStoryboardSegue) {
+        //From UserProfiles to Answers
     }
 }
 // MARK:
@@ -96,7 +120,7 @@ extension AnswersViewController: UITextFieldDelegate {
     
     func sendAnswer(data: [String: String]) {
         var answerDataDict = data
-        let currentUserID = FirebaseConfigManager.sharedInstance.currentUser?.uid
+        let currentUserID = FIRAuth.auth()?.currentUser?.uid
         answerDataDict[Constants.AnswerFields.userID] = currentUserID
         let key = FirebaseConfigManager.sharedInstance.ref.child("answers").child(questionRef!).childByAutoId().key
         let childUpdates = ["questions/\(key)": answerDataDict,
@@ -113,8 +137,8 @@ extension AnswersViewController: AnswerCellDelegate {
     //MARK: - AnswerCellDelegate Methods
     //MARK:
     func handleProfileImageButtonTapOn(row: Int) {
-//        self.selectedIndexRow = row
-//        performSegueWithIdentifier(Constants.Segues., sender: self)
+        self.selectedIndexRow = row
+        performSegueWithIdentifier(Constants.Segues.AnswersToProfiles, sender: self)
     }
     
     func handleLikeButtonTapOn(row: Int) {
@@ -122,18 +146,23 @@ extension AnswersViewController: AnswerCellDelegate {
         let answerID = answer[Constants.AnswerFields.answerID] as! String
         //increment question likeCount
         FirebaseConfigManager.sharedInstance.ref.child("likeCounts").child(answerID).observeSingleEventOfType(.Value, withBlock: { (likeCountSnapshot) in
-            let likeCountDict = likeCountSnapshot.value as! [String: Int]
-            guard let currentLikeCount = likeCountDict[Constants.LikeCountFields.likeCount] else { return }
-//            guard let currentLikeStatus = likeCountDict[Constants.LikeCountFields.likeStatus] else { return }
-//            if currentLikeStatus == 0 {
-//                let decrementedLikeCount = (currentLikeCount) - 1
-//                FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(answerID)/likeCount").setValue(decrementedLikeCount)
-//                FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(answerID)/likeStatus").setValue(1)
-//            } else if currentLikeStatus == 1 {
-//                let incrementedLikeCount = (currentLikeCount) + 1
-//                FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(answerID)/likeCount").setValue(incrementedLikeCount)
-//                FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(answerID)/likeStatus").setValue(0)
-//            }
+            let likeCountDict = likeCountSnapshot.value as! [String: AnyObject]
+            guard let currentLikeCount = likeCountDict[Constants.LikeCountFields.likeCount] as! Int? else { return }
+            guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
+            FirebaseConfigManager.sharedInstance.ref.child("likeStatuses").child(answerID).child(currentUserID).observeSingleEventOfType(.Value, withBlock: {
+                (likeStatusSnapshot) in
+                let likeStatusDict = likeStatusSnapshot.value as! [String: Int]
+                guard let likeStatus = likeStatusDict[Constants.LikeStatusFields.likeStatus] else { return }
+                if likeStatus == 0 {
+                    let incrementedLikeCount = (currentLikeCount) + 1
+                    FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(answerID)/likeCount").setValue(incrementedLikeCount)
+                    FirebaseConfigManager.sharedInstance.ref.child("likeStatuses/\(answerID)/\(currentUserID)/likeStatus").setValue(1)
+                } else if likeStatus == 1 {
+                    let decrementedLikeCount = (currentLikeCount) - 1
+                    FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(answerID)/likeCount").setValue(decrementedLikeCount)
+                    FirebaseConfigManager.sharedInstance.ref.child("likeStatuses/\(answerID)/\(currentUserID)/likeStatus").setValue(0)
+                }
+            })
         })
     }
 }

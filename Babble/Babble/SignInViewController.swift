@@ -8,7 +8,7 @@
 
 import UIKit
 import Firebase
-//import SDWebImage
+import Kingfisher
 
 //MARK:
 //MARK: - SignInViewController Class
@@ -22,42 +22,39 @@ class SignInViewController: UIViewController {
     //MARK:
     //MARK: - UIViewController Methods
     //MARK:
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        //TODO: navigationItem.hidesBackButton = true
-    }
-    
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
-        guard let user = FirebaseConfigManager.sharedInstance.currentUser else { return }
-        self.signedIn(user)
-        let usersRef = FirebaseConfigManager.sharedInstance.ref.child("users")
-        let userID = user.uid
-        usersRef.child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
-            var user = userSnapshot.value as! [String: AnyObject]
-            if let photoDownloadURL = user[Constants.UserFields.photoDownloadURL] as! String? {
-                FIRStorage.storage().referenceForURL(photoDownloadURL).dataWithMaxSize(INT64_MAX) { (data, error) in
-                    if let error = error {
-                        print("Error downloading: \(error)")
-                        return
-                    }
-                    let image = UIImage(data: data!)
-                    //SDImageCache.sharedImageCache().storeImage(image, forKey: photoDownloadURL)
-                    AppState.sharedInstance.profileImage = image
-                }
-            }
-        })
+        if let user = FIRAuth.auth()?.currentUser {
+            self.signedIn(user)
+        }
     }
     // MARK:
     // MARK: - Firebase Authentication Configuration
     // MARK:
     func signedIn(user: FIRUser?) {
+        
         //<FIRUserInfo> protocol provides user data to FIRUser
         AppState.sharedInstance.displayName = user?.displayName ?? user?.email
-        //AppState.sharedInstance.photoUrlString = user?.photoURL
         AppState.sharedInstance.signedIn = true
         
-        NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.SignedIn, object: nil, userInfo: nil)
+        let usersRef = FirebaseConfigManager.sharedInstance.ref.child("users")
+        let userID = user!.uid
+        usersRef.child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
+            var user = userSnapshot.value as! [String: AnyObject]
+            if let photoDownloadURL = user[Constants.UserFields.photoDownloadURL] as! String? {
+                AppState.sharedInstance.photoDownloadURL = photoDownloadURL
+                AppState.sharedInstance.profileImage = nil
+                let prefetchPhotoDownloadURL = [photoDownloadURL].map { NSURL(string: $0)! }
+                let prefetcher = ImagePrefetcher(urls: prefetchPhotoDownloadURL, optionsInfo: nil, progressBlock: nil, completionHandler: {
+                    (skippedResources, failedResources, completedResources) -> () in
+                    print("These resources are prefetched: \(completedResources)")
+                })
+                prefetcher.start()
+            }
+            
+        })
+        
+        //NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.SignedIn, object: nil, userInfo: nil)
         performSegueWithIdentifier(Constants.Segues.SignInToHome, sender: nil)
     }
     // MARK:
@@ -101,15 +98,15 @@ class SignInViewController: UIViewController {
             let placeholderPhotoRefString = "gs://babble-8b668.appspot.com/" + placeholderPhotoRef.fullPath ?? ""
             let userDataDict = [Constants.UserFields.photoUrl: placeholderPhotoRefString]
             self?.createUserData(userDataDict)
-            self?.signedIn(FirebaseConfigManager.sharedInstance.currentUser)
+            self?.signedIn(FIRAuth.auth()?.currentUser)
         }
     }
     
     func createUserData(data: [String: String]) {
         var userDataDict = data
-        let displayName = FirebaseConfigManager.sharedInstance.currentUser?.displayName
+        let displayName = FIRAuth.auth()?.currentUser?.displayName
         userDataDict[Constants.UserFields.displayName] = displayName
-        if let currentUserUID = FirebaseConfigManager.sharedInstance.currentUser?.uid {
+        if let currentUserUID = FIRAuth.auth()?.currentUser?.uid {
             FirebaseConfigManager.sharedInstance.ref.child("users").child(currentUserUID).setValue(userDataDict)
         }
     }
@@ -135,14 +132,14 @@ class SignInViewController: UIViewController {
         presentViewController(prompt, animated: true, completion: nil);
     }
     
-    @IBAction func didTapSignOutHomeScreen(segue:UIStoryboardSegue) {
-        let firebaseAuth = FIRAuth.auth()
-        do {
-            try firebaseAuth?.signOut()
-            AppState.sharedInstance.signedIn = false
-        } catch let signOutError as NSError {
-            print ("Error signing out: \(signOutError)")
-        }
-    }
+    //    @IBAction func didTapSignOutHomeScreen(segue:UIStoryboardSegue) {
+    //        let firebaseAuth = FIRAuth.auth()
+    //        do {
+    //            try firebaseAuth?.signOut()
+    //            AppState.sharedInstance.signedIn = false
+    //        } catch let signOutError as NSError {
+    //            print ("Error signing out: \(signOutError)")
+    //        }
+    //    }
     
 }

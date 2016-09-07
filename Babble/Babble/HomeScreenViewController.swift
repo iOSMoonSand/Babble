@@ -47,14 +47,14 @@ class HomeScreenViewController: UIViewController {
             destinationVC.questionRef = questionID as? String
         }
         
-        if segue.identifier == Constants.Segues.HomeToProfile {
+        if segue.identifier == Constants.Segues.HomeToProfiles {
             guard let selectedIndexRow = selectedIndexRow else { return }
             var question: [String : AnyObject] = self.questionsArray[selectedIndexRow]
             let userID = question[Constants.QuestionFields.userID]
             guard let nav = segue.destinationViewController as? UINavigationController else { return }
-            guard let UserProfilesVC = nav.topViewController as? UserProfilesViewController else { return }
+            guard let UserProfilesVC = nav.topViewController as? HomeToProfilesViewController else { return }
             UserProfilesVC.userIDRef = userID as? String
-            guard let destinationVC = segue.destinationViewController as? UserProfilesViewController else { return }
+            guard let destinationVC = segue.destinationViewController as? HomeToProfilesViewController else { return }
             destinationVC.userIDRef = userID as? String
         }
     }
@@ -91,13 +91,28 @@ class HomeScreenViewController: UIViewController {
     
     func postQuestion(data: [String: AnyObject]) {
         var questionDataDict = data
-        guard let currentUserID = FirebaseConfigManager.sharedInstance.currentUser?.uid else { return }
+        guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
         questionDataDict[Constants.QuestionFields.userID] = currentUserID
         let key = FirebaseConfigManager.sharedInstance.ref.child("questions").childByAutoId().key
         let childUpdates = ["questions/\(key)": questionDataDict,
                             "likeCounts/\(key)/likeCount": 0,
                             "likeStatuses/\(key)/\(currentUserID)/likeStatus": 0]
         FirebaseConfigManager.sharedInstance.ref.updateChildValues(childUpdates as! [String : AnyObject])
+    }
+    
+    
+    @IBAction func didTapSignOut(sender: UIBarButtonItem) {
+        print("sign out button tapped")
+        let firebaseAuth = FIRAuth.auth()
+        do {
+            try firebaseAuth!.signOut()
+            AppState.sharedInstance.signedIn = false
+            dismissViewControllerAnimated(true, completion: nil)
+        } catch let signOutError as NSError {
+            print ("Error signing out: \(signOutError)")
+        } catch {
+            print("Bundexy says: An unknown error was caught.")
+        }
     }
     // MARK:
     // MARK: - Unwind Segues
@@ -108,7 +123,7 @@ class HomeScreenViewController: UIViewController {
     @IBAction func didTapCancelAddQuestion(segue:UIStoryboardSegue) {
         //From AddQuestion to HomeScreen
     }
-    @IBAction func didTapBackProfiles(segue:UIStoryboardSegue) {
+    @IBAction func didTapBackProfilesToHome(segue:UIStoryboardSegue) {
         //From UserProfiles to HomeScreen
     }
 }
@@ -145,26 +160,24 @@ extension HomeScreenViewController: QuestionCellDelegate {
     //MARK:
     func handleProfileImageButtonTapOn(row: Int) {
         self.selectedIndexRow = row
-        performSegueWithIdentifier(Constants.Segues.HomeToProfile, sender: self)
+        performSegueWithIdentifier(Constants.Segues.HomeToProfiles, sender: self)
     }
     
     func handleLikeButtonTapOn(row: Int) {
         let question = self.questionsArray[row]
         let questionID = question[Constants.QuestionFields.questionID] as! String
-        let userID = question[Constants.QuestionFields.userID] as! String
         //increment question likeCount
         FirebaseConfigManager.sharedInstance.ref.child("likeCounts").child(questionID).observeSingleEventOfType(.Value, withBlock: { (likeCountSnapshot) in
             let likeCountDict = likeCountSnapshot.value as! [String: AnyObject]
             guard let currentLikeCount = likeCountDict[Constants.LikeCountFields.likeCount] as! Int? else { return }
-            
-            guard let currentUserID = FirebaseConfigManager.sharedInstance.currentUser?.uid else { return }
-            
+            guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
             FirebaseConfigManager.sharedInstance.ref.child("likeStatuses").child(questionID).child(currentUserID).observeSingleEventOfType(.Value, withBlock: {
                 (likeStatusSnapshot) in
                 let likeStatusDict = likeStatusSnapshot.value as! [String: Int]
                 guard let likeStatus = likeStatusDict[Constants.LikeStatusFields.likeStatus] else { return }
                 if likeStatus == 0 {
                     let incrementedLikeCount = (currentLikeCount) + 1
+                    print("\(incrementedLikeCount + 1)")
                     FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(questionID)/likeCount").setValue(incrementedLikeCount)
                     FirebaseConfigManager.sharedInstance.ref.child("likeStatuses/\(questionID)/\(currentUserID)/likeStatus").setValue(1)
                 } else if likeStatus == 1 {

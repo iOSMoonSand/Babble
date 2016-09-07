@@ -1,8 +1,8 @@
 //
-//  UserProfilesViewController.swift
+//  HomeToProfilesViewController.swift
 //  Babble
 //
-//  Created by Alexis Schreier on 08/22/16.
+//  Created by Alexis Schreier on 09/06/16.
 //  Copyright © 2016 Alexis Schreier. All rights reserved.
 //
 
@@ -10,9 +10,9 @@ import UIKit
 import Firebase
 
 //MARK:
-//MARK: - UserProfilesViewController Class
+//MARK: - HomeToProfilesViewController Class
 //MARK:
-class UserProfilesViewController: UITableViewController {
+class HomeToProfilesViewController: UITableViewController {
     //MARK:
     //MARK: - Attributes
     //MARK:
@@ -37,18 +37,31 @@ class UserProfilesViewController: UITableViewController {
         FirebaseConfigManager.sharedInstance.ref.child("users").child(userID).observeEventType(.Value, withBlock: { userSnapshot in
             guard let user = userSnapshot.value as? [String: AnyObject] else { return }
             let userBio = user[Constants.UserFields.userBio] as! String
-            let photoURL = user[Constants.UserFields.photoUrl] as! String
-            
-            self.userProfileTextView.text = userBio
-            
-            FIRStorage.storage().referenceForURL(photoURL).dataWithMaxSize(INT64_MAX) { (data, error) in
-                if let error = error {
-                    print("Error downloading: \(error)")
-                    return
+            if let photoDownloadURL = user[Constants.UserFields.photoDownloadURL] as! String? {
+                self.userProfileImageView.kf_setImageWithURL(NSURL(string: photoDownloadURL), placeholderImage: nil, optionsInfo: nil)
+            } else if let photoURL = user[Constants.UserFields.photoUrl] as! String? {
+                FIRStorage.storage().referenceForURL(photoURL).dataWithMaxSize(INT64_MAX) { (data, error) in
+                    if let error = error {
+                        print("Error downloading: \(error)")
+                        return
+                    }
+                    self.userProfileImageView.image = UIImage(data: data!)
                 }
-                self.userProfileImageView.image = UIImage(data: data!)
             }
+            self.userProfileTextView.text = userBio
         })
-    }
     
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+

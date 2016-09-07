@@ -87,6 +87,7 @@ DEPENDENCIES:
   - Firebase/Auth
   - Firebase/Database
   - Firebase/Storage
+  - FirebaseAuth
   - FirebaseUI (~> 0.4)
   - Kingfisher (~> 2.4)
 
@@ -111,6 +112,6 @@ SPEC CHECKSUMS:
   GoogleUtilities: 56c5ac05b7aa5dc417a1bb85221a9516e04d7032
   Kingfisher: d467bd710907ec9aa94aaddecaa5390aa3559819
 
-PODFILE CHECKSUM: 9adecce8e94ecf9ed2dbb4147c93bed4e21f475e
+PODFILE CHECKSUM: 3ff47f92cbed3f20b86ac821769912bfd8e7f873
 
 COCOAPODS: 1.0.0

@@ -11,8 +11,6 @@ import Firebase
 
 class FirebaseConfigManager {
     static let sharedInstance = FirebaseConfigManager()
-    
     var ref: FIRDatabaseReference! = FIRDatabase.database().reference()
     var storageRef: FIRStorageReference! = FIRStorage.storage().referenceForURL("gs://babble-8b668.appspot.com/")
-    var currentUser: FIRUser? = FIRAuth.auth()?.currentUser
 }

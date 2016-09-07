@@ -57,11 +57,11 @@ class QuestionCell: UITableViewCell {
         })
         //retrieve or create likeStatus from/in Firebase
         FirebaseConfigManager.sharedInstance.ref.child("likeStatuses").child(questionID).observeEventType(.Value, withBlock: { (likeStatusSnapshot) in
-            let likeStatusForUserDict = likeStatusSnapshot.value as! [String: [String: Int]]
+            let likeStatusForUsersDict = likeStatusSnapshot.value as! [String: [String: Int]]
             if self.question[Constants.QuestionFields.questionID] as! String == likeStatusSnapshot.key {
-                for (key, value) in likeStatusForUserDict {
-                    if key == FirebaseConfigManager.sharedInstance.currentUser?.uid {
-                        print("\(FirebaseConfigManager.sharedInstance.currentUser?.displayName): \(key)")
+                guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
+                for (key, value) in likeStatusForUsersDict {
+                    if key == FIRAuth.auth()?.currentUser?.uid {
                         let likeStatusForUser = value
                         let likeStatus = likeStatusForUser[Constants.LikeStatusFields.likeStatus]
                         if likeStatus == 1 {
@@ -71,6 +71,12 @@ class QuestionCell: UITableViewCell {
                             let emptyHeartImage = UIImage(named: "heart-empty")
                             self.likeButton.setBackgroundImage(emptyHeartImage, forState: .Normal)
                         }
+                    }
+                    if likeStatusForUsersDict[currentUserID] == nil {
+                        let currentAnswerID = self.question[Constants.QuestionFields.questionID] as! String
+                        FirebaseConfigManager.sharedInstance.ref.child("likeStatuses/\(currentAnswerID)/\(currentUserID)/likeStatus").setValue(0)
+                        let emptyHeartImage = UIImage(named: "heart-empty")
+                        self.likeButton.setBackgroundImage(emptyHeartImage, forState: .Normal)
                     }
                 }
             }
@@ -90,7 +96,6 @@ class QuestionCell: UITableViewCell {
                 
                 if let photoDownloadURL = self.question[Constants.QuestionFields.photoDownloadURL] as! String? {
                     let url = NSURL(string: photoDownloadURL)
-                    print("photoDownloadURL exists for \(displayName)")
                     self.profilePhotoImageButton.kf_setBackgroundImageWithURL(url, forState: .Normal, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"))
                 } else if let photoUrl = self.question[Constants.QuestionFields.photoUrl] {
                     FIRStorage.storage().referenceForURL(photoUrl as! String).dataWithMaxSize(INT64_MAX) { (data, error) in
@@ -111,6 +116,8 @@ class QuestionCell: UITableViewCell {
                     let image = UIImage(named: "ic_account_circle")
                     self.profilePhotoImageButton.setBackgroundImage(image, forState: .Normal)
                 }
+                self.profilePhotoImageButton.layer.cornerRadius = self.profilePhotoImageButton.bounds.width/2
+                self.profilePhotoImageButton.clipsToBounds = true
             }
         })
     }

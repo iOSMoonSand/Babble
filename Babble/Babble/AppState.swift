@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Kingfisher
 
 class AppState: NSObject {
     
@@ -15,7 +16,7 @@ class AppState: NSObject {
     
     var signedIn = false
     var displayName: String?
-    var photoUrlString: String = ""
+    var photoDownloadURL: String?
     var profileImage: UIImage?
 }
 
