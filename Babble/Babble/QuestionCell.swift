@@ -29,7 +29,8 @@ class QuestionCell: UITableViewCell {
     //MARK:
     @IBOutlet weak var profilePhotoImageButton: UIButton!
     @IBOutlet weak var displayNameLabel: UILabel!
-    @IBOutlet weak var questionTextLabel: UILabel!
+    //@IBOutlet weak var questionTextLabel: UILabel!
+    @IBOutlet weak var questionTextView: UITextView!
     @IBOutlet weak var likeButtonCountLabel: UILabel!
     @IBOutlet weak var likeButton: UIButton!
     weak var delegate: QuestionCellDelegate?
@@ -39,13 +40,16 @@ class QuestionCell: UITableViewCell {
     //MARK: - Instance Methods
     //MARK:
     func performWithQuestion(question: [String : AnyObject]) {
+        
+        self.questionTextView.contentInset = UIEdgeInsetsMake(self.questionTextView.contentInset.top, -5, self.questionTextView.contentInset.bottom, self.questionTextView.contentInset.right)
+        
         //unpack local question data
         self.question = question
         self.profilePhotoImageButton.setBackgroundImage(nil, forState: .Normal)
         let questionText = self.question[Constants.QuestionFields.text] as! String
         let questionID = self.question[Constants.QuestionFields.questionID] as! String
         let userID = self.question[Constants.QuestionFields.userID] as! String
-        self.questionTextLabel.text = questionText
+        self.questionTextView.text = questionText
         //retrieve likeCount from Firebase
         FirebaseConfigManager.sharedInstance.ref.child("likeCounts").child(questionID).observeEventType(.Value, withBlock: {(likeCountSnapshot) in
             let likeCountDict = likeCountSnapshot.value as! [String: Int]
