@@ -37,9 +37,6 @@ class AnswersViewController: UIViewController {
             guard let selectedIndexRow = selectedIndexRow else { return }
             var answer: [String : AnyObject] = self.answersArray[selectedIndexRow]
             let userID = answer[Constants.QuestionFields.userID]
-            guard let nav = segue.destinationViewController as? UINavigationController else { return }
-            guard let UserProfilesVC = nav.topViewController as? AnswersToProfilesViewController else { return }
-            UserProfilesVC.userIDRef = userID as? String
             guard let destinationVC = segue.destinationViewController as? AnswersToProfilesViewController else { return }
             destinationVC.userIDRef = userID as? String
         }
@@ -103,6 +100,10 @@ extension AnswersViewController: UITableViewDelegate, UITableViewDataSource {
         let answer: [String: AnyObject] = self.answersArray[indexPath.row]
         cell.performWithAnswer(answer)
         return cell
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
 }
 // MARK:

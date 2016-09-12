@@ -24,7 +24,7 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
     var selectedImage: UIImage!
     //var ref: FIRDatabaseReference! = FIRDatabase.database().reference()
     //var storageRef: FIRStorageReference!
-    var selectedImageURLString = String()
+    //var selectedImageURLString = String()
     //MARK: -
     //MARK: - UIViewController Methods
     //MARK: -
@@ -175,19 +175,19 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
         dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func setSelectedImageAsProfileImageView() {
-        if self.selectedImageURLString.isEmpty {
-            print("selectedImageURLString is an empty string...")
-        } else {
-            FIRStorage.storage().referenceForURL(self.selectedImageURLString).dataWithMaxSize(INT64_MAX) { (data, error) in
-                if let error = error {
-                    print("Error downloading: \(error)")
-                    return
-                }
-                self.fullScreenImageView.image = UIImage(data: data!)
-            }
-        }
-    }
+//    func setSelectedImageAsProfileImageView() {
+//        if self.selectedImageURLString.isEmpty {
+//            print("selectedImageURLString is an empty string...")
+//        } else {
+//            FIRStorage.storage().referenceForURL(self.selectedImageURLString).dataWithMaxSize(INT64_MAX) { (data, error) in
+//                if let error = error {
+//                    print("Error downloading: \(error)")
+//                    return
+//                }
+//                self.fullScreenImageView.image = UIImage(data: data!)
+//            }
+//        }
+//    }
 }
 
 

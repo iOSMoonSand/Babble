@@ -28,7 +28,7 @@ class AnswerCell: UITableViewCell {
     //MARK:
     @IBOutlet weak var profilePhotoImageButton: UIButton!
     @IBOutlet weak var displayNameLabel: UILabel!
-    @IBOutlet weak var answerTextLabel: UILabel!
+    @IBOutlet weak var answerTextView: UITextView!
     @IBOutlet weak var likeButton: UIButton!
     @IBOutlet weak var likeButtonCountLabel: UILabel!
     weak var delegate: AnswerCellDelegate?
@@ -45,7 +45,7 @@ class AnswerCell: UITableViewCell {
         //let questionID = self.answer[Constants.AnswerFields.questionID] as! String
         let answerID = self.answer[Constants.AnswerFields.answerID] as! String
         let userID = self.answer[Constants.AnswerFields.userID] as! String
-        self.answerTextLabel.text = answerText
+        self.answerTextView.text = answerText
         //retrieve likeCount from Firebase
         FirebaseConfigManager.sharedInstance.ref.child("likeCounts").child(answerID).observeEventType(.Value, withBlock: {(likeCountSnapshot) in
             let likeCountDict = likeCountSnapshot.value as! [String: Int]

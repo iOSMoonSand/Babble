@@ -55,7 +55,7 @@ class SignInViewController: UIViewController {
         })
         
         //NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.SignedIn, object: nil, userInfo: nil)
-        performSegueWithIdentifier(Constants.Segues.SignInToHome, sender: nil)
+        performSegueWithIdentifier(Constants.Segues.SignInToHome, sender: self)
     }
     // MARK:
     // MARK: - IBAction: Sign In
@@ -131,15 +131,14 @@ class SignInViewController: UIViewController {
         prompt.addAction(okAction)
         presentViewController(prompt, animated: true, completion: nil);
     }
-    
-    //    @IBAction func didTapSignOutHomeScreen(segue:UIStoryboardSegue) {
-    //        let firebaseAuth = FIRAuth.auth()
-    //        do {
-    //            try firebaseAuth?.signOut()
-    //            AppState.sharedInstance.signedIn = false
-    //        } catch let signOutError as NSError {
-    //            print ("Error signing out: \(signOutError)")
-    //        }
-    //    }
-    
 }
+
+
+
+
+
+
+
+
+
+

@@ -40,9 +40,6 @@ class HomeScreenViewController: UIViewController {
             guard let selectedIndexPath = self.tableView.indexPathForSelectedRow else { return }
             let questionSnapShot = self.questionsArray[selectedIndexPath.row]
             let questionID = questionSnapShot[Constants.QuestionFields.questionID]
-            guard let nav = segue.destinationViewController as? UINavigationController else { return }
-            guard let answersVC = nav.topViewController as? AnswersViewController else { return }
-            answersVC.questionRef = questionID as? String
             guard let destinationVC = segue.destinationViewController as? AnswersViewController else { return }
             destinationVC.questionRef = questionID as? String
         }
@@ -51,9 +48,6 @@ class HomeScreenViewController: UIViewController {
             guard let selectedIndexRow = selectedIndexRow else { return }
             var question: [String : AnyObject] = self.questionsArray[selectedIndexRow]
             let userID = question[Constants.QuestionFields.userID]
-            guard let nav = segue.destinationViewController as? UINavigationController else { return }
-            guard let UserProfilesVC = nav.topViewController as? HomeToProfilesViewController else { return }
-            UserProfilesVC.userIDRef = userID as? String
             guard let destinationVC = segue.destinationViewController as? HomeToProfilesViewController else { return }
             destinationVC.userIDRef = userID as? String
         }
@@ -99,21 +93,6 @@ class HomeScreenViewController: UIViewController {
                             "likeStatuses/\(key)/\(currentUserID)/likeStatus": 0]
         FirebaseConfigManager.sharedInstance.ref.updateChildValues(childUpdates as! [String : AnyObject])
     }
-    
-    
-    @IBAction func didTapSignOut(sender: UIBarButtonItem) {
-        print("sign out button tapped")
-        let firebaseAuth = FIRAuth.auth()
-        do {
-            try firebaseAuth!.signOut()
-            AppState.sharedInstance.signedIn = false
-            dismissViewControllerAnimated(true, completion: nil)
-        } catch let signOutError as NSError {
-            print ("Error signing out: \(signOutError)")
-        } catch {
-            print("Bundexy says: An unknown error was caught.")
-        }
-    }
     // MARK:
     // MARK: - Unwind Segues
     // MARK:
@@ -149,6 +128,7 @@ extension HomeScreenViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         performSegueWithIdentifier(Constants.Segues.HomeToAnswers, sender: self)
+        self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
 }
 // MARK:

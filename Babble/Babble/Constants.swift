@@ -10,9 +10,9 @@
 
 struct Constants {
     
-    struct NotificationKeys {
-        static let SignedIn = "SignInCompleted"
-    }
+//    struct NotificationKeys {
+//        static let SignedIn = "SignInCompleted"
+//    }
     
     struct Segues {
         static let SignInToHome = "SignInToHome"

@@ -101,6 +101,7 @@
 			isa = PBXGroup;
 			children = (
 				5E2E6F1E1D25A794003588DC /* Babble */,
+				5E7427CF1D839AE7003F2CBD /* Old */,
 				5E1190A11D4040BA00F05B9F /* Support Files */,
 				5E2E6F1D1D25A794003588DC /* Products */,
 				1E5059947B2692634C64B41A /* Pods */,
@@ -122,7 +123,6 @@
 				5E3E77021D284421006E5EA4 /* View Controllers */,
 				5E8BA9561D5E715600FB530E /* Table View Cells */,
 				5EA2ED231D6B83760031003C /* FirebaseConfigManager.swift */,
-				5E59CCDC1D518A9300708053 /* ProfileImageManager.swift */,
 				5E47756B1D2601B900A5E9B0 /* Constants.swift */,
 				5E753B091D493F72001D82B8 /* AppState.swift */,
 				5E2E6F231D25A794003588DC /* Main.storyboard */,
@@ -142,6 +142,16 @@
 			name = "View Controllers";
 			sourceTree = "<group>";
 		};
+		5E7427CF1D839AE7003F2CBD /* Old */ = {
+			isa = PBXGroup;
+			children = (
+				5E753B0F1D4EA23F001D82B8 /* ProfilePhotoViewController.swift */,
+				5E59CCDC1D518A9300708053 /* ProfileImageManager.swift */,
+			);
+			name = Old;
+			path = Babble;
+			sourceTree = "<group>";
+		};
 		5E753B111D4FCBAE001D82B8 /* Home */ = {
 			isa = PBXGroup;
 			children = (
@@ -156,7 +166,6 @@
 			isa = PBXGroup;
 			children = (
 				5E753B0D1D4BD123001D82B8 /* MeViewController.swift */,
-				5E753B0F1D4EA23F001D82B8 /* ProfilePhotoViewController.swift */,
 			);
 			name = Me;
 			sourceTree = "<group>";
