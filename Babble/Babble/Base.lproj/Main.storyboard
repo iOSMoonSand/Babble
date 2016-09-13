@@ -228,30 +228,19 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Example: Why do cats meow?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0Rt-pi-O79">
-                                <rect key="frame" x="20" y="533" width="560" height="40"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" text="Write your Question here!" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="2VL-9f-2zY">
-                                <rect key="frame" x="20" y="92" width="560" height="433"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Write your Question here!" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="2VL-9f-2zY">
+                                <rect key="frame" x="20" y="72" width="560" height="520"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="433" id="wbW-3x-ikR"/>
-                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="0Rt-pi-O79" firstAttribute="top" secondItem="2VL-9f-2zY" secondAttribute="bottom" constant="28" id="Pux-8S-P0J"/>
-                            <constraint firstItem="2VL-9f-2zY" firstAttribute="leading" secondItem="f4c-J7-bIh" secondAttribute="leadingMargin" id="UhC-GL-qJH"/>
-                            <constraint firstItem="2VL-9f-2zY" firstAttribute="trailing" secondItem="f4c-J7-bIh" secondAttribute="trailingMargin" id="WXw-Mp-itY"/>
-                            <constraint firstItem="2VL-9f-2zY" firstAttribute="leading" secondItem="0Rt-pi-O79" secondAttribute="leading" id="bhw-Hy-opU"/>
-                            <constraint firstItem="2VL-9f-2zY" firstAttribute="trailing" secondItem="0Rt-pi-O79" secondAttribute="trailing" id="jwP-33-nkt"/>
-                            <constraint firstItem="2VL-9f-2zY" firstAttribute="top" secondItem="HQT-8z-iGa" secondAttribute="bottom" constant="8" symbolic="YES" id="lso-MR-Ea6"/>
+                            <constraint firstItem="2VL-9f-2zY" firstAttribute="trailing" secondItem="f4c-J7-bIh" secondAttribute="trailingMargin" id="EkY-pv-PXK"/>
+                            <constraint firstItem="nNu-ky-7Hr" firstAttribute="top" secondItem="2VL-9f-2zY" secondAttribute="bottom" constant="8" id="dOC-uW-FLs"/>
+                            <constraint firstItem="2VL-9f-2zY" firstAttribute="leading" secondItem="f4c-J7-bIh" secondAttribute="leadingMargin" id="pqK-oG-w6Z"/>
+                            <constraint firstItem="2VL-9f-2zY" firstAttribute="top" secondItem="HQT-8z-iGa" secondAttribute="bottom" constant="8" id="rtn-NB-iEF"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Add Question" id="60M-vS-Pnc">
@@ -267,7 +256,6 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="textLabel" destination="0Rt-pi-O79" id="PoM-AQ-tUQ"/>
                         <outlet property="textView" destination="2VL-9f-2zY" id="QtS-PE-fNC"/>
                     </connections>
                 </viewController>

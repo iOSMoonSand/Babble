@@ -57,13 +57,13 @@ class AnswerCell: UITableViewCell {
         })
         //retrieve or create likeStatus from/in Firebase
         FirebaseConfigManager.sharedInstance.ref.child("likeStatuses").child(answerID).observeEventType(.Value, withBlock: { (likeStatusSnapshot) in
-            let likeStatusForUsersDict = likeStatusSnapshot.value as! [String: [String: Int]]
+            let likeStatusForUsersDict = likeStatusSnapshot.value as! [String: AnyObject]
             if self.answer[Constants.AnswerFields.answerID] as! String == likeStatusSnapshot.key {
                 guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
                 for (key, value) in likeStatusForUsersDict {
                     if key == currentUserID {
                         let likeStatusForUser = value
-                        let likeStatus = likeStatusForUser[Constants.LikeStatusFields.likeStatus]
+                        let likeStatus = likeStatusForUser[Constants.LikeStatusFields.likeStatus] as? Int
                         if likeStatus == 1 {
                             let fullHeartImage = UIImage(named: "heart-full")
                             self.likeButton.setBackgroundImage(fullHeartImage, forState: .Normal)
@@ -86,7 +86,7 @@ class AnswerCell: UITableViewCell {
         FirebaseConfigManager.sharedInstance.ref.child("users").child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
             var user = userSnapshot.value as! [String: AnyObject]
             if self.answer[Constants.AnswerFields.userID] as! String == userSnapshot.key {
-                let photoURL = user[Constants.UserFields.photoUrl] as! String
+                let photoURL = user[Constants.UserFields.photoURL] as! String
                 let displayName = user[Constants.UserFields.displayName] as! String
                 if let photoDownloadURL = user[Constants.UserFields.photoDownloadURL] {
                     self.answer[Constants.AnswerFields.photoDownloadURL] = photoDownloadURL

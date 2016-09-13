@@ -22,11 +22,14 @@ class AnswersViewController: UIViewController {
     var answersArray = [[String : AnyObject]]()
     var questionRef: String?
     var selectedIndexRow: Int?
+    var tapOutsideTextView = UITapGestureRecognizer()
     // MARK:
     // MARK: - UIViewController Methods
     // MARK:
     override func viewDidLoad() {
+        textField.delegate = self
         super.viewDidLoad()
+        registerForKeyboardNotifications()
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tableViewCell")
         self.retrieveAnswerData()
     }
@@ -44,6 +47,7 @@ class AnswersViewController: UIViewController {
 
     
     deinit {
+        unregisterForKeyboardNotifications()
         FirebaseConfigManager.sharedInstance.ref.child("answers").child(questionRef!).removeObserverWithHandle(_refHandle)
     }
     // MARK:
@@ -81,7 +85,52 @@ class AnswersViewController: UIViewController {
     @IBAction func didTapBackProfilesToAnswers(segue:UIStoryboardSegue) {
         //From UserProfiles to Answers
     }
+    
+    
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //MARK: - NSNotification Methods
+    //MARK: -
+    var kbHeight: CGFloat!
+    
+    func registerForKeyboardNotifications() {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardDidShow(_:)), name: UIKeyboardDidShowNotification, object:nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardDidHide(_:)), name: UIKeyboardDidHideNotification, object:nil)
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardDidChangeFrame(_:)), name: UIKeyboardDidChangeFrameNotification, object:nil)
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(didChangePreferredContentSize(_:)), name: UIContentSizeCategoryDidChangeNotification, object:nil)
+    }
+
+    func unregisterForKeyboardNotifications() {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardDidShowNotification, object:nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardDidHideNotification, object:nil)
+//        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardDidChangeFrameNotification, object:nil)
+//        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIContentSizeCategoryDidChangeNotification, object:nil)
+    }
+    
+    func keyboardDidShow(notification: NSNotification) {
+        if let userInfo = notification.userInfo {
+            if let keyboardSize =  (userInfo[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
+                kbHeight = keyboardSize.height
+                self.animateTextField(true)
+            }
+        }
+    }
+    
+    func keyboardDidHide(notification: NSNotification) {
+        self.animateTextField(false)
+    }
+    
+    func animateTextField(up: Bool) {
+        var movement = (up ? -kbHeight : kbHeight)
+        UIView.animateWithDuration(0.3, animations: {
+            self.view.frame = CGRectOffset(self.view.frame, 0, movement)
+        })
+    }
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // MARK:
 // MARK: - UITableViewDataSource & UITableViewDelegate Protocols
 // MARK:
@@ -113,9 +162,29 @@ extension AnswersViewController: UITextFieldDelegate {
     // MARK:
     // MARK: - UITextFieldDelegate Methods
     // MARK:
+    func textFieldDidBeginEditing(textField: UITextField) {
+        print("textFieldDidBeginEditing")
+        self.tableView.allowsSelection = false
+        self.tapOutsideTextView = UITapGestureRecognizer(target: self, action: #selector(self.didTapOutsideTextViewWhenEditing))
+        self.view.addGestureRecognizer(tapOutsideTextView)
+    }
+    
+    func didTapOutsideTextViewWhenEditing() {
+        self.view.endEditing(true)
+    }
+    
+    func textFieldDidEndEditing(textField: UITextField) {
+        print("textFieldDidEndEditing")
+        self.tableView.allowsSelection = true
+        self.view.removeGestureRecognizer(tapOutsideTextView)
+    }
+    
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         let data = [Constants.AnswerFields.text: textField.text! as String]
         sendAnswer(data)
+        textField.resignFirstResponder()
+        self.tableView.allowsSelection = true
+        self.view.removeGestureRecognizer(tapOutsideTextView)
         return true
     }
     
@@ -124,9 +193,9 @@ extension AnswersViewController: UITextFieldDelegate {
         let currentUserID = FIRAuth.auth()?.currentUser?.uid
         answerDataDict[Constants.AnswerFields.userID] = currentUserID
         let key = FirebaseConfigManager.sharedInstance.ref.child("answers").child(questionRef!).childByAutoId().key
-        let childUpdates = ["questions/\(key)": answerDataDict,
+        let childUpdates = ["answers/\(questionRef!)/\(key)": answerDataDict,
                             "likeCounts/\(key)/likeCount": 0,
-                            "likeCounts/\(key)/likeStatus": 1]
+                            "likeStatuses/\(key)/likeStatus": 1]
         FirebaseConfigManager.sharedInstance.ref.updateChildValues(childUpdates as! [String : AnyObject])
     }
 }

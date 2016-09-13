@@ -39,7 +39,7 @@ class HomeToProfilesViewController: UITableViewController {
             let userBio = user[Constants.UserFields.userBio] as! String
             if let photoDownloadURL = user[Constants.UserFields.photoDownloadURL] as! String? {
                 self.userProfileImageView.kf_setImageWithURL(NSURL(string: photoDownloadURL), placeholderImage: nil, optionsInfo: nil)
-            } else if let photoURL = user[Constants.UserFields.photoUrl] as! String? {
+            } else if let photoURL = user[Constants.UserFields.photoURL] as! String? {
                 FIRStorage.storage().referenceForURL(photoURL).dataWithMaxSize(INT64_MAX) { (data, error) in
                     if let error = error {
                         print("Error downloading: \(error)")

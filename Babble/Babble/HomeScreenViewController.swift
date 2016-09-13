@@ -56,7 +56,8 @@ class HomeScreenViewController: UIViewController {
     // MARK: - Firebase Database Retrieval
     // MARK:
     func retrieveQuestionData() {
-        //TODO: why use [weak self] in closure
+        //TODO: look up why use [weak self] in closure
+        //TODO: use _refHandle in other places?
         _refHandle = FirebaseConfigManager.sharedInstance.ref.child("questions").observeEventType(.Value, withBlock: { (questionSnapshot) in
             self.questionsArray = [[String : AnyObject]]()//make a new clean array
             let questions = questionSnapshot.value as! [String: [String: AnyObject]]

@@ -17,6 +17,6 @@ class AppState: NSObject {
     var signedIn = false
     var displayName: String?
     var photoDownloadURL: String?
-    var profileImage: UIImage?
+    var defaultPhotoURL: String?
 }
 

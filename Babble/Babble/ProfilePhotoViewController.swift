@@ -84,9 +84,9 @@ class ProfilePhotoViewController: UIViewController, UIImagePickerControllerDeleg
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         
-        guard let image: UIImage = info[UIImagePickerControllerOriginalImage] as! UIImage else { return }
+        guard let image: UIImage = info[UIImagePickerControllerOriginalImage] as? UIImage else { return }
         self.fullScreenImageView.image = image
-        AppState.sharedInstance.profileImage = image
+        //AppState.sharedInstance.profileImage = image
         let profileImageName = "profileImageName.png"
         let imageData = UIImagePNGRepresentation(image)!
         let filePath = "\(FIRAuth.auth()!.currentUser!.uid)/\(Int(NSDate.timeIntervalSinceReferenceDate() * 1000))"

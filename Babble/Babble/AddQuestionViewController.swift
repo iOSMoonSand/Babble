@@ -22,7 +22,6 @@ class AddQuestionViewController: UIViewController {
     //MARK: - Attributes
     //MARK:
     @IBOutlet weak var textView: UITextView!
-    @IBOutlet weak var textLabel: UILabel!
     var newQuestionText: String?
     //MARK:
     //MARK: - UIViewController Methods

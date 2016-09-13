@@ -37,13 +37,12 @@ class SignInViewController: UIViewController {
         AppState.sharedInstance.displayName = user?.displayName ?? user?.email
         AppState.sharedInstance.signedIn = true
         
-        let usersRef = FirebaseConfigManager.sharedInstance.ref.child("users")
         let userID = user!.uid
-        usersRef.child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
+        FirebaseConfigManager.sharedInstance.ref.child("users").child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
             var user = userSnapshot.value as! [String: AnyObject]
+            AppState.sharedInstance.photoDownloadURL = nil
             if let photoDownloadURL = user[Constants.UserFields.photoDownloadURL] as! String? {
                 AppState.sharedInstance.photoDownloadURL = photoDownloadURL
-                AppState.sharedInstance.profileImage = nil
                 let prefetchPhotoDownloadURL = [photoDownloadURL].map { NSURL(string: $0)! }
                 let prefetcher = ImagePrefetcher(urls: prefetchPhotoDownloadURL, optionsInfo: nil, progressBlock: nil, completionHandler: {
                     (skippedResources, failedResources, completedResources) -> () in
@@ -53,8 +52,6 @@ class SignInViewController: UIViewController {
             }
             
         })
-        
-        //NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.SignedIn, object: nil, userInfo: nil)
         performSegueWithIdentifier(Constants.Segues.SignInToHome, sender: self)
     }
     // MARK:
@@ -75,6 +72,7 @@ class SignInViewController: UIViewController {
     // MARK: - IBAction: Create New Account
     // MARK:
     @IBAction func didTapCreateAccount(sender: AnyObject) {
+        AppState.sharedInstance.photoDownloadURL = nil
         let email = emailField.text
         let password = passwordField.text
         FIRAuth.auth()?.createUserWithEmail(email!, password: password!) { (user, error) in
@@ -82,11 +80,11 @@ class SignInViewController: UIViewController {
                 print(error.localizedDescription)
                 return
             }
-            self.setDisplayName(user!)
+            self.setDisplayNameAndDefaultPhoto(user!)
         }
     }
     
-    func setDisplayName(user: FIRUser) {
+    func setDisplayNameAndDefaultPhoto(user: FIRUser) {
         let changeRequest = user.profileChangeRequest()
         changeRequest.displayName = user.email!.componentsSeparatedByString("@")[0]
         changeRequest.commitChangesWithCompletion() { [weak self] (error) in
@@ -96,7 +94,8 @@ class SignInViewController: UIViewController {
             }
             let placeholderPhotoRef = FirebaseConfigManager.sharedInstance.storageRef.child("Profile_avatar_placeholder_large.png")
             let placeholderPhotoRefString = "gs://babble-8b668.appspot.com/" + placeholderPhotoRef.fullPath ?? ""
-            let userDataDict = [Constants.UserFields.photoUrl: placeholderPhotoRefString]
+            AppState.sharedInstance.defaultPhotoURL = placeholderPhotoRefString
+            let userDataDict = [Constants.UserFields.photoURL: placeholderPhotoRefString]
             self?.createUserData(userDataDict)
             self?.signedIn(FIRAuth.auth()?.currentUser)
         }

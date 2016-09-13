@@ -48,7 +48,7 @@ struct Constants {
     }
     
     struct UserFields {//each user separated by userID child
-        static let photoUrl = "photoURL"
+        static let photoURL = "photoURL"
         static let displayName = "displayName"
         static let userBio = "userBio"
         static let photoDownloadURL = "photoDownloadURL"

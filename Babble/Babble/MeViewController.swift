@@ -24,10 +24,12 @@ class MeViewController: UITableViewController {
     @IBOutlet weak var textView: UITextView!
     var imageFromProfilePhotoVC: UIImage!
     var tapOutsideTextView = UITapGestureRecognizer()
+    var isKeyboardOpen = false
     //MARK:
     //MARK: - UIViewController Methods
     //MARK:
     override func viewDidLoad() {
+        registerForKeyboardNotifications()
         textView.delegate = self
         guard let userID = FIRAuth.auth()?.currentUser?.uid else { return }
         let usersRef = FirebaseConfigManager.sharedInstance.ref.child("users")
@@ -39,6 +41,7 @@ class MeViewController: UITableViewController {
                 self?.textView.text = "Write your bio here!"
             }
             })
+        self.view.backgroundColor = UIColor.whiteColor()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -46,14 +49,22 @@ class MeViewController: UITableViewController {
         imageView.layer.cornerRadius = imageView.bounds.width/2
         imageView.clipsToBounds = true
     }
+    
+    deinit {
+        unregisterForKeyboardNotifications()
+    }
     //MARK:
     //MARK: - Load Firebase User Profile Photo
     //MARK:
     func loadFirebaseUserProfilePhoto() {
-        guard let photoDownloadURL = AppState.sharedInstance.photoDownloadURL else { return }
-        self.imageView.kf_setImageWithURL(NSURL(string: photoDownloadURL)!,
-                                          placeholderImage: nil,
-                                          optionsInfo: nil)
+        if let photoDownloadURL = AppState.sharedInstance.photoDownloadURL {
+            self.imageView.kf_setImageWithURL(NSURL(string: photoDownloadURL)!,
+                                              placeholderImage: nil,
+                                              optionsInfo: nil)
+        } else {
+            let image = UIImage(named: "Profile_avatar_placeholder_large")
+            self.imageView.image = image
+        }
     }
     
     @IBAction func didTapProfilePhotoImageView(sender: UITapGestureRecognizer) {
@@ -103,7 +114,99 @@ class MeViewController: UITableViewController {
             print("Bundexy says: An unknown error was caught.")
         }
     }
+    
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //MARK: - NSNotification Methods
+    //MARK: -
+    
+    var kbHeight: CGFloat!
+    
+    func registerForKeyboardNotifications() {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardDidShow(_:)), name: UIKeyboardDidShowNotification, object:nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardDidHide(_:)), name: UIKeyboardDidHideNotification, object:nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardDidChangeFrame(_:)), name: UIKeyboardDidChangeFrameNotification, object:nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(didChangePreferredContentSize(_:)), name: UIContentSizeCategoryDidChangeNotification, object:nil)
+    }
+    
+    func unregisterForKeyboardNotifications() {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardDidShowNotification, object:nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardDidHideNotification, object:nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardDidChangeFrameNotification, object:nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIContentSizeCategoryDidChangeNotification, object:nil)
+    }
+    
+    func keyboardDidShow(notification: NSNotification) {
+        if let userInfo = notification.userInfo {
+            if let keyboardSize =  (userInfo[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
+                kbHeight = keyboardSize.height
+                self.animateTextField(true)
+            }
+        }
+        
+//        if self.isKeyboardOpen {
+//            return
+//        }
+//        self.isKeyboardOpen = true
+//        guard let keyBoardSize = notification.userInfo![UIKeyboardFrameBeginUserInfoKey]?.CGRectValue.size, rate = notification.userInfo![UIKeyboardAnimationDurationUserInfoKey]?.doubleValue else { return }
+//        self.resizeTableViewWithKeyboardSize(keyBoardSize, rate: rate)
+        
+    }
+    
+    func keyboardDidHide(notification: NSNotification) {
+        self.animateTextField(false)
+        
+//        if (self.isKeyboardOpen == false) {
+//            return
+//        }
+//        self.isKeyboardOpen = false
+//        let rate = notification.userInfo![UIKeyboardAnimationDurationUserInfoKey]?.doubleValue
+//        let heigth = (self.navigationController?.navigationBar.frame.size.height)! + UIApplication.sharedApplication().statusBarFrame.size.height
+//        let contentInsets = UIEdgeInsetsMake(heigth, UIEdgeInsetsZero.left, UIEdgeInsetsZero.bottom, UIEdgeInsetsZero.right)
+//        UIView.animateWithDuration(rate!) { () -> Void in
+//            self.tableView.contentInset = contentInsets
+//            self.tableView.scrollIndicatorInsets = contentInsets
+//        }
+    }
+    
+    func animateTextField(up: Bool) {
+        var movement = (up ? -kbHeight : kbHeight)
+        UIView.animateWithDuration(0.3, animations: {
+            self.view.frame = CGRectOffset(self.view.frame, 0, movement)
+        })
+    }
+    
+    func keyboardDidChangeFrame(notification: NSNotification) {
+//        if (self.isKeyboardOpen == true) {
+//            guard let keyBoardSize = notification.userInfo![UIKeyboardFrameBeginUserInfoKey]?.CGRectValue.size, rate = notification.userInfo![UIKeyboardAnimationDurationUserInfoKey]?.doubleValue else { return }
+//            self.resizeTableViewWithKeyboardSize(keyBoardSize, rate: rate)
+//        }
+    }
+    
+    func resizeTableViewWithKeyboardSize(keyBoardSize:CGSize, rate:Double) {
+        let heigth = (self.navigationController?.navigationBar.frame.size.height)! + UIApplication.sharedApplication().statusBarFrame.size.height
+//        let frame = CGRect(x: tableView.bounds.origin.x, y: tableView.bounds.origin.y - keyBoardSize.height, width: tableView.bounds.width, height: tableView.bounds.height + keyBoardSize.height)
+        let contentInsets = UIEdgeInsetsMake(heigth, 0.0, (keyBoardSize.height), 0.0)
+        UIView.animateWithDuration(rate) { () -> Void in
+            self.tableView.contentInset = contentInsets
+            self.tableView.scrollIndicatorInsets = contentInsets
+//            self?.tableView.frame = frame
+        }
+    }
+    
+    func didChangePreferredContentSize(notification: NSNotification) {
+        //self.sections = sharedInstance.itemsBySection(self.isLogin)
+        self.tableView.reloadData()
+    }
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
 //MARK:
 //MARK: - UIImagePickerControllerDelegate &  UINavigationControllerDelegate Protocol
 //MARK:
@@ -117,9 +220,10 @@ extension MeViewController: UIImagePickerControllerDelegate, UINavigationControl
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         guard let image: UIImage = info[UIImagePickerControllerOriginalImage] as? UIImage else { return }
+        image.imageOrientation
         self.imageView.image = image
-        let profileImageName = "profileImageName.png"
-        let imageData = UIImagePNGRepresentation(image)!
+        let profileImageName = "profileImageName.jpg"
+        let imageData = UIImageJPEGRepresentation(image, 0.3)!
         let filePath = "\(FIRAuth.auth()!.currentUser!.uid)/\(Int(NSDate.timeIntervalSinceReferenceDate() * 1000))"
         
         let photoStorageRef = FirebaseConfigManager.sharedInstance.storageRef.child(filePath)

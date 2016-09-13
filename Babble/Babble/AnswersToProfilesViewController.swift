@@ -37,7 +37,7 @@ class AnswersToProfilesViewController: UITableViewController {
         FirebaseConfigManager.sharedInstance.ref.child("users").child(userID).observeEventType(.Value, withBlock: { userSnapshot in
             guard let user = userSnapshot.value as? [String: AnyObject] else { return }
             let userBio = user[Constants.UserFields.userBio] as! String
-            let photoURL = user[Constants.UserFields.photoUrl] as! String
+            let photoURL = user[Constants.UserFields.photoURL] as! String
             
             self.userProfileTextView.text = userBio
             
