@@ -52,6 +52,8 @@ class SignInViewController: UIViewController {
             }
             
         })
+        self.emailField.text = ""
+        self.passwordField.text = ""
         performSegueWithIdentifier(Constants.Segues.SignInToHome, sender: self)
     }
     // MARK:

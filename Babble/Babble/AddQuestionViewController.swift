@@ -26,6 +26,11 @@ class AddQuestionViewController: UIViewController {
     //MARK:
     //MARK: - UIViewController Methods
     //MARK:
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.textView.delegate = self
+    }
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == Constants.Segues.PostNewQuestionToHome {
             newQuestionText = self.textView.text
@@ -36,6 +41,13 @@ class AddQuestionViewController: UIViewController {
 }
 
 extension AddQuestionViewController: UITextViewDelegate {
+    
+    func textViewDidBeginEditing(textView: UITextView) {
+        let placeholderText = "Example: Why do cats meow?"
+        if self.textView.text == placeholderText {
+            self.textView.text = ""
+        }
+    }
     
 }
 

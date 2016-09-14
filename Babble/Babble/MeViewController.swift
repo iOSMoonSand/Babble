@@ -36,9 +36,13 @@ class MeViewController: UITableViewController {
         usersRef.child(userID).observeSingleEventOfType(.Value, withBlock: { [weak self] (userSnapshot) in
             guard let user = userSnapshot.value as? [String: AnyObject] else { return }
             if let userBio = user[Constants.UserFields.userBio] as? String {
-                self?.textView.text = userBio
-            } else {
-                self?.textView.text = "Write your bio here!"
+                if userBio == "" {
+                    self?.textView.text = "Write your bio here!"
+                    self?.textView.textColor = UIColor.grayColor()
+                } else {
+                    self?.textView.text = userBio
+                    self?.textView.textColor = UIColor.blackColor()
+                }
             }
             })
         self.view.backgroundColor = UIColor.whiteColor()
@@ -81,8 +85,8 @@ class MeViewController: UITableViewController {
             let imagePickerController = UIImagePickerController()
             if UIImagePickerController.isSourceTypeAvailable(.Camera) {
                 imagePickerController.sourceType = .Camera
-                //self.presentViewController(imagePickerController, animated: true, completion: nil)
-                print("Camera option not yet configured :(")
+                self.presentViewController(imagePickerController, animated: true, completion: nil)
+                //print("Camera option not yet configured :(")
             } else {//TODO: localized error handling
                 let noCameraAlert = UIAlertController.init(title: nil, message: "No camera attached to this device", preferredStyle: .Alert)
                 let okAction = UIAlertAction.init(title: "OK", style: .Default) { (action) in
@@ -96,7 +100,7 @@ class MeViewController: UITableViewController {
         let cancelAction = UIAlertAction.init(title: "Cancel", style: UIAlertActionStyle.Cancel) { (action) in
         }
         actionSheet.addAction(choosePhotoAction)
-        actionSheet.addAction(takePhotoAction)
+        //actionSheet.addAction(takePhotoAction)
         actionSheet.addAction(cancelAction)
         presentViewController(actionSheet, animated: true, completion: nil);
     }
@@ -155,7 +159,10 @@ class MeViewController: UITableViewController {
     
     func keyboardDidHide(notification: NSNotification) {
         self.animateTextField(false)
-        
+        if self.textView.text == "" {
+            self.textView.text = "Write your bio here!"
+            self.textView.textColor = UIColor.grayColor()
+        }
 //        if (self.isKeyboardOpen == false) {
 //            return
 //        }
@@ -220,7 +227,6 @@ extension MeViewController: UIImagePickerControllerDelegate, UINavigationControl
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         guard let image: UIImage = info[UIImagePickerControllerOriginalImage] as? UIImage else { return }
-        image.imageOrientation
         self.imageView.image = image
         let profileImageName = "profileImageName.jpg"
         let imageData = UIImageJPEGRepresentation(image, 0.3)!
@@ -266,6 +272,10 @@ extension MeViewController: UITextViewDelegate {
     //MARK:
     func textViewDidBeginEditing(textView: UITextView) {
         print("textViewDidBeginEditing")
+        let placeholderText = "Write your bio here!"
+        if self.textView.text == placeholderText {
+            self.textView.text = ""
+        }
         self.tableView.allowsSelection = false
         self.tapOutsideTextView = UITapGestureRecognizer(target: self, action: #selector(self.didTapOutsideTextViewWhenEditing))
         self.view.addGestureRecognizer(tapOutsideTextView)
