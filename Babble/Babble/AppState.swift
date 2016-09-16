@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import UIKit
+import Kingfisher
 
 class AppState: NSObject {
     
@@ -14,6 +16,7 @@ class AppState: NSObject {
     
     var signedIn = false
     var displayName: String?
-    var photoUrl: NSURL?
+    var photoDownloadURL: String?
+    var defaultPhotoURL: String?
 }
 

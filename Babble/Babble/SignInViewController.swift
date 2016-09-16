@@ -6,40 +6,59 @@
 //  Copyright © 2016 Alexis Schreier. All rights reserved.
 //
 
-//SignUp a user, set display name, Sign In with email/password, remember a signed in user and request a password reset
-
 import UIKit
 import Firebase
+import Kingfisher
 
+//MARK:
+//MARK: - SignInViewController Class
+//MARK:
 class SignInViewController: UIViewController {
-    
-// MARK: - Properties
+    //MARK:
+    //MARK: - Attributes
+    //MARK:
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
-    
-
-// MARK: - UIViewController Methods
+    var tapOutsideTextView = UITapGestureRecognizer()
+    //MARK:
+    //MARK: - UIViewController Methods
+    //MARK:
     override func viewDidAppear(animated: Bool) {
-        //checks for cached user credentials
+        super.viewDidAppear(true)
+        self.emailField.delegate = self
+        self.passwordField.delegate = self
         if let user = FIRAuth.auth()?.currentUser {
             self.signedIn(user)
         }
     }
-    
-    
-// MARK: - Firebase Authentication Configuration
+    // MARK:
+    // MARK: - Firebase Authentication Configuration
+    // MARK:
     func signedIn(user: FIRUser?) {
-        //<FIRUserInfo> protocol providing user data to FIRUser
+        //<FIRUserInfo> protocol provides user data to FIRUser
         AppState.sharedInstance.displayName = user?.displayName ?? user?.email
-        AppState.sharedInstance.photoUrl = user?.photoURL
         AppState.sharedInstance.signedIn = true
-
-        NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.SignedIn, object: nil, userInfo: nil)
-        performSegueWithIdentifier(Constants.Segues.SignInToHome, sender: nil)
+        let userID = user!.uid
+        FirebaseConfigManager.sharedInstance.ref.child("users").child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
+            var user = userSnapshot.value as! [String: AnyObject]
+            AppState.sharedInstance.photoDownloadURL = nil
+            if let photoDownloadURL = user[Constants.UserFields.photoDownloadURL] as! String? {
+                AppState.sharedInstance.photoDownloadURL = photoDownloadURL
+                let prefetchPhotoDownloadURL = [photoDownloadURL].map { NSURL(string: $0)! }
+                let prefetcher = ImagePrefetcher(urls: prefetchPhotoDownloadURL, optionsInfo: nil, progressBlock: nil, completionHandler: {
+                    (skippedResources, failedResources, completedResources) -> () in
+                    print("These resources are prefetched: \(completedResources)")
+                })
+                prefetcher.start()
+            }
+        })
+        self.emailField.text = ""
+        self.passwordField.text = ""
+        performSegueWithIdentifier(Constants.Segues.SignInToHome, sender: self)
     }
-    
-    
-// MARK: - IBAction: Sign In
+    // MARK:
+    // MARK: - IBAction: Sign In
+    // MARK:
     @IBAction func didTapSignIn(sender: AnyObject) {
         let email = emailField.text
         let password = passwordField.text
@@ -51,10 +70,11 @@ class SignInViewController: UIViewController {
             self.signedIn(user!)
         }
     }
-    
-    
-// MARK: - IBAction: Account Creation
+    // MARK:
+    // MARK: - IBAction: Create New Account
+    // MARK:
     @IBAction func didTapCreateAccount(sender: AnyObject) {
+        AppState.sharedInstance.photoDownloadURL = nil
         let email = emailField.text
         let password = passwordField.text
         FIRAuth.auth()?.createUserWithEmail(email!, password: password!) { (user, error) in
@@ -62,25 +82,45 @@ class SignInViewController: UIViewController {
                 print(error.localizedDescription)
                 return
             }
-            self.setDisplayName(user!)
+            
+            self.setDisplayNameAndDefaultPhoto(user!)
+            user?.sendEmailVerificationWithCompletion({ (error) in
+                if let error = error {
+                    print(error.localizedDescription)
+                }
+                print("Email verification sent.")
+            })
         }
     }
-//!! Could be used for profile editing
-    func setDisplayName(user: FIRUser) {
-        //Creates an object which may be used to change the user's profile data.
+    
+    func setDisplayNameAndDefaultPhoto(user: FIRUser) {
         let changeRequest = user.profileChangeRequest()
         changeRequest.displayName = user.email!.componentsSeparatedByString("@")[0]
-        changeRequest.commitChangesWithCompletion(){ (error) in
+        changeRequest.commitChangesWithCompletion() { [weak self] (error) in
             if let error = error {
                 print(error.localizedDescription)
                 return
             }
-            self.signedIn(FIRAuth.auth()?.currentUser)
+            let placeholderPhotoRef = FirebaseConfigManager.sharedInstance.storageRef.child("Profile_avatar_placeholder_large.png")
+            let placeholderPhotoRefString = "gs://babble-8b668.appspot.com/" + placeholderPhotoRef.fullPath ?? ""
+            AppState.sharedInstance.defaultPhotoURL = placeholderPhotoRefString
+            let userDataDict = [Constants.UserFields.photoURL: placeholderPhotoRefString]
+            self?.createUserData(userDataDict)
+            self?.signedIn(FIRAuth.auth()?.currentUser)
         }
     }
-
     
-// MARK: - IBAction: Password Reset
+    func createUserData(data: [String: String]) {
+        var userDataDict = data
+        let displayName = FIRAuth.auth()?.currentUser?.displayName
+        userDataDict[Constants.UserFields.displayName] = displayName
+        if let currentUserUID = FIRAuth.auth()?.currentUser?.uid {
+            FirebaseConfigManager.sharedInstance.ref.child("users").child(currentUserUID).setValue(userDataDict)
+        }
+    }
+    // MARK:
+    // MARK: - IBAction: Reset Password
+    // MARK:
     @IBAction func didTapForgotPassword(sender: AnyObject) {
         let prompt = UIAlertController.init(title: nil, message: "Email:", preferredStyle: UIAlertControllerStyle.Alert)
         let okAction = UIAlertAction.init(title: "OK", style: UIAlertActionStyle.Default) { (action) in
@@ -100,3 +140,33 @@ class SignInViewController: UIViewController {
         presentViewController(prompt, animated: true, completion: nil);
     }
 }
+// MARK:
+// MARK: - UITextFieldDelegate Protocol
+// MARK:
+extension SignInViewController: UITextFieldDelegate {
+// MARK:
+// MARK: - UITextFieldDelegate Methods
+// MARK:
+    func textFieldDidBeginEditing(textField: UITextField) {
+        print("textFieldDidBeginEditing")
+        self.tapOutsideTextView = UITapGestureRecognizer(target: self, action: #selector(self.didTapOutsideTextViewWhenEditing))
+        self.view.addGestureRecognizer(tapOutsideTextView)
+    }
+    
+    func didTapOutsideTextViewWhenEditing() {
+        self.view.endEditing(true)
+    }
+    
+    func textFieldDidEndEditing(textField: UITextField) {
+        print("textFieldDidEndEditing")
+        self.view.removeGestureRecognizer(tapOutsideTextView)
+    }
+}
+
+
+
+
+
+
+
+

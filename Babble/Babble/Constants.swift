@@ -10,27 +10,55 @@
 
 struct Constants {
     
-    struct NotificationKeys {
-        static let SignedIn = "SignInCompleted"
-    }
+//    struct NotificationKeys {
+//        static let SignedIn = "SignInCompleted"
+//    }
     
     struct Segues {
         static let SignInToHome = "SignInToHome"
-        static let HomeToSignIn = "HomeToSignIn"
-        static let HomeToAnswersNavController = "HomeToAnswersNavController"
+        static let HomeToAnswers = "HomeToAnswers"
+        static let HomeToAddQuestion = "HomeToAddQuestion"
+        static let PostNewQuestionToHome = "PostNewQuestionToHome"
+        static let MyProfileToProfilePhoto = "MyProfileToProfilePhoto"
+        static let ProfilePhotoToMyProfile = "ProfilePhotoToMyProfile"
+        static let HomeToProfiles = "HomeToProfiles"
+        static let AnswersToProfiles = "AnswersToProfiles"
     }
     
     struct QuestionFields {
-        static let name = "name"
+        static let questionID = "questionID"
         static let text = "text"
-        static let photoUrl = "photoUrl"
-        static let imageUrl = "imageUrl"
+        static let userID = "userID"
+        static let photoUrl = "photoURL"
+        static let photoDownloadURL = "photoDownloadURL"
+        static let displayName = "displayName"
+        static let likeCountID = "likeCountID"
+        static let likeCount = "likeCount"
     }
     
-    struct AnswerFields {
-        static let name = "name"
+    struct AnswerFields {//each answer separated by questionID child
         static let text = "text"
-        static let photoUrl = "photoUrl"
-        static let imageUrl = "imageUrl"
+        static let userID = "userID"
+        static let photoUrl = "photoURL"
+        static let photoDownloadURL = "photoDownloadURL"
+        static let likeCount = "likeCount"
+        static let displayName = "displayName"
+        static let answerID = "answerID"
+        static let questionID = "questionID"
+    }
+    
+    struct UserFields {//each user separated by userID child
+        static let photoURL = "photoURL"
+        static let displayName = "displayName"
+        static let userBio = "userBio"
+        static let photoDownloadURL = "photoDownloadURL"
+    }
+    
+    struct LikeCountFields {//each LikeCount separated by likeCountID child
+        static let likeCount = "likeCount"
+    }
+    
+    struct LikeStatusFields {//each question has users who each have an individual like status
+        static let likeStatus = "likeStatus"
     }
 }

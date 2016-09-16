@@ -9,87 +9,182 @@
 import UIKit
 import Firebase
 
-class HomeScreenViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
-
-// MARK: - Properties
+//MARK: -
+//MARK: - HomeScreenViewController Class
+//MARK: -
+class HomeScreenViewController: UIViewController {
+    //MARK: -
+    //MARK: - Attributes
+    //MARK: -
     @IBOutlet weak var tableView: UITableView!
-    var ref: FIRDatabaseReference!
     private var _refHandle: FIRDatabaseHandle!
-    var questionsArray: [FIRDataSnapshot]! = [] //empty array that can hold data snapshots of questions
-
-
-// MARK: - UIViewController Methods
+    var questionsArray = [[String : AnyObject]]()
+    var newQuestion: String?
+    var selectedIndexRow: Int?
+    //MARK: -
+    //MARK: - UIViewController Methods
+    //MARK: -
     override func viewDidLoad() {
         super.viewDidLoad()
-        ref = FIRDatabase.database().reference()
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tableViewCell")
-        configureDatabase()
+        self.retrieveQuestionData()
     }
     
     deinit {
-        self.ref.child("questions").removeObserverWithHandle(_refHandle)
+        FirebaseConfigManager.sharedInstance.ref.child("questions").removeObserverWithHandle(_refHandle)
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == Constants.Segues.HomeToAnswersNavController {
+        
+        if segue.identifier == Constants.Segues.HomeToAnswers {
             guard let selectedIndexPath = self.tableView.indexPathForSelectedRow else { return }
-            let questionSnapShot: FIRDataSnapshot! = self.questionsArray[selectedIndexPath.row]
-            let selectedQuestion = questionSnapShot.key
-            
+            let questionSnapShot = self.questionsArray[selectedIndexPath.row]
+            let questionID = questionSnapShot[Constants.QuestionFields.questionID]
             guard let destinationVC = segue.destinationViewController as? AnswersViewController else { return }
-            destinationVC.questionRef = selectedQuestion
+            destinationVC.questionRef = questionID as? String
+        }
+        
+        if segue.identifier == Constants.Segues.HomeToProfiles {
+            guard let selectedIndexRow = selectedIndexRow else { return }
+            var question: [String : AnyObject] = self.questionsArray[selectedIndexRow]
+            let userID = question[Constants.QuestionFields.userID]
+            guard let destinationVC = segue.destinationViewController as? HomeToProfilesViewController else { return }
+            destinationVC.userIDRef = userID as? String
         }
     }
-
-    
-// MARK: - Firebase Database Configuration
-    func configureDatabase() {
-        ref = FIRDatabase.database().reference()
-        _refHandle = self.ref.child("questions").observeEventType(.ChildAdded, withBlock: {(snapshot) -> Void in
-            self.questionsArray.append(snapshot)
-            self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.questionsArray.count-1, inSection: 0)], withRowAnimation: .Automatic)
+    // MARK:
+    // MARK: - Firebase Database Retrieval
+    // MARK:
+    func retrieveQuestionData() {
+        //TODO: look up why use [weak self] in closure
+        //TODO: use _refHandle in other places?
+        _refHandle = FirebaseConfigManager.sharedInstance.ref.child("questions").observeEventType(.Value, withBlock: { (questionSnapshot) in
+            self.questionsArray = [[String : AnyObject]]()//make a new clean array
+            let questions = questionSnapshot.value as! [String: [String: AnyObject]]
+            var question = [String: AnyObject]()
+            for (key, value) in questions {
+                question = value
+                question[Constants.QuestionFields.questionID] = key
+                // question object includes: text, userID, questionID
+                self.questionsArray.append(question)
+            }
+            self.questionsArray.sortInPlace {
+                (($0 as [String: AnyObject])["likeCount"] as? Int) > (($1 as [String: AnyObject])["likeCount"] as? Int)
+            }
+            self.tableView.reloadData()
         })
     }
+    // MARK:
+    // MARK: - Button Actions
+    // MARK:
+    @IBAction func didTapPostAddQuestion(segue:UIStoryboardSegue) {
+        //Unwind segue from AddQuestion to HomeScreen
+        //Identifier: PostNewQuestionToHome
+        let data = [Constants.QuestionFields.text: self.newQuestion! as String]
+        postQuestion(data)
+    }
     
-    
-// MARK: - UITableViewDataSource & UITableViewDelegate methods
+    func postQuestion(data: [String: AnyObject]) {
+        var questionDataDict = data
+        guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
+        questionDataDict[Constants.QuestionFields.userID] = currentUserID
+        let key = FirebaseConfigManager.sharedInstance.ref.child("questions").childByAutoId().key
+        let childUpdates = ["questions/\(key)": questionDataDict,
+                            "likeCounts/\(key)/likeCount": 0,
+                            "likeStatuses/\(key)/\(currentUserID)/likeStatus": 0]
+        FirebaseConfigManager.sharedInstance.ref.updateChildValues(childUpdates as! [String : AnyObject])
+    }
+    // MARK:
+    // MARK: - Unwind Segues
+    // MARK:
+    @IBAction func didTapBackAnswers(segue:UIStoryboardSegue) {
+        //From AddQuestion to HomeScreen
+    }
+    @IBAction func didTapCancelAddQuestion(segue:UIStoryboardSegue) {
+        //From AddQuestion to HomeScreen
+    }
+    @IBAction func didTapBackProfilesToHome(segue:UIStoryboardSegue) {
+        //From UserProfiles to HomeScreen
+    }
+}
+// MARK:
+// MARK: - UITableViewDelegate & UITableViewDataSource Protocols
+// MARK:
+extension HomeScreenViewController: UITableViewDelegate, UITableViewDataSource {
+    // MARK:
+    // MARK: - UITableViewDataSource & UITableViewDelegate Methods
+    // MARK:
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return questionsArray.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell: UITableViewCell! = self.tableView.dequeueReusableCellWithIdentifier("tableViewCell", forIndexPath: indexPath)
-        //unpack question from database
-        let questionSnapshot: FIRDataSnapshot! = self.questionsArray[indexPath.row]
-        let question = questionSnapshot.value as! Dictionary<String, String>
-        let name = question[Constants.QuestionFields.name] as String!
-        let text = question[Constants.QuestionFields.text] as String!
-        //assign data to cell
-        cell!.textLabel?.text = name + ": " + text
-        cell!.imageView?.image = UIImage(named: "ic_account_circle")
-        if let photoUrl = question[Constants.QuestionFields.photoUrl], url = NSURL(string:photoUrl), data = NSData(contentsOfURL: url) {
-        cell!.imageView?.image = UIImage(data: data)
-        }
-        return cell!
+        let cell = self.tableView.dequeueReusableCellWithIdentifier("QuestionCell", forIndexPath: indexPath) as! QuestionCell
+        cell.delegate = self
+        cell.row = indexPath.row
+        let question: [String: AnyObject] = self.questionsArray[indexPath.row]
+        cell.performWithQuestion(question)
+        return cell
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        performSegueWithIdentifier(Constants.Segues.HomeToAnswersNavController, sender: self)
+        performSegueWithIdentifier(Constants.Segues.HomeToAnswers, sender: self)
+        self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
-    
-    
-// MARK: - IBActions
-    @IBAction func didTapSignOut(sender: AnyObject) {
-        
-        let firebaseAuth = FIRAuth.auth()
-        do {
-            try firebaseAuth?.signOut()
-            //            AppState.sharedInstance.signedIn = false
-            performSegueWithIdentifier(Constants.Segues.HomeToSignIn, sender: nil)
-        } catch let signOutError as NSError {
-            print ("Error signing out: \(signOutError)")
-        }
-    }
-    
-
 }
+// MARK:
+// MARK: - QuestionCellDelegate Protocol
+// MARK:
+extension HomeScreenViewController: QuestionCellDelegate {
+    //MARK:
+    //MARK: - QuestionCellDelegate Methods
+    //MARK:
+    func handleProfileImageButtonTapOn(row: Int) {
+        self.selectedIndexRow = row
+        performSegueWithIdentifier(Constants.Segues.HomeToProfiles, sender: self)
+    }
+    
+    func handleLikeButtonTapOn(row: Int) {
+        let question = self.questionsArray[row]
+        let questionID = question[Constants.QuestionFields.questionID] as! String
+        //increment question likeCount
+        FirebaseConfigManager.sharedInstance.ref.child("likeCounts").child(questionID).observeSingleEventOfType(.Value, withBlock: { (likeCountSnapshot) in
+            let likeCountDict = likeCountSnapshot.value as! [String: AnyObject]
+            guard let currentLikeCount = likeCountDict[Constants.LikeCountFields.likeCount] as! Int? else { return }
+            guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
+            FirebaseConfigManager.sharedInstance.ref.child("likeStatuses").child(questionID).child(currentUserID).observeSingleEventOfType(.Value, withBlock: {
+                (likeStatusSnapshot) in
+                let likeStatusDict = likeStatusSnapshot.value as! [String: Int]
+                guard let likeStatus = likeStatusDict[Constants.LikeStatusFields.likeStatus] else { return }
+                if likeStatus == 0 {
+                    let incrementedLikeCount = (currentLikeCount) + 1
+                    print("\(incrementedLikeCount + 1)")
+                    FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(questionID)/likeCount").setValue(incrementedLikeCount)
+                    FirebaseConfigManager.sharedInstance.ref.child("likeStatuses/\(questionID)/\(currentUserID)/likeStatus").setValue(1)
+                } else if likeStatus == 1 {
+                    let decrementedLikeCount = (currentLikeCount) - 1
+                    FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(questionID)/likeCount").setValue(decrementedLikeCount)
+                    FirebaseConfigManager.sharedInstance.ref.child("likeStatuses/\(questionID)/\(currentUserID)/likeStatus").setValue(0)
+                }
+                })
+        })
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
