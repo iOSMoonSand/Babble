@@ -19,11 +19,14 @@ class SignInViewController: UIViewController {
     //MARK:
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
+    var tapOutsideTextView = UITapGestureRecognizer()
     //MARK:
     //MARK: - UIViewController Methods
     //MARK:
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
+        self.emailField.delegate = self
+        self.passwordField.delegate = self
         if let user = FIRAuth.auth()?.currentUser {
             self.signedIn(user)
         }
@@ -32,11 +35,9 @@ class SignInViewController: UIViewController {
     // MARK: - Firebase Authentication Configuration
     // MARK:
     func signedIn(user: FIRUser?) {
-        
         //<FIRUserInfo> protocol provides user data to FIRUser
         AppState.sharedInstance.displayName = user?.displayName ?? user?.email
         AppState.sharedInstance.signedIn = true
-        
         let userID = user!.uid
         FirebaseConfigManager.sharedInstance.ref.child("users").child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
             var user = userSnapshot.value as! [String: AnyObject]
@@ -50,7 +51,6 @@ class SignInViewController: UIViewController {
                 })
                 prefetcher.start()
             }
-            
         })
         self.emailField.text = ""
         self.passwordField.text = ""
@@ -82,7 +82,14 @@ class SignInViewController: UIViewController {
                 print(error.localizedDescription)
                 return
             }
+            
             self.setDisplayNameAndDefaultPhoto(user!)
+            user?.sendEmailVerificationWithCompletion({ (error) in
+                if let error = error {
+                    print(error.localizedDescription)
+                }
+                print("Email verification sent.")
+            })
         }
     }
     
@@ -133,8 +140,28 @@ class SignInViewController: UIViewController {
         presentViewController(prompt, animated: true, completion: nil);
     }
 }
-
-
+// MARK:
+// MARK: - UITextFieldDelegate Protocol
+// MARK:
+extension SignInViewController: UITextFieldDelegate {
+// MARK:
+// MARK: - UITextFieldDelegate Methods
+// MARK:
+    func textFieldDidBeginEditing(textField: UITextField) {
+        print("textFieldDidBeginEditing")
+        self.tapOutsideTextView = UITapGestureRecognizer(target: self, action: #selector(self.didTapOutsideTextViewWhenEditing))
+        self.view.addGestureRecognizer(tapOutsideTextView)
+    }
+    
+    func didTapOutsideTextViewWhenEditing() {
+        self.view.endEditing(true)
+    }
+    
+    func textFieldDidEndEditing(textField: UITextField) {
+        print("textFieldDidEndEditing")
+        self.view.removeGestureRecognizer(tapOutsideTextView)
+    }
+}
 
 
 

@@ -46,6 +46,7 @@ extension AddQuestionViewController: UITextViewDelegate {
         let placeholderText = "Example: Why do cats meow?"
         if self.textView.text == placeholderText {
             self.textView.text = ""
+            self.textView.textColor = UIColor.blackColor()
         }
     }
     

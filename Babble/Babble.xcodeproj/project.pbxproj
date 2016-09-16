@@ -11,6 +11,8 @@
 		5E2E6F201D25A794003588DC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E2E6F1F1D25A794003588DC /* AppDelegate.swift */; };
 		5E2E6F251D25A794003588DC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5E2E6F231D25A794003588DC /* Main.storyboard */; };
 		5E2E6F2A1D25A794003588DC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5E2E6F281D25A794003588DC /* LaunchScreen.storyboard */; };
+		5E3CFE341D88EC7F005D0109 /* MeVCImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3CFE331D88EC7F005D0109 /* MeVCImageCell.swift */; };
+		5E3CFE361D88EC93005D0109 /* MeVCTextViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3CFE351D88EC93005D0109 /* MeVCTextViewCell.swift */; };
 		5E3E77011D2843B7006E5EA4 /* HomeScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3E77001D2843B7006E5EA4 /* HomeScreenViewController.swift */; };
 		5E3E77041D284CB5006E5EA4 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3E77031D284CB5006E5EA4 /* SignInViewController.swift */; };
 		5E47756C1D2601B900A5E9B0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E47756B1D2601B900A5E9B0 /* Constants.swift */; };
@@ -39,6 +41,8 @@
 		5E2E6F241D25A794003588DC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		5E2E6F291D25A794003588DC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5E2E6F2B1D25A794003588DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5E3CFE331D88EC7F005D0109 /* MeVCImageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeVCImageCell.swift; sourceTree = "<group>"; };
+		5E3CFE351D88EC93005D0109 /* MeVCTextViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeVCTextViewCell.swift; sourceTree = "<group>"; };
 		5E3E77001D2843B7006E5EA4 /* HomeScreenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeScreenViewController.swift; sourceTree = "<group>"; };
 		5E3E77031D284CB5006E5EA4 /* SignInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		5E47756B1D2601B900A5E9B0 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -175,6 +179,8 @@
 			children = (
 				5E8BA9501D5E553000FB530E /* QuestionCell.swift */,
 				5E8BA9541D5E715000FB530E /* AnswerCell.swift */,
+				5E3CFE331D88EC7F005D0109 /* MeVCImageCell.swift */,
+				5E3CFE351D88EC93005D0109 /* MeVCTextViewCell.swift */,
 			);
 			name = "Table View Cells";
 			sourceTree = "<group>";
@@ -327,11 +333,13 @@
 				5E47756C1D2601B900A5E9B0 /* Constants.swift in Sources */,
 				5E753B0E1D4BD123001D82B8 /* MeViewController.swift in Sources */,
 				5E753B0A1D493F72001D82B8 /* AppState.swift in Sources */,
+				5E3CFE361D88EC93005D0109 /* MeVCTextViewCell.swift in Sources */,
 				5E2E6F201D25A794003588DC /* AppDelegate.swift in Sources */,
 				5EBD4DE41D7F525E004DA8DD /* HomeToProfilesViewController.swift in Sources */,
 				5EBD4DE61D7F52A8004DA8DD /* AnswersToProfilesViewController.swift in Sources */,
 				5E8BA9511D5E553000FB530E /* QuestionCell.swift in Sources */,
 				5E3E77041D284CB5006E5EA4 /* SignInViewController.swift in Sources */,
+				5E3CFE341D88EC7F005D0109 /* MeVCImageCell.swift in Sources */,
 				5E753B0C1D498C54001D82B8 /* AddQuestionViewController.swift in Sources */,
 				5EA2ED241D6B83760031003C /* FirebaseConfigManager.swift in Sources */,
 				5E3E77011D2843B7006E5EA4 /* HomeScreenViewController.swift in Sources */,

@@ -85,27 +85,19 @@ class AnswersViewController: UIViewController {
     @IBAction func didTapBackProfilesToAnswers(segue:UIStoryboardSegue) {
         //From UserProfiles to Answers
     }
-    
-    
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //MARK:
     //MARK: - NSNotification Methods
-    //MARK: -
+    //MARK:
     var kbHeight: CGFloat!
     
     func registerForKeyboardNotifications() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardDidShow(_:)), name: UIKeyboardDidShowNotification, object:nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardDidHide(_:)), name: UIKeyboardDidHideNotification, object:nil)
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardDidChangeFrame(_:)), name: UIKeyboardDidChangeFrameNotification, object:nil)
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(didChangePreferredContentSize(_:)), name: UIContentSizeCategoryDidChangeNotification, object:nil)
-    }
+}
 
     func unregisterForKeyboardNotifications() {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardDidShowNotification, object:nil)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardDidHideNotification, object:nil)
-//        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardDidChangeFrameNotification, object:nil)
-//        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIContentSizeCategoryDidChangeNotification, object:nil)
-    }
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardDidHideNotification, object:nil)}
     
     func keyboardDidShow(notification: NSNotification) {
         if let userInfo = notification.userInfo {
@@ -121,16 +113,12 @@ class AnswersViewController: UIViewController {
     }
     
     func animateTextField(up: Bool) {
-        var movement = (up ? -kbHeight : kbHeight)
-        UIView.animateWithDuration(0.3, animations: {
+        let movement = (up ? -kbHeight : kbHeight)
+        UIView.animateWithDuration(0.1, animations: {
             self.view.frame = CGRectOffset(self.view.frame, 0, movement)
         })
     }
 }
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 // MARK:
 // MARK: - UITableViewDataSource & UITableViewDelegate Protocols
 // MARK:

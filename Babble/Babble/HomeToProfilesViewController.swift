@@ -36,7 +36,7 @@ class HomeToProfilesViewController: UITableViewController {
         guard let userID = self.userIDRef else { return }
         FirebaseConfigManager.sharedInstance.ref.child("users").child(userID).observeEventType(.Value, withBlock: { userSnapshot in
             guard let user = userSnapshot.value as? [String: AnyObject] else { return }
-            let userBio = user[Constants.UserFields.userBio] as! String
+            let userBio = user[Constants.UserFields.userBio] as? String
             if let photoDownloadURL = user[Constants.UserFields.photoDownloadURL] as! String? {
                 self.userProfileImageView.kf_setImageWithURL(NSURL(string: photoDownloadURL), placeholderImage: nil, optionsInfo: nil)
             } else if let photoURL = user[Constants.UserFields.photoURL] as! String? {
