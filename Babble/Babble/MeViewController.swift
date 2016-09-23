@@ -63,7 +63,6 @@ class MeViewController: UIViewController {
     }
     
     @IBAction func didTapSignOut(sender: UIBarButtonItem) {
-        print("sign out button tapped")
         let firebaseAuth = FIRAuth.auth()
         do {
             try firebaseAuth!.signOut()

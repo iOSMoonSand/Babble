@@ -19,8 +19,10 @@ class HomeScreenViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     private var _refHandle: FIRDatabaseHandle!
     var questionsArray = [[String : AnyObject]]()
+    var top10QuestionsArray = ArraySlice<[String : AnyObject]>()
     var newQuestion: String?
     var selectedIndexRow: Int?
+    
     //MARK: -
     //MARK: - UIViewController Methods
     //MARK: -
@@ -38,7 +40,7 @@ class HomeScreenViewController: UIViewController {
         
         if segue.identifier == Constants.Segues.HomeToAnswers {
             guard let selectedIndexPath = self.tableView.indexPathForSelectedRow else { return }
-            let questionSnapShot = self.questionsArray[selectedIndexPath.row]
+            let questionSnapShot = self.top10QuestionsArray[selectedIndexPath.row]
             let questionID = questionSnapShot[Constants.QuestionFields.questionID]
             guard let destinationVC = segue.destinationViewController as? AnswersViewController else { return }
             destinationVC.questionRef = questionID as? String
@@ -46,7 +48,7 @@ class HomeScreenViewController: UIViewController {
         
         if segue.identifier == Constants.Segues.HomeToProfiles {
             guard let selectedIndexRow = selectedIndexRow else { return }
-            var question: [String : AnyObject] = self.questionsArray[selectedIndexRow]
+            var question: [String : AnyObject] = self.top10QuestionsArray[selectedIndexRow]
             let userID = question[Constants.QuestionFields.userID]
             guard let destinationVC = segue.destinationViewController as? HomeToProfilesViewController else { return }
             destinationVC.userIDRef = userID as? String
@@ -71,6 +73,7 @@ class HomeScreenViewController: UIViewController {
             self.questionsArray.sortInPlace {
                 (($0 as [String: AnyObject])["likeCount"] as? Int) > (($1 as [String: AnyObject])["likeCount"] as? Int)
             }
+            self.top10QuestionsArray = self.questionsArray.prefix(10)
             self.tableView.reloadData()
         })
     }
@@ -115,14 +118,14 @@ extension HomeScreenViewController: UITableViewDelegate, UITableViewDataSource {
     // MARK: - UITableViewDataSource & UITableViewDelegate Methods
     // MARK:
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return questionsArray.count
+        return self.top10QuestionsArray.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = self.tableView.dequeueReusableCellWithIdentifier("QuestionCell", forIndexPath: indexPath) as! QuestionCell
         cell.delegate = self
         cell.row = indexPath.row
-        let question: [String: AnyObject] = self.questionsArray[indexPath.row]
+        let question: [String: AnyObject] = self.top10QuestionsArray[indexPath.row]
         cell.performWithQuestion(question)
         return cell
     }
@@ -145,7 +148,7 @@ extension HomeScreenViewController: QuestionCellDelegate {
     }
     
     func handleLikeButtonTapOn(row: Int) {
-        let question = self.questionsArray[row]
+        let question = self.top10QuestionsArray[row]
         let questionID = question[Constants.QuestionFields.questionID] as! String
         //increment question likeCount
         FirebaseConfigManager.sharedInstance.ref.child("likeCounts").child(questionID).observeSingleEventOfType(.Value, withBlock: { (likeCountSnapshot) in
@@ -158,7 +161,6 @@ extension HomeScreenViewController: QuestionCellDelegate {
                 guard let likeStatus = likeStatusDict[Constants.LikeStatusFields.likeStatus] else { return }
                 if likeStatus == 0 {
                     let incrementedLikeCount = (currentLikeCount) + 1
-                    print("\(incrementedLikeCount + 1)")
                     FirebaseConfigManager.sharedInstance.ref.child("likeCounts/\(questionID)/likeCount").setValue(incrementedLikeCount)
                     FirebaseConfigManager.sharedInstance.ref.child("likeStatuses/\(questionID)/\(currentUserID)/likeStatus").setValue(1)
                 } else if likeStatus == 1 {
