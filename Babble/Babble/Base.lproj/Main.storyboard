@@ -490,7 +490,7 @@
         <scene sceneID="8Pp-gF-lBE">
             <objects>
                 <navigationController title="Home Screen Nav Controller" automaticallyAdjustsScrollViewInsets="NO" id="3SC-o7-hNK" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Home" id="EHK-Rg-rp1"/>
+                    <tabBarItem key="tabBarItem" title="Top 10" image="list-simple-star-7" id="EHK-Rg-rp1"/>
                     <toolbarItems/>
                     <keyCommands/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Ew9-dR-6dE">
@@ -619,13 +619,13 @@
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bXP-9R-lAs" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="556" y="1158"/>
+            <point key="canvasLocation" x="584" y="1162"/>
         </scene>
         <!--Me Nav Controller-->
         <scene sceneID="bnS-rr-TYZ">
             <objects>
                 <navigationController title="Me Nav Controller" automaticallyAdjustsScrollViewInsets="NO" id="YAS-QA-Oxe" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Me" id="LKl-LW-3eW"/>
+                    <tabBarItem key="tabBarItem" title="Profile" image="circle-user-7" id="LKl-LW-3eW"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="RQo-ul-4Wv">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -755,4 +755,8 @@
             <point key="canvasLocation" x="2138" y="1500"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="circle-user-7" width="30" height="30"/>
+        <image name="list-simple-star-7" width="30" height="30"/>
+    </resources>
 </document>

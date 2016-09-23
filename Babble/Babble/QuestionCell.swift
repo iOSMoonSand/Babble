@@ -57,6 +57,7 @@ class QuestionCell: UITableViewCell {
                 guard let currentLikeCount = likeCountDict[Constants.LikeCountFields.likeCount] else { return }
                 self.question[Constants.QuestionFields.likeCount] = currentLikeCount
                 self.likeButtonCountLabel.text = String(currentLikeCount)
+                FirebaseConfigManager.sharedInstance.ref.child("questions/\(questionID)/likeCount").setValue(currentLikeCount)
             }
         })
         //retrieve or create likeStatus from/in Firebase
