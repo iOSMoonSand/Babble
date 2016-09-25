@@ -28,6 +28,9 @@ class HomeToProfilesViewController: UITableViewController {
     }
     
     override func viewWillAppear(animated: Bool) {
+        self.userProfileImageView.layer.borderWidth = 1
+        self.userProfileImageView.layer.masksToBounds = false
+        self.userProfileImageView.layer.borderColor = UIColor.blackColor().CGColor
         self.userProfileImageView.layer.cornerRadius = self.userProfileImageView.bounds.width / 2
         self.userProfileImageView.clipsToBounds = true
     }

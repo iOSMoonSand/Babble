@@ -40,7 +40,7 @@ class AnswerCell: UITableViewCell {
     func performWithAnswer(answer: [String : AnyObject]) {
         //unpack local question data
         self.answer = answer
-        self.profilePhotoImageButton.setBackgroundImage(nil, forState: .Normal)
+        self.profilePhotoImageButton.setImage(nil, forState: .Normal)
         let answerText = self.answer[Constants.AnswerFields.text] as! String
         //let questionID = self.answer[Constants.AnswerFields.questionID] as! String
         let answerID = self.answer[Constants.AnswerFields.answerID] as! String
@@ -81,7 +81,7 @@ class AnswerCell: UITableViewCell {
                 }
             }
         })
-
+        
         //retrieve photoURL and displayName from Firebase
         FirebaseConfigManager.sharedInstance.ref.child("users").child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
             var user = userSnapshot.value as! [String: AnyObject]
@@ -98,26 +98,30 @@ class AnswerCell: UITableViewCell {
                 
                 if let photoDownloadURL = self.answer[Constants.AnswerFields.photoDownloadURL] as! String? {
                     let url = NSURL(string: photoDownloadURL)
-                    self.profilePhotoImageButton.kf_setBackgroundImageWithURL(url, forState: .Normal, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"))
+                    self.profilePhotoImageButton.kf_setImageWithURL(url, forState: .Normal, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"))
                 } else if let photoUrl = self.answer[Constants.AnswerFields.photoUrl] {
                     FIRStorage.storage().referenceForURL(photoUrl as! String).dataWithMaxSize(INT64_MAX) { (data, error) in
-                        self.profilePhotoImageButton.setBackgroundImage(nil, forState: .Normal)
+                        self.profilePhotoImageButton.setImage(nil, forState: .Normal)
                         if error != nil {
                             print("Error downloading: \(error)")
                             return
                         } else {
                             let image = UIImage(data: data!)
-                            self.profilePhotoImageButton.setBackgroundImage(image, forState: .Normal)
+                            self.profilePhotoImageButton.setImage(image, forState: .Normal)
                         }
                     }
                 } else if let photoUrl = self.answer[Constants.AnswerFields.photoUrl], url = NSURL(string:photoUrl as! String), data = NSData(contentsOfURL: url) {
                     let image = UIImage(data: data)
-                    self.profilePhotoImageButton.setBackgroundImage(image, forState: .Normal)
+                    self.profilePhotoImageButton.setImage(image, forState: .Normal)
                     
                 } else {
                     let image = UIImage(named: "ic_account_circle")
-                    self.profilePhotoImageButton.setBackgroundImage(image, forState: .Normal)
+                    self.profilePhotoImageButton.setImage(image, forState: .Normal)
                 }
+                self.profilePhotoImageButton.imageView?.contentMode = .ScaleAspectFill
+                self.profilePhotoImageButton.layer.borderWidth = 1
+                self.profilePhotoImageButton.layer.masksToBounds = false
+                self.profilePhotoImageButton.layer.borderColor = UIColor.blackColor().CGColor
                 self.profilePhotoImageButton.layer.cornerRadius = self.profilePhotoImageButton.bounds.width/2
                 self.profilePhotoImageButton.clipsToBounds = true
             }

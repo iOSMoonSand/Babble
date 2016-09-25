@@ -19,9 +19,12 @@ class MeVCImageCell: UITableViewCell {
     
     override func awakeFromNib() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.imageTapped))
-        profileImageView.addGestureRecognizer(tapGesture)
-        profileImageView.layer.cornerRadius = profileImageView.bounds.width/2
-        profileImageView.clipsToBounds = true
+        self.profileImageView.addGestureRecognizer(tapGesture)
+        self.profileImageView.layer.borderWidth = 1
+        self.profileImageView.layer.masksToBounds = false
+        self.profileImageView.layer.borderColor = UIColor.blackColor().CGColor
+        self.profileImageView.layer.cornerRadius = profileImageView.bounds.width/2
+        self.profileImageView.clipsToBounds = true
         
     }
     

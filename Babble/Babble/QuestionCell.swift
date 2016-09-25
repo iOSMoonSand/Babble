@@ -45,7 +45,7 @@ class QuestionCell: UITableViewCell {
         
         //unpack local question data
         self.question = question
-        self.profilePhotoImageButton.setBackgroundImage(nil, forState: .Normal)
+        self.profilePhotoImageButton.setImage(nil, forState: .Normal)
         let questionText = self.question[Constants.QuestionFields.text] as! String
         let questionID = self.question[Constants.QuestionFields.questionID] as! String
         let userID = self.question[Constants.QuestionFields.userID] as! String
@@ -101,30 +101,34 @@ class QuestionCell: UITableViewCell {
                 
                 if let photoDownloadURL = self.question[Constants.QuestionFields.photoDownloadURL] as! String? {
                     let url = NSURL(string: photoDownloadURL)
-                    self.profilePhotoImageButton.kf_setBackgroundImageWithURL(url, forState: .Normal, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"))
+                    self.profilePhotoImageButton.kf_setImageWithURL(url, forState: .Normal, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"))
                 } else if let photoUrl = self.question[Constants.QuestionFields.photoUrl] {
                     let image = UIImage(named: "Profile_avatar_placeholder_large")
-                    self.profilePhotoImageButton.setBackgroundImage(image, forState: .Normal)
+                    self.profilePhotoImageButton.setImage(image, forState: .Normal)
                 } else if let photoUrl = self.question[Constants.QuestionFields.photoUrl] {
                     FIRStorage.storage().referenceForURL(photoUrl as! String).dataWithMaxSize(INT64_MAX) { (data, error) in
-                        self.profilePhotoImageButton.setBackgroundImage(nil, forState: .Normal)
+                        self.profilePhotoImageButton.setImage(nil, forState: .Normal)
                         if error != nil {
                             print("Error downloading: \(error)")
                             return
                         } else {
                             let image = UIImage(data: data!)
-                            self.profilePhotoImageButton.setBackgroundImage(image, forState: .Normal)
+                            self.profilePhotoImageButton.setImage(image, forState: .Normal)
                         }
                     }
-                    }
-                
-                } else if let photoUrl = self.question[Constants.QuestionFields.photoUrl], url = NSURL(string:photoUrl as! String), data = NSData(contentsOfURL: url) {
-                    let image = UIImage(data: data)
-                    self.profilePhotoImageButton.setBackgroundImage(image, forState: .Normal)
-                    
                 }
-                self.profilePhotoImageButton.layer.cornerRadius = self.profilePhotoImageButton.bounds.width/2
-                self.profilePhotoImageButton.clipsToBounds = true
+                
+            } else if let photoUrl = self.question[Constants.QuestionFields.photoUrl], url = NSURL(string:photoUrl as! String), data = NSData(contentsOfURL: url) {
+                let image = UIImage(data: data)
+                self.profilePhotoImageButton.setImage(image, forState: .Normal)
+                
+            }
+            self.profilePhotoImageButton.imageView?.contentMode = .ScaleAspectFill
+            self.profilePhotoImageButton.layer.borderWidth = 1
+            self.profilePhotoImageButton.layer.masksToBounds = false
+            self.profilePhotoImageButton.layer.borderColor = UIColor.blackColor().CGColor
+            self.profilePhotoImageButton.layer.cornerRadius = self.profilePhotoImageButton.bounds.width/2
+            self.profilePhotoImageButton.clipsToBounds = true
         })
     }
     //MARK:
