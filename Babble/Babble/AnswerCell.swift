@@ -79,6 +79,7 @@ class AnswerCell: UITableViewCell {
                         self.likeButton.setBackgroundImage(emptyHeartImage, forState: .Normal)
                     }
                 }
+                
             }
         })
         

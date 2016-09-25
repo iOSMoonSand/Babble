@@ -276,63 +276,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="119" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="gU6-cE-rnK">
-                                <rect key="frame" x="0.0" y="64" width="600" height="440"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="AnswerCell" rowHeight="119" id="5Lf-aN-Zrl" customClass="AnswerCell" customModule="Babble" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="600" height="119"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="5Lf-aN-Zrl" id="AuR-cE-vjK">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="118.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Display Name Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4RL-iI-yQO">
-                                                    <rect key="frame" x="90" y="8" width="157" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
-                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ghv-AI-XpH">
-                                                    <rect key="frame" x="8" y="8" width="46" height="45.5"/>
-                                                    <connections>
-                                                        <action selector="profileImageButtonTapped:" destination="5Lf-aN-Zrl" eventType="touchUpInside" id="RkA-JZ-NHG"/>
-                                                    </connections>
-                                                </button>
-                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x1S-eB-pl7">
-                                                    <rect key="frame" x="549" y="48" width="23" height="23"/>
-                                                    <connections>
-                                                        <action selector="likeButtonTapped:" destination="5Lf-aN-Zrl" eventType="touchUpInside" id="2Bn-JZ-ikS"/>
-                                                    </connections>
-                                                </button>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" fixedFrame="YES" editable="NO" text="Text View" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="0h7-N1-DKI">
-                                                    <rect key="frame" x="90" y="37" width="437" height="73.5"/>
-                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                                </textView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XUi-wl-fax">
-                                                    <rect key="frame" x="539" y="70" width="42" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                        </tableViewCellContentView>
-                                        <connections>
-                                            <outlet property="answerTextView" destination="0h7-N1-DKI" id="0wT-w8-GaL"/>
-                                            <outlet property="displayNameLabel" destination="4RL-iI-yQO" id="sdP-S0-HM4"/>
-                                            <outlet property="likeButton" destination="x1S-eB-pl7" id="dVC-wM-c6b"/>
-                                            <outlet property="likeButtonCountLabel" destination="XUi-wl-fax" id="mP5-9s-zVO"/>
-                                            <outlet property="profilePhotoImageButton" destination="ghv-AI-XpH" id="Uzs-ku-Uyv"/>
-                                        </connections>
-                                    </tableViewCell>
-                                </prototypes>
-                                <connections>
-                                    <outlet property="dataSource" destination="poZ-ay-L4x" id="V4E-VI-xQc"/>
-                                    <outlet property="delegate" destination="poZ-ay-L4x" id="99l-Kp-Ky7"/>
-                                </connections>
-                            </tableView>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Write your answer here!" textAlignment="natural" clearsOnBeginEditing="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Ted-B4-8py">
                                 <rect key="frame" x="20" y="513" width="506" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -348,6 +291,89 @@
                                     <action selector="didTapSendAnswerButton:" destination="poZ-ay-L4x" eventType="touchUpInside" id="e86-tf-LBJ"/>
                                 </connections>
                             </button>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="138" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="gU6-cE-rnK">
+                                <rect key="frame" x="0.0" y="64" width="600" height="440"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="AnswerCell" rowHeight="138" id="5Lf-aN-Zrl" customClass="AnswerCell" customModule="Babble" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="600" height="138"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="5Lf-aN-Zrl" id="AuR-cE-vjK">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="137.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Display Name Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4RL-iI-yQO">
+                                                    <rect key="frame" x="62" y="20" width="157" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ghv-AI-XpH">
+                                                    <rect key="frame" x="8" y="8" width="46" height="45.5"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="46" id="L4g-lv-8wm"/>
+                                                        <constraint firstAttribute="width" constant="46" id="xER-a0-J1m"/>
+                                                    </constraints>
+                                                    <connections>
+                                                        <action selector="profileImageButtonTapped:" destination="5Lf-aN-Zrl" eventType="touchUpInside" id="RkA-JZ-NHG"/>
+                                                    </connections>
+                                                </button>
+                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x1S-eB-pl7">
+                                                    <rect key="frame" x="8" y="103" width="23" height="23"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="24" id="JBj-di-iqN"/>
+                                                        <constraint firstAttribute="height" constant="23" id="Z6s-7d-EjU"/>
+                                                    </constraints>
+                                                    <connections>
+                                                        <action selector="likeButtonTapped:" destination="5Lf-aN-Zrl" eventType="touchUpInside" id="2Bn-JZ-ikS"/>
+                                                    </connections>
+                                                </button>
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" misplaced="YES" editable="NO" text="Text View" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="0h7-N1-DKI">
+                                                    <rect key="frame" x="8" y="61" width="584" height="34"/>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                </textView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XUi-wl-fax">
+                                                    <rect key="frame" x="31" y="103" width="561" height="23"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="4RL-iI-yQO" firstAttribute="leading" secondItem="ghv-AI-XpH" secondAttribute="trailing" constant="8" id="7C5-kw-ecQ"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="XUi-wl-fax" secondAttribute="bottom" id="Bbh-aM-drz"/>
+                                                <constraint firstItem="XUi-wl-fax" firstAttribute="top" secondItem="0h7-N1-DKI" secondAttribute="bottom" constant="8" id="CGt-k5-iWD"/>
+                                                <constraint firstItem="0h7-N1-DKI" firstAttribute="trailing" secondItem="AuR-cE-vjK" secondAttribute="trailingMargin" id="DwY-W0-G8j"/>
+                                                <constraint firstItem="0h7-N1-DKI" firstAttribute="leading" secondItem="AuR-cE-vjK" secondAttribute="leadingMargin" id="Gxr-wy-xKS"/>
+                                                <constraint firstItem="x1S-eB-pl7" firstAttribute="leading" secondItem="AuR-cE-vjK" secondAttribute="leadingMargin" id="MgH-xB-BXr"/>
+                                                <constraint firstItem="XUi-wl-fax" firstAttribute="leading" secondItem="x1S-eB-pl7" secondAttribute="trailing" id="OO3-Yb-KhW"/>
+                                                <constraint firstItem="ghv-AI-XpH" firstAttribute="top" secondItem="AuR-cE-vjK" secondAttribute="topMargin" id="RxI-TJ-9Ln"/>
+                                                <constraint firstItem="XUi-wl-fax" firstAttribute="top" secondItem="0h7-N1-DKI" secondAttribute="bottom" constant="8" id="ShQ-7G-5BK"/>
+                                                <constraint firstItem="0h7-N1-DKI" firstAttribute="top" secondItem="4RL-iI-yQO" secondAttribute="bottom" constant="20" id="U02-Xh-asa"/>
+                                                <constraint firstItem="XUi-wl-fax" firstAttribute="trailing" secondItem="AuR-cE-vjK" secondAttribute="trailingMargin" id="U9U-wC-I2e"/>
+                                                <constraint firstItem="x1S-eB-pl7" firstAttribute="top" secondItem="0h7-N1-DKI" secondAttribute="bottom" constant="8" id="ebH-TQ-ATI"/>
+                                                <constraint firstItem="XUi-wl-fax" firstAttribute="leading" secondItem="x1S-eB-pl7" secondAttribute="trailing" id="j5H-qu-xss"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="x1S-eB-pl7" secondAttribute="bottom" id="pZh-Px-dW0"/>
+                                                <constraint firstItem="4RL-iI-yQO" firstAttribute="top" secondItem="AuR-cE-vjK" secondAttribute="topMargin" constant="12" id="tbT-ss-bsl"/>
+                                                <constraint firstItem="ghv-AI-XpH" firstAttribute="leading" secondItem="AuR-cE-vjK" secondAttribute="leadingMargin" id="vEo-ba-XzB"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="answerTextView" destination="0h7-N1-DKI" id="0wT-w8-GaL"/>
+                                            <outlet property="displayNameLabel" destination="4RL-iI-yQO" id="sdP-S0-HM4"/>
+                                            <outlet property="likeButton" destination="x1S-eB-pl7" id="dVC-wM-c6b"/>
+                                            <outlet property="likeButtonCountLabel" destination="XUi-wl-fax" id="mP5-9s-zVO"/>
+                                            <outlet property="profilePhotoImageButton" destination="ghv-AI-XpH" id="Uzs-ku-Uyv"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="poZ-ay-L4x" id="V4E-VI-xQc"/>
+                                    <outlet property="delegate" destination="poZ-ay-L4x" id="99l-Kp-Ky7"/>
+                                </connections>
+                            </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
