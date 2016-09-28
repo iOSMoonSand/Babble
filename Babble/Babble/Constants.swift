@@ -23,6 +23,8 @@ struct Constants {
         static let ProfilePhotoToMyProfile = "ProfilePhotoToMyProfile"
         static let HomeToProfiles = "HomeToProfiles"
         static let AnswersToProfiles = "AnswersToProfiles"
+        static let DiscoverToAnswers = "DiscoverToAnswers"
+        static let DiscoverToProfiles = "DiscoverToProfiles"
     }
     
     struct QuestionFields {
@@ -34,6 +36,7 @@ struct Constants {
         static let displayName = "displayName"
         static let likeCountID = "likeCountID"
         static let likeCount = "likeCount"
+        static let date = "date"
     }
     
     struct AnswerFields {//each answer separated by questionID child
