@@ -11,13 +11,19 @@ import Firebase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    
+    override init() {
+        super.init()
+        // Firebase Init
+        FIRApp.configure()
+    }
 
     var window: UIWindow?
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
-        FIRApp.configure()
+        //FIRApp.configure()
         
         return true
     }

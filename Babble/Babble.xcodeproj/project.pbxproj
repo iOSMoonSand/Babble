@@ -21,10 +21,12 @@
 		5E753B0C1D498C54001D82B8 /* AddQuestionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E753B0B1D498C54001D82B8 /* AddQuestionViewController.swift */; };
 		5E753B0E1D4BD123001D82B8 /* MeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E753B0D1D4BD123001D82B8 /* MeViewController.swift */; };
 		5E753B101D4EA23F001D82B8 /* ProfilePhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E753B0F1D4EA23F001D82B8 /* ProfilePhotoViewController.swift */; };
+		5E753DFC1D9F073200DB5BCE /* FirebaseMgr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E753DFB1D9F073200DB5BCE /* FirebaseMgr.swift */; };
+		5E753E001D9F139A00DB5BCE /* Question.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E753DFF1D9F139A00DB5BCE /* Question.swift */; };
+		5E753E021D9F157600DB5BCE /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E753E011D9F157600DB5BCE /* User.swift */; };
 		5E8BA9511D5E553000FB530E /* QuestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8BA9501D5E553000FB530E /* QuestionCell.swift */; };
 		5E8BA9531D5E5AAA00FB530E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5E8BA9521D5E5AAA00FB530E /* Assets.xcassets */; };
 		5E8BA9551D5E715000FB530E /* AnswerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8BA9541D5E715000FB530E /* AnswerCell.swift */; };
-		5EA2ED241D6B83760031003C /* FirebaseConfigManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA2ED231D6B83760031003C /* FirebaseConfigManager.swift */; };
 		5EAC6AB01D9AEAFA00A4432F /* DiscoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AAF1D9AEAFA00A4432F /* DiscoverViewController.swift */; };
 		5EAC6AB21D9AEEC200A4432F /* DiscoverQuestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AB11D9AEEC200A4432F /* DiscoverQuestionCell.swift */; };
 		5EAC6AB41D9AF8A600A4432F /* DiscoverToProfilesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AB31D9AF8A600A4432F /* DiscoverToProfilesViewController.swift */; };
@@ -56,10 +58,12 @@
 		5E753B0B1D498C54001D82B8 /* AddQuestionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddQuestionViewController.swift; sourceTree = "<group>"; };
 		5E753B0D1D4BD123001D82B8 /* MeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeViewController.swift; sourceTree = "<group>"; };
 		5E753B0F1D4EA23F001D82B8 /* ProfilePhotoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfilePhotoViewController.swift; sourceTree = "<group>"; };
+		5E753DFB1D9F073200DB5BCE /* FirebaseMgr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseMgr.swift; sourceTree = "<group>"; };
+		5E753DFF1D9F139A00DB5BCE /* Question.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
+		5E753E011D9F157600DB5BCE /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		5E8BA9501D5E553000FB530E /* QuestionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuestionCell.swift; sourceTree = "<group>"; };
 		5E8BA9521D5E5AAA00FB530E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5E8BA9541D5E715000FB530E /* AnswerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnswerCell.swift; sourceTree = "<group>"; };
-		5EA2ED231D6B83760031003C /* FirebaseConfigManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseConfigManager.swift; sourceTree = "<group>"; };
 		5EAC6AAF1D9AEAFA00A4432F /* DiscoverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverViewController.swift; sourceTree = "<group>"; };
 		5EAC6AB11D9AEEC200A4432F /* DiscoverQuestionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverQuestionCell.swift; sourceTree = "<group>"; };
 		5EAC6AB31D9AF8A600A4432F /* DiscoverToProfilesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverToProfilesViewController.swift; sourceTree = "<group>"; };
@@ -136,7 +140,9 @@
 			children = (
 				5E3E77021D284421006E5EA4 /* View Controllers */,
 				5E8BA9561D5E715600FB530E /* Table View Cells */,
-				5EA2ED231D6B83760031003C /* FirebaseConfigManager.swift */,
+				5E753DFB1D9F073200DB5BCE /* FirebaseMgr.swift */,
+				5E753DFF1D9F139A00DB5BCE /* Question.swift */,
+				5E753E011D9F157600DB5BCE /* User.swift */,
 				5E47756B1D2601B900A5E9B0 /* Constants.swift */,
 				5E753B091D493F72001D82B8 /* AppState.swift */,
 				5E2E6F231D25A794003588DC /* Main.storyboard */,
@@ -351,6 +357,7 @@
 			files = (
 				5E753B101D4EA23F001D82B8 /* ProfilePhotoViewController.swift in Sources */,
 				5E59CCDD1D518A9300708053 /* ProfileImageManager.swift in Sources */,
+				5E753DFC1D9F073200DB5BCE /* FirebaseMgr.swift in Sources */,
 				5EAC6AB41D9AF8A600A4432F /* DiscoverToProfilesViewController.swift in Sources */,
 				5E1190A31D41CBB600F05B9F /* AnswersViewController.swift in Sources */,
 				5E8BA9551D5E715000FB530E /* AnswerCell.swift in Sources */,
@@ -366,10 +373,11 @@
 				5EAC6AB21D9AEEC200A4432F /* DiscoverQuestionCell.swift in Sources */,
 				5E8BA9511D5E553000FB530E /* QuestionCell.swift in Sources */,
 				5E3E77041D284CB5006E5EA4 /* SignInViewController.swift in Sources */,
+				5E753E001D9F139A00DB5BCE /* Question.swift in Sources */,
 				5EAC6AB61D9AFDC700A4432F /* DiscoverAnswersViewController.swift in Sources */,
+				5E753E021D9F157600DB5BCE /* User.swift in Sources */,
 				5E3CFE341D88EC7F005D0109 /* MeVCImageCell.swift in Sources */,
 				5E753B0C1D498C54001D82B8 /* AddQuestionViewController.swift in Sources */,
-				5EA2ED241D6B83760031003C /* FirebaseConfigManager.swift in Sources */,
 				5E3E77011D2843B7006E5EA4 /* HomeScreenViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
