@@ -18,6 +18,7 @@ class AnswersViewController: UIViewController {
     // MARK:
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var textField: UITextField!
+    @IBOutlet weak var scrollView: UIScrollView!
     private var _refHandle: FIRDatabaseHandle!
     var answersArray = [[String : AnyObject]]()
     var questionRef: String?
@@ -91,32 +92,37 @@ class AnswersViewController: UIViewController {
     var kbHeight: CGFloat!
     
     func registerForKeyboardNotifications() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardDidShow(_:)), name: UIKeyboardDidShowNotification, object:nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardDidHide(_:)), name: UIKeyboardDidHideNotification, object:nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWasShown(_:)), name: UIKeyboardWillShowNotification, object:nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillBeHidden(_:)), name: UIKeyboardWillHideNotification, object:nil)
 }
 
     func unregisterForKeyboardNotifications() {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardDidShowNotification, object:nil)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardDidHideNotification, object:nil)}
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object:nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object:nil)}
     
-    func keyboardDidShow(notification: NSNotification) {
-        if let userInfo = notification.userInfo {
-            if let keyboardSize =  (userInfo[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
-                kbHeight = keyboardSize.height
-                self.animateTextField(true)
-            }
+    func keyboardWasShown(notification: NSNotification) {
+        guard let info = notification.userInfo else { return }
+        guard let kbSize = info[UIKeyboardFrameBeginUserInfoKey]!.CGRectValue().size as? CGSize? else { return }
+        
+        let contentInsets = UIEdgeInsetsMake(0.0, 0.0, ((kbSize?.height)! + 8.0), 0.0)
+        self.scrollView.contentInset = contentInsets
+        self.scrollView.scrollIndicatorInsets = contentInsets
+        
+        var aRect = self.view.frame
+        aRect.size.height -= (kbSize?.height)!
+        
+        if (!CGRectContainsPoint(aRect, self.textField.frame.origin)) {
+            self.scrollView.scrollRectToVisible(self.textField.frame, animated: true)
         }
+        
+        
+        
     }
     
-    func keyboardDidHide(notification: NSNotification) {
-        self.animateTextField(false)
-    }
-    
-    func animateTextField(up: Bool) {
-        let movement = (up ? -kbHeight : kbHeight)
-        UIView.animateWithDuration(0.1, animations: {
-            self.view.frame = CGRectOffset(self.view.frame, 0, movement)
-        })
+    func keyboardWillBeHidden(notification: NSNotification) {
+        let contentInsets = UIEdgeInsetsZero
+        self.scrollView.contentInset = contentInsets
+        self.scrollView.scrollIndicatorInsets = contentInsets
     }
 }
 // MARK:
