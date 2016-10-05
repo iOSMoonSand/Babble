@@ -25,6 +25,11 @@ class SignInViewController: UIViewController {
     //MARK:
     //MARK: - UIViewController Methods
     //MARK:
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        FirebaseMgr.shared.registerForNotifications()
+    }
+    
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
         self.emailField.delegate = self

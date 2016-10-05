@@ -1,51 +1,58 @@
-////
-////  AnswerCell.swift
-////  Babble
-////
-////  Created by Alexis Schreier on 08/12/16.
-////  Copyright © 2016 Alexis Schreier. All rights reserved.
-////
 //
-//import UIKit
-//import Firebase
+//  AnswerCell.swift
+//  Babble
 //
-////MARK:
-////MARK: - AnswerCellDelegate Class Protocol
-////MARK:
-//protocol AnswerCellDelegate: class {
-//    //MARK:
-//    //MARK: - AnswerCellDelegate Methods
-//    //MARK:
-//    func handleProfileImageButtonTapOn(row: Int)
-//    func handleLikeButtonTapOn(row: Int)
-//}
-////MARK:
-////MARK: - AnswerCell Class
-////MARK:
-//class AnswerCell: UITableViewCell {
-//    //MARK:
-//    //MARK: - Attributes
-//    //MARK:
-//    @IBOutlet weak var profilePhotoImageButton: UIButton!
-//    @IBOutlet weak var displayNameLabel: UILabel!
-//    @IBOutlet weak var answerTextView: UITextView!
-//    @IBOutlet weak var likeButton: UIButton!
-//    @IBOutlet weak var likeButtonCountLabel: UILabel!
-//    weak var delegate: AnswerCellDelegate?
-//    var answer = [String: AnyObject]()
-//    var row: Int?
-//    //MARK:
-//    //MARK: - Instance Methods
-//    //MARK:
-//    func performWithAnswer(answer: [String : AnyObject]) {
-//        //unpack local question data
-//        self.answer = answer
-//        self.profilePhotoImageButton.setImage(nil, forState: .Normal)
-//        let answerText = self.answer[Constants.AnswerFields.text] as! String
-//        //let questionID = self.answer[Constants.AnswerFields.questionID] as! String
-//        let answerID = self.answer[Constants.AnswerFields.answerID] as! String
-//        let userID = self.answer[Constants.AnswerFields.userID] as! String
-//        self.answerTextView.text = answerText
+//  Created by Alexis Schreier on 08/12/16.
+//  Copyright © 2016 Alexis Schreier. All rights reserved.
+//
+
+import UIKit
+import Firebase
+
+//MARK:
+//MARK: - AnswerCellDelegate Class Protocol
+//MARK:
+protocol AnswerCellDelegate: class {
+    //MARK:
+    //MARK: - AnswerCellDelegate Methods
+    //MARK:
+    func handleProfileImageButtonTapOn(row: Int)
+    func handleLikeButtonTapOn(row: Int)
+}
+//MARK:
+//MARK: - AnswerCell Class
+//MARK:
+class AnswerCell: UITableViewCell {
+    //MARK:
+    //MARK: - Attributes
+    //MARK:
+    @IBOutlet weak var profilePhotoImageButton: UIButton!
+    @IBOutlet weak var displayNameLabel: UILabel!
+    @IBOutlet weak var answerTextView: UITextView!
+    @IBOutlet weak var likeButton: UIButton!
+    @IBOutlet weak var likeButtonCountLabel: UILabel!
+    weak var delegate: AnswerCellDelegate?
+    var answer = [String: AnyObject]()
+    var row: Int?
+    //MARK:
+    //MARK: - Instance Methods
+    //MARK:
+    func performWithAnswer(answer: Answer) {
+        
+        self.answerTextView.contentInset = UIEdgeInsetsMake(self.answerTextView.contentInset.top, -5, self.answerTextView.contentInset.bottom, self.answerTextView.contentInset.right)
+        
+        //unpack local question data
+        self.profilePhotoImageButton.setImage(nil, forState: .Normal)
+        let answerText = answer.text
+        let answerID = answer.answerID
+        let userID = answer.userID
+        let likeCount = answer.likeCount
+        
+        self.answerTextView.text = answerText
+        self.likeButtonCountLabel.text = String(likeCount)
+        let emptyHeartImage = UIImage(named: "heart-empty")
+        self.likeButton.setImage(emptyHeartImage, forState: .Normal)
+    }
 //        //retrieve likeCount from Firebase
 //        self.ref.child("likeCounts").child(answerID).observeEventType(.Value, withBlock: {(likeCountSnapshot) in
 //            let likeCountDict = likeCountSnapshot.value as! [String: Int]
@@ -140,4 +147,4 @@
 //        guard let row = self.row else { return }
 //        delegate?.handleLikeButtonTapOn(row)
 //    }
-//}
+}

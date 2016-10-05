@@ -34,26 +34,36 @@ class QuestionCell: UITableViewCell {
     @IBOutlet weak var likeButtonCountLabel: UILabel!
     @IBOutlet weak var likeButton: UIButton!
     weak var delegate: QuestionCellDelegate?
-    //var question: Question?
+    var user: User?
     var row: Int?
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        self.registerForNotifications()
+    }
+    
     //MARK:
     //MARK: - Instance Methods
     //MARK:
     func performWithQuestion(question: Question) {
         
         self.questionTextView.contentInset = UIEdgeInsetsMake(self.questionTextView.contentInset.top, -5, self.questionTextView.contentInset.bottom, self.questionTextView.contentInset.right)
-        
         //unpack local question data
+        let userID = question.userID
+        let userIdDict = ["userID": userID]
+        self.postUserIDNotificationWith(userIdDict)
         self.profilePhotoImageButton.setImage(nil, forState: .Normal)
         let questionText = question.text
         let questionID = question.questionID
-        let userID = question.userID
         let likeCount = question.likeCount
         
         self.questionTextView.text = questionText
         self.likeButtonCountLabel.text = String(likeCount)
         let emptyHeartImage = UIImage(named: "heart-empty")
         self.likeButton.setImage(emptyHeartImage, forState: .Normal)
+        
+        FirebaseMgr.shared.retrieveUsers()
+        
 //        //retrieve likeCount from Firebase
 //        FirebaseConfigManager.sharedInstance.ref.child("likeCounts").child(questionID).observeEventType(.Value, withBlock: {(likeCountSnapshot) in
 //            let likeCountDict = likeCountSnapshot.value as! [String: Int]
@@ -92,50 +102,24 @@ class QuestionCell: UITableViewCell {
 //            }
 //        })
         
-//        //retrieve photoURL and displayName from Firebase
-//        FirebaseConfigManager.sharedInstance.ref.child("users").child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
-//            var user = userSnapshot.value as! [String: AnyObject]
-//            if self.question[Constants.QuestionFields.userID] as! String == userSnapshot.key {
-//                let photoURL = user[Constants.UserFields.photoURL] as! String
-//                let displayName = user[Constants.UserFields.displayName] as! String
-//                if let photoDownloadURL = user[Constants.UserFields.photoDownloadURL] {
-//                    self.question[Constants.QuestionFields.photoDownloadURL] = photoDownloadURL
-//                }
-//                self.question[Constants.QuestionFields.photoUrl] = photoURL
-//                self.question[Constants.QuestionFields.displayName] = displayName
-//                self.displayNameLabel.text = displayName
-//                
-//                if let photoDownloadURL = self.question[Constants.QuestionFields.photoDownloadURL] as! String? {
-//                    let url = NSURL(string: photoDownloadURL)
-//                    self.profilePhotoImageButton.kf_setImageWithURL(url, forState: .Normal, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"))
-//                } else if let photoUrl = self.question[Constants.QuestionFields.photoUrl] {
-//                    let image = UIImage(named: "Profile_avatar_placeholder_large")
-//                    self.profilePhotoImageButton.setImage(image, forState: .Normal)
-//                } else if let photoUrl = self.question[Constants.QuestionFields.photoUrl] {
-//                    FIRStorage.storage().referenceForURL(photoUrl as! String).dataWithMaxSize(INT64_MAX) { (data, error) in
-//                        self.profilePhotoImageButton.setImage(nil, forState: .Normal)
-//                        if error != nil {
-//                            print("Error downloading: \(error)")
-//                            return
-//                        } else {
-//                            let image = UIImage(data: data!)
-//                            self.profilePhotoImageButton.setImage(image, forState: .Normal)
-//                        }
-//                    }
-//                }
-//                
-//            } else if let photoUrl = self.question[Constants.QuestionFields.photoUrl], url = NSURL(string:photoUrl as! String), data = NSData(contentsOfURL: url) {
-//                let image = UIImage(data: data)
-//                self.profilePhotoImageButton.setImage(image, forState: .Normal)
-//                
-//            }
-//            self.profilePhotoImageButton.imageView?.contentMode = .ScaleAspectFill
-//            self.profilePhotoImageButton.layer.borderWidth = 1
-//            self.profilePhotoImageButton.layer.masksToBounds = false
-//            self.profilePhotoImageButton.layer.borderColor = UIColor.blackColor().CGColor
-//            self.profilePhotoImageButton.layer.cornerRadius = self.profilePhotoImageButton.bounds.width/2
-//            self.profilePhotoImageButton.clipsToBounds = true
-//        })
+    }
+    //MARK:
+    //MARK: - Notification Registration Methods
+    //MARK:
+    func registerForNotifications() {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateCellWithUserData), name: Constants.NotifKeys.UserRetrieved, object: nil)
+    }
+    
+    func updateCellWithUserData() {
+        print("update cell here")
+        self.user = FirebaseMgr.shared.user
+        self.displayNameLabel.text = self.user?.displayName
+    }
+    //MARK:
+    //MARK: - Notification Posting Methods
+    //MARK:
+    func postUserIDNotificationWith(userIdDict: [String: String]) {
+        NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotifKeys.SendUserID, object: self, userInfo: userIdDict)
     }
     //MARK:
     //MARK: - Button Actions

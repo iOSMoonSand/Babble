@@ -1,4 +1,4 @@
-//
+ //
 //  HomeScreenViewController.swift
 //  Babble
 //
@@ -14,13 +14,14 @@ import Firebase
 //MARK: -
 class HomeScreenViewController: UIViewController {
     //MARK: -
-    //MARK: - Attributes
+    //MARK: - Properties
     //MARK: -
     @IBOutlet weak var tableView: UITableView!
-    private var _refHandle: FIRDatabaseHandle!
+    //var top10QuestionsArray = ArraySlice<[Question]>()
+    var newQuestion: String?
+    var selectedIndexRow: Int?
     var questionsArray = [Question]() {
         didSet{
-            
             if oldValue.count == 0 {
                 self.tableView.reloadData()
             } else {
@@ -29,26 +30,19 @@ class HomeScreenViewController: UIViewController {
             }
         }
     }
-    //var top10QuestionsArray = ArraySlice<[Question]>()
-    var newQuestion: String?
-    var selectedIndexRow: Int?
     
     private func changeRowsForDifference(difference: Int, inSection section: Int){
         var indexPaths: [NSIndexPath] = []
-        
         let rowOffSet = section == 0 ? questionsArray.count-1 : questionsArray.count-1
-        
         for i in 0..<abs(difference) {
             indexPaths.append(NSIndexPath(forRow: i + rowOffSet, inSection: section))
         }
-        
         if difference > 0 {
             self.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Top)
         } else {
             self.tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: .Top)
         }
     }
-    
     //MARK: -
     //MARK: - UIViewController Methods
     //MARK: -
@@ -56,22 +50,22 @@ class HomeScreenViewController: UIViewController {
         super.viewDidLoad()
         self.tableView.delegate = self
         self.tableView.dataSource = self
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateQuestionsArray), name: "questionsRetrieved", object: nil)
+        self.registerForNotifications()
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tableViewCell")
         FirebaseMgr.shared.retrieveQuestions()
     }
 
     
-//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-//        
-//        if segue.identifier == Constants.Segues.HomeToAnswers {
-//            guard let selectedIndexPath = self.tableView.indexPathForSelectedRow else { return }
-//            let questionSnapShot = self.top10QuestionsArray[selectedIndexPath.row]
-//            let questionID = questionSnapShot[Constants.QuestionFields.questionID]
-//            guard let destinationVC = segue.destinationViewController as? AnswersViewController else { return }
-//            destinationVC.questionRef = questionID as? String
-//        }
-//        
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == Constants.Segues.HomeToAnswers {
+            guard let selectedIndexPath = self.tableView.indexPathForSelectedRow else { return }
+            let selectedQuestion = self.questionsArray[selectedIndexPath.row]
+            let questionID = selectedQuestion.questionID
+            let questionIdDict = ["questionID": questionID]
+            guard let destinationVC = segue.destinationViewController as? AnswersViewController else { return }
+            destinationVC.selectedQuestionIdDict = questionIdDict
+        }
+//
 //        if segue.identifier == Constants.Segues.HomeToProfiles {
 //            guard let selectedIndexRow = selectedIndexRow else { return }
 //            var question: [String : AnyObject] = self.top10QuestionsArray[selectedIndexRow]
@@ -79,14 +73,16 @@ class HomeScreenViewController: UIViewController {
 //            guard let destinationVC = segue.destinationViewController as? HomeToProfilesViewController else { return }
 //            destinationVC.userIDRef = userID as? String
 //        }
-//    }
+    }
     // MARK:
-    // MARK: - Firebase Database Retrieval
+    // MARK: - Notification Registration Methods
     // MARK:
+    func registerForNotifications() {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateQuestionsArray), name: Constants.NotifKeys.QuestionsRetrieved, object: nil)
+    }
+    
     func updateQuestionsArray(){
         self.questionsArray = FirebaseMgr.shared.questionsArray
-        //self.top10QuestionsArray = self.questionsArray.prefix(10)
-        //self.tableView.reloadData()
     }
     // MARK:
     // MARK: - Button Actions

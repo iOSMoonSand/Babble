@@ -20,21 +20,57 @@ class FirebaseMgr {
     //MARK: - Properties
     //MARK:
     static let shared = FirebaseMgr()
-    let ref: FIRDatabaseReference! = FIRDatabase.database().reference()
-    let storageRef: FIRStorageReference! = FIRStorage.storage().referenceForURL("gs://babble-8b668.appspot.com/")
-    private var _refHandle: FIRDatabaseHandle!
+    lazy var ref: FIRDatabaseReference! = {
+        FIRDatabase.database().reference()
+    }()
+    lazy var storageRef: FIRStorageReference! = {
+        FIRStorage.storage().referenceForURL("gs://babble-8b668.appspot.com/")
+    }()
+    private var _questionsRefHandle: FIRDatabaseHandle!
+    private var _answersRefHandle: FIRDatabaseHandle!
+    private var _usersRefHandle: FIRDatabaseHandle!
+    private var selectedQuestionID = String()
+    private var selectedUserID = String()
+    var user: User?
+    //
+    // Questions Array
+    //
     var questionsArray = [Question]() {
         didSet {
-            NSNotificationCenter.defaultCenter().postNotification((NSNotification(name: "questionsRetrieved", object: nil)))
+            self.questionsArray.sortInPlace {($0.likeCount > $1.likeCount)}
+            NSNotificationCenter.defaultCenter().postNotification((NSNotification(name: Constants.NotifKeys.QuestionsRetrieved, object: nil)))
+        }
+    }
+    //
+    // Answers Array
+    //
+    var answersArray = [Answer]() {
+        didSet {
+            self.answersArray.sortInPlace {($0.likeCount > $1.likeCount)}
+            NSNotificationCenter.defaultCenter().postNotification((NSNotification(name: Constants.NotifKeys.AnswersRetrieved, object: nil)))
         }
     }
     //MARK:
-    //MARK: - FirebaseMgr Methods
+    //MARK: - Accessor Methods
+    //MARK:
+    func questionsRef() -> FIRDatabaseReference {
+        return self.ref.child("questions")
+    }
+    
+    func answersRef() -> FIRDatabaseReference {
+        return self.ref.child("answers")
+    }
+    
+    func UsersRef() -> FIRDatabaseReference {
+        return self.ref.child("users")
+    }
+    //MARK:
+    //MARK: - Questions Data Retrieval
     //MARK:
     func retrieveQuestions() {
         //TODO: look up why use [weak self] in closure
         //TODO: use _refHandle in other places?
-        self._refHandle = self.ref.child("questions").observeEventType(.Value, withBlock: { (questionSnapshot) in
+        self._questionsRefHandle = self.questionsRef().observeEventType(.Value, withBlock: { (questionSnapshot) in
             self.questionsArray = [Question]()//make a new clean array
             let retrievedQuestions = questionSnapshot.value as! [String: [String: AnyObject]]
             var retrievedQuestion = [String: AnyObject]()
@@ -46,16 +82,119 @@ class FirebaseMgr {
                     text = retrievedQuestion[Constants.QuestionFields.text] as? String,
                     userID = retrievedQuestion[Constants.QuestionFields.userID] as? String,
                     likeCount = retrievedQuestion[Constants.QuestionFields.likeCount] as? Int
-                else { return }
+                    else { return }
                 let question = Question(questionID: questionID, text: text, userID: userID, likeCount: likeCount)
-                // question object includes: text, userID, questionID, likeCount
                 self.questionsArray.append(question)
             }
         })
     }
+    //MARK:
+    //MARK: - Answer Data Retrieval
+    //MARK:
+    func retrieveAnswers() {
+        self._answersRefHandle = self.answersRef().child(self.selectedQuestionID).observeEventType(.Value, withBlock: { (answerSnapshot) in
+            self.answersArray = [Answer]()//make a new clean array
+            if answerSnapshot.value is NSNull {
+            } else {
+                let retrievedAnswers = answerSnapshot.value as! [String: [String: AnyObject]]
+                var retrievedAnswer = [String: AnyObject]()
+                for (key, value) in retrievedAnswers {
+                    retrievedAnswer = value
+                    retrievedAnswer[Constants.AnswerFields.answerID] = key
+                    guard let
+                        answerID = retrievedAnswer[Constants.AnswerFields.answerID] as? String,
+                        text = retrievedAnswer[Constants.AnswerFields.text] as? String,
+                        userID = retrievedAnswer[Constants.AnswerFields.userID] as? String,
+                        likeCount = retrievedAnswer[Constants.AnswerFields.likeCount] as? Int
+                        else { return }
+                    let answer = Answer(answerID: answerID, text: text, userID: userID, likeCount: likeCount)
+                    self.answersArray.append(answer)
+                }
+            }
+        })
+    }
+    //MARK:
+    //MARK: - User Data Retrieval Method
+    //MARK:
+    func retrieveUsers() {
+        //retrieve userID, displayName, photoURL, userBio, and OPTIONALLY photoDownloadURL
+                self._usersRefHandle = self.UsersRef().child(self.selectedUserID).observeEventType(.Value, withBlock: { (userSnapshot) in
+                    var retrievedUser = userSnapshot.value as! [String: AnyObject]
+                    if self.selectedUserID == userSnapshot.key {
+                        guard let
+                            displayName = retrievedUser[Constants.UserFields.displayName] as? String,
+                            photoURL = retrievedUser[Constants.UserFields.photoURL] as? String,
+                            userBio = retrievedUser[Constants.UserFields.userBio] as? String
+                        else { return }
+                        let user = User(userID: self.selectedUserID, displayName: displayName, photoURL: photoURL, userBio: userBio)
+                        
+                        if let photoDownloadURL = retrievedUser[Constants.UserFields.photoDownloadURL] as? String {
+                            user.photoDownloadURL = photoDownloadURL
+                        }
+                        self.user = user
+                       NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotifKeys.UserRetrieved, object: self, userInfo: nil)
+                    }
+                    })
+    }
+//                        if let photoDownloadURL = self.question[Constants.QuestionFields.photoDownloadURL] as! String? {
+//                            let url = NSURL(string: photoDownloadURL)
+//                            self.profilePhotoImageButton.kf_setImageWithURL(url, forState: .Normal, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"))
+//                        } else if let photoUrl = self.question[Constants.QuestionFields.photoUrl] {
+//                            let image = UIImage(named: "Profile_avatar_placeholder_large")
+//                            self.profilePhotoImageButton.setImage(image, forState: .Normal)
+//                        } else if let photoUrl = self.question[Constants.QuestionFields.photoUrl] {
+//                            FIRStorage.storage().referenceForURL(photoUrl as! String).dataWithMaxSize(INT64_MAX) { (data, error) in
+//                                self.profilePhotoImageButton.setImage(nil, forState: .Normal)
+//                                if error != nil {
+//                                    print("Error downloading: \(error)")
+//                                    return
+//                                } else {
+//                                    let image = UIImage(data: data!)
+//                                    self.profilePhotoImageButton.setImage(image, forState: .Normal)
+//                                }
+//                            }
+//                        }
+//        
+//                    } else if let photoUrl = self.question[Constants.QuestionFields.photoUrl], url = NSURL(string:photoUrl as! String), data = NSData(contentsOfURL: url) {
+//                        let image = UIImage(data: data)
+//                        self.profilePhotoImageButton.setImage(image, forState: .Normal)
+//        
+//                    }
+//                    self.profilePhotoImageButton.imageView?.contentMode = .ScaleAspectFill
+//                    self.profilePhotoImageButton.layer.borderWidth = 1
+//                    self.profilePhotoImageButton.layer.masksToBounds = false
+//                    self.profilePhotoImageButton.layer.borderColor = UIColor.blackColor().CGColor
+//                    self.profilePhotoImageButton.layer.cornerRadius = self.profilePhotoImageButton.bounds.width/2
+//                    self.profilePhotoImageButton.clipsToBounds = true
+//                })
+//
+//    }
+    //MARK:
+    //MARK: - Notification Registration Methods
+    //MARK:
+    func registerForNotifications() {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(storeUserIdDict(_:)), name: Constants.NotifKeys.SendUserID, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(storeQuestionIdDict(_:)), name: Constants.NotifKeys.SendQuestionID, object: nil)
+    }
+    
+    @objc func storeQuestionIdDict(notification: NSNotification) {
+        if let userInfo = notification.userInfo {
+            guard let questionID = userInfo["questionID"] as? String else { return }
+            self.selectedQuestionID = questionID
+        }
+    }
+    
+    @objc func storeUserIdDict(notification: NSNotification) {
+        if let userInfo = notification.userInfo {
+            guard let userID = userInfo["userID"] as? String else { return }
+            self.selectedUserID = userID
+        }
+    }
     
     deinit {
-        self.ref.child("questions").removeObserverWithHandle(self._refHandle)
+        self.questionsRef().removeObserverWithHandle(self._questionsRefHandle)
+        self.UsersRef().removeObserverWithHandle(self._usersRefHandle)
+        self.answersRef().removeObserverWithHandle(self._answersRefHandle)
     }
 }
 

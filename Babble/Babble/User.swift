@@ -8,13 +8,18 @@
 
 import Foundation
 
-//class User {
-//    
-//    let userID: String
-//    let displayName: String
-//    let photoURL: String
-//    let photoDownloadURL: String
-//    let userBio: String
-//    
-//    init(userID: String, displayName: String, photoURL: String, photoDownloadURL: String, let userBio: String)
-//}
+class User {
+    
+    let userID: String
+    let displayName: String
+    let photoURL: String
+    var photoDownloadURL: String?
+    let userBio: String
+    
+    init(userID: String, displayName: String, photoURL: String, userBio: String){
+        self.userID = userID
+        self.displayName = displayName
+        self.photoURL = photoURL
+        self.userBio = userBio
+    }
+}

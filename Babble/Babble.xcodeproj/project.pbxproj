@@ -27,6 +27,7 @@
 		5E8BA9511D5E553000FB530E /* QuestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8BA9501D5E553000FB530E /* QuestionCell.swift */; };
 		5E8BA9531D5E5AAA00FB530E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5E8BA9521D5E5AAA00FB530E /* Assets.xcassets */; };
 		5E8BA9551D5E715000FB530E /* AnswerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8BA9541D5E715000FB530E /* AnswerCell.swift */; };
+		5EA4B52D1DA43010007316AB /* Answer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA4B52C1DA43010007316AB /* Answer.swift */; };
 		5EAC6AB01D9AEAFA00A4432F /* DiscoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AAF1D9AEAFA00A4432F /* DiscoverViewController.swift */; };
 		5EAC6AB21D9AEEC200A4432F /* DiscoverQuestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AB11D9AEEC200A4432F /* DiscoverQuestionCell.swift */; };
 		5EAC6AB41D9AF8A600A4432F /* DiscoverToProfilesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AB31D9AF8A600A4432F /* DiscoverToProfilesViewController.swift */; };
@@ -64,6 +65,7 @@
 		5E8BA9501D5E553000FB530E /* QuestionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuestionCell.swift; sourceTree = "<group>"; };
 		5E8BA9521D5E5AAA00FB530E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5E8BA9541D5E715000FB530E /* AnswerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnswerCell.swift; sourceTree = "<group>"; };
+		5EA4B52C1DA43010007316AB /* Answer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Answer.swift; sourceTree = "<group>"; };
 		5EAC6AAF1D9AEAFA00A4432F /* DiscoverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverViewController.swift; sourceTree = "<group>"; };
 		5EAC6AB11D9AEEC200A4432F /* DiscoverQuestionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverQuestionCell.swift; sourceTree = "<group>"; };
 		5EAC6AB31D9AF8A600A4432F /* DiscoverToProfilesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverToProfilesViewController.swift; sourceTree = "<group>"; };
@@ -138,13 +140,9 @@
 		5E2E6F1E1D25A794003588DC /* Babble */ = {
 			isa = PBXGroup;
 			children = (
-				5E3E77021D284421006E5EA4 /* View Controllers */,
-				5E8BA9561D5E715600FB530E /* Table View Cells */,
-				5E753DFB1D9F073200DB5BCE /* FirebaseMgr.swift */,
-				5E753DFF1D9F139A00DB5BCE /* Question.swift */,
-				5E753E011D9F157600DB5BCE /* User.swift */,
-				5E47756B1D2601B900A5E9B0 /* Constants.swift */,
-				5E753B091D493F72001D82B8 /* AppState.swift */,
+				5EA4B52E1DA484EE007316AB /* Models */,
+				5EA4B52F1DA4850E007316AB /* Views */,
+				5EA4B5301DA48544007316AB /* Controllers */,
 				5E2E6F231D25A794003588DC /* Main.storyboard */,
 				5E8BA9521D5E5AAA00FB530E /* Assets.xcassets */,
 			);
@@ -220,6 +218,35 @@
 				5EAC6AB31D9AF8A600A4432F /* DiscoverToProfilesViewController.swift */,
 			);
 			name = "User Profiles";
+			sourceTree = "<group>";
+		};
+		5EA4B52E1DA484EE007316AB /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5E753DFF1D9F139A00DB5BCE /* Question.swift */,
+				5EA4B52C1DA43010007316AB /* Answer.swift */,
+				5E753E011D9F157600DB5BCE /* User.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		5EA4B52F1DA4850E007316AB /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				5E8BA9561D5E715600FB530E /* Table View Cells */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		5EA4B5301DA48544007316AB /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				5E3E77021D284421006E5EA4 /* View Controllers */,
+				5E753DFB1D9F073200DB5BCE /* FirebaseMgr.swift */,
+				5E47756B1D2601B900A5E9B0 /* Constants.swift */,
+				5E753B091D493F72001D82B8 /* AppState.swift */,
+			);
+			name = Controllers;
 			sourceTree = "<group>";
 		};
 		5EAC6AAE1D9AEAE000A4432F /* Discover */ = {
@@ -362,6 +389,7 @@
 				5E1190A31D41CBB600F05B9F /* AnswersViewController.swift in Sources */,
 				5E8BA9551D5E715000FB530E /* AnswerCell.swift in Sources */,
 				5E47756C1D2601B900A5E9B0 /* Constants.swift in Sources */,
+				5EA4B52D1DA43010007316AB /* Answer.swift in Sources */,
 				5EAC6AB81D9AFEC700A4432F /* DiscoverAnswersCell.swift in Sources */,
 				5E753B0E1D4BD123001D82B8 /* MeViewController.swift in Sources */,
 				5E753B0A1D493F72001D82B8 /* AppState.swift in Sources */,

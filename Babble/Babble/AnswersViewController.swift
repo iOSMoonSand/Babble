@@ -1,39 +1,66 @@
-////
-////  AnswersViewController.swift
-////  Babble
-////
-////  Created by Alexis Schreier on 07/21/16.
-////  Copyright © 2016 Alexis Schreier. All rights reserved.
-////
 //
-//import UIKit
-//import Firebase
+//  AnswersViewController.swift
+//  Babble
 //
-//// MARK:
-//// MARK: - AnswersViewController Class
-//// MARK:
-//class AnswersViewController: UIViewController {
-//    // MARK:
-//    // MARK: - Attributes
-//    // MARK:
-//    @IBOutlet weak var tableView: UITableView!
-//    @IBOutlet weak var textField: UITextField!
-//    private var _refHandle: FIRDatabaseHandle!
-//    var answersArray = [[String : AnyObject]]()
-//    var questionRef: String?
-//    var selectedIndexRow: Int?
-//    var tapOutsideTextView = UITapGestureRecognizer()
-//    // MARK:
-//    // MARK: - UIViewController Methods
-//    // MARK:
-//    override func viewDidLoad() {
-//        textField.delegate = self
-//        super.viewDidLoad()
-//        registerForKeyboardNotifications()
-//        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tableViewCell")
-//        self.retrieveAnswerData()
-//    }
-//    
+//  Created by Alexis Schreier on 07/21/16.
+//  Copyright © 2016 Alexis Schreier. All rights reserved.
+//
+
+import UIKit
+import Firebase
+
+// MARK:
+// MARK: - AnswersViewController Class
+// MARK:
+class AnswersViewController: UIViewController {
+    // MARK:
+    // MARK: - Attributes
+    // MARK:
+    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var textField: UITextField!
+    var selectedQuestionIdDict: [String: String]?
+    var selectedIndexRow: Int?
+    var tapOutsideTextView = UITapGestureRecognizer()
+    var answersArray = [Answer]() {
+        didSet{
+            if oldValue.count == 0 {
+                self.tableView.reloadData()
+            } else {
+                let rowDifference = self.answersArray.count - oldValue.count
+                changeRowsForDifference(rowDifference, inSection: 0)
+            }
+        }
+    }
+    
+    private func changeRowsForDifference(difference: Int, inSection section: Int){
+        var indexPaths: [NSIndexPath] = []
+        
+        let rowOffSet = section == 0 ? self.answersArray.count-1 : self.answersArray.count-1
+        
+        for i in 0..<abs(difference) {
+            indexPaths.append(NSIndexPath(forRow: i + rowOffSet, inSection: section))
+        }
+        
+        if difference > 0 {
+            self.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Top)
+        } else {
+            self.tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: .Top)
+        }
+    }
+    // MARK:
+    // MARK: - UIViewController Methods
+    // MARK:
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
+//        self.textField.delegate = self
+        self.registerForNotifications()
+        self.postNotifications()
+        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tableViewCell")
+        FirebaseMgr.shared.retrieveAnswers()
+    }
+    
 //    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 //        
 //        if segue.identifier == Constants.Segues.AnswersToProfiles {
@@ -44,15 +71,25 @@
 //            destinationVC.userIDRef = userID as? String
 //        }
 //    }
-//
-//    
-//    deinit {
-//        unregisterForKeyboardNotifications()
-//        self.ref.child("answers").child(questionRef!).removeObserverWithHandle(_refHandle)
-//    }
-//    // MARK:
-//    // MARK: - Firebase Database Retrieval
-//    // MARK:
+    // MARK:
+    // MARK: - Notification Registration Methods
+    // MARK:
+    func registerForNotifications() {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateAnswersArray), name: Constants.NotifKeys.AnswersRetrieved, object: nil)
+    }
+    
+    func updateAnswersArray() {
+        self.answersArray = FirebaseMgr.shared.answersArray
+    }
+    // MARK:
+    // MARK: - Notification Post Methods
+    // MARK:
+    func postNotifications() {
+        NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotifKeys.SendQuestionID, object: self, userInfo: self.selectedQuestionIdDict)
+    }
+    // MARK:
+    // MARK: - Firebase Database Retrieval
+    // MARK:
 //    func retrieveAnswerData() {
 //        _refHandle = self.ref.child("answers").child(questionRef!).observeEventType(.Value, withBlock: { (answerSnapshot) in
 //            self.answersArray = [[String: AnyObject]]()//make new clean array
@@ -85,64 +122,32 @@
 //    @IBAction func didTapBackProfilesToAnswers(segue:UIStoryboardSegue) {
 //        //From UserProfiles to Answers
 //    }
-//    //MARK:
-//    //MARK: - NSNotification Methods
-//    //MARK:
-//    var kbHeight: CGFloat!
-//    
-//    func registerForKeyboardNotifications() {
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardDidShow(_:)), name: UIKeyboardDidShowNotification, object:nil)
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardDidHide(_:)), name: UIKeyboardDidHideNotification, object:nil)
-//}
-//
-//    func unregisterForKeyboardNotifications() {
-//        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardDidShowNotification, object:nil)
-//        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardDidHideNotification, object:nil)}
-//    
-//    func keyboardDidShow(notification: NSNotification) {
-//        if let userInfo = notification.userInfo {
-//            if let keyboardSize =  (userInfo[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
-//                kbHeight = keyboardSize.height
-//                self.animateTextField(true)
-//            }
-//        }
-//    }
-//    
-//    func keyboardDidHide(notification: NSNotification) {
-//        self.animateTextField(false)
-//    }
-//    
-//    func animateTextField(up: Bool) {
-//        let movement = (up ? -kbHeight : kbHeight)
-//        UIView.animateWithDuration(0.1, animations: {
-//            self.view.frame = CGRectOffset(self.view.frame, 0, movement)
-//        })
-//    }
-//}
-//// MARK:
-//// MARK: - UITableViewDataSource & UITableViewDelegate Protocols
-//// MARK:
-//extension AnswersViewController: UITableViewDelegate, UITableViewDataSource {
-//    // MARK:
-//    // MARK: - UITableViewDataSource & UITableViewDelegate Methods
-//    // MARK:
-//    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return self.answersArray.count
-//    }
-//    
-//    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-//        let cell = self.tableView.dequeueReusableCellWithIdentifier("AnswerCell", forIndexPath: indexPath) as! AnswerCell
-//        cell.delegate = self
-//        cell.row = indexPath.row
-//        let answer: [String: AnyObject] = self.answersArray[indexPath.row]
-//        cell.performWithAnswer(answer)
-//        return cell
-//    }
-//    
-//    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-//        self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
-//    }
-//}
+}
+    
+// MARK:
+// MARK: - UITableViewDataSource & UITableViewDelegate Protocols
+// MARK:
+extension AnswersViewController: UITableViewDelegate, UITableViewDataSource {
+    // MARK:
+    // MARK: - UITableViewDataSource & UITableViewDelegate Methods
+    // MARK:
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.answersArray.count
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = self.tableView.dequeueReusableCellWithIdentifier("AnswerCell", forIndexPath: indexPath) as! AnswerCell
+        cell.delegate = self
+        cell.row = indexPath.row
+        let answer: Answer = self.answersArray[indexPath.row]
+        cell.performWithAnswer(answer)
+        return cell
+    }
+
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
+}
 //// MARK:
 //// MARK: - UITextFieldDelegate Protocol
 //// MARK:
@@ -187,19 +192,19 @@
 //        self.ref.updateChildValues(childUpdates as! [String : AnyObject])
 //    }
 //}
-//// MARK:
-//// MARK: - AnswerCellDelegate Protocol
-//// MARK:
-//extension AnswersViewController: AnswerCellDelegate {
-//    //MARK:
-//    //MARK: - AnswerCellDelegate Methods
-//    //MARK:
-//    func handleProfileImageButtonTapOn(row: Int) {
+// MARK:
+// MARK: - AnswerCellDelegate Protocol
+// MARK:
+extension AnswersViewController: AnswerCellDelegate {
+    //MARK:
+    //MARK: - AnswerCellDelegate Methods
+    //MARK:
+    func handleProfileImageButtonTapOn(row: Int) {
 //        self.selectedIndexRow = row
 //        performSegueWithIdentifier(Constants.Segues.AnswersToProfiles, sender: self)
-//    }
-//    
-//    func handleLikeButtonTapOn(row: Int) {
+    }
+//
+    func handleLikeButtonTapOn(row: Int) {
 //        let answer = self.answersArray[row]
 //        let answerID = answer[Constants.AnswerFields.answerID] as! String
 //        //increment question likeCount
@@ -222,27 +227,27 @@
 //                }
 //            })
 //        })
-//    }
-//}
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

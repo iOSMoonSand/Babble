@@ -6,13 +6,15 @@
 //  Copyright © 2016 Alexis Schreier. All rights reserved.
 //
 
-//"https://babble-8b668.firebaseio.com/"
-
 struct Constants {
     
-//    struct NotificationKeys {
-//        static let SignedIn = "SignInCompleted"
-//    }
+    struct NotifKeys {
+        static let SendUserID = "SendUserID"
+        static let SendQuestionID = "SendQuestionID"
+        static let QuestionsRetrieved = "QuestionsRetrieved"
+        static let UserRetrieved = "UserRetrieved"
+        static let AnswersRetrieved = "AnswersRetrieved"
+    }
     
     struct Segues {
         static let SignInToHome = "SignInToHome"
