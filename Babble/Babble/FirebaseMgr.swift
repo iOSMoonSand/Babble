@@ -28,10 +28,10 @@ class FirebaseMgr {
     }()
     private var _questionsRefHandle: FIRDatabaseHandle!
     private var _answersRefHandle: FIRDatabaseHandle!
-    private var _usersRefHandle: FIRDatabaseHandle!
+    private var _usersNameRefHandle: FIRDatabaseHandle!
+    private var _usersPhotoRefHandle: FIRDatabaseHandle!
     private var selectedQuestionID = String()
     private var selectedUserID = String()
-    var user: User?
     //
     // Questions Array
     //
@@ -61,8 +61,12 @@ class FirebaseMgr {
         return self.ref.child("answers")
     }
     
-    func UsersRef() -> FIRDatabaseReference {
+    func usersRef() -> FIRDatabaseReference {
         return self.ref.child("users")
+    }
+    
+    func likeStatusesRef() -> FIRDatabaseReference {
+        return self.ref.child("likeStatuses")
     }
     //MARK:
     //MARK: - Questions Data Retrieval
@@ -114,11 +118,11 @@ class FirebaseMgr {
         })
     }
     //MARK:
-    //MARK: - User Data Retrieval Method
+    //MARK: - User Data Retrieval
     //MARK:
     func retrieveUserDisplayName(userID: String, completion: (displayName: String) -> Void) {
         //retrieve userID, displayName, photoURL, userBio, and OPTIONALLY photoDownloadURL
-        self._usersRefHandle = self.UsersRef().child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
+        self._usersNameRefHandle = self.usersRef().child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
             var retrievedUser = userSnapshot.value as! [String: AnyObject]
             if userID == userSnapshot.key {
                 guard let displayName = retrievedUser[Constants.UserFields.displayName] as? String else { return }
@@ -128,7 +132,7 @@ class FirebaseMgr {
     }
     
     func retrieveUserPhotoDownloadURL(userID: String, completion: (photoDownloadURL: String?, defaultImage: UIImage) -> Void) {
-        self._usersRefHandle = self.UsersRef().child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
+        self._usersPhotoRefHandle = self.usersRef().child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
             guard let defaultImage = UIImage(named: "Profile_avatar_placeholder_large") else { return }
             var retrievedUser = userSnapshot.value as! [String: AnyObject]
             if userID == userSnapshot.key {
@@ -140,6 +144,30 @@ class FirebaseMgr {
             }
         })
     }
+    //MARK:
+    //MARK: - Saving Like Count Data
+    //MARK:
+    func saveNewLikeCount(questionID: String) {
+        self.questionsRef().child("\(questionID)/likeCount").observeSingleEventOfType(.Value, withBlock: { (likeCountSnapshot) in
+            guard let currentLikeCount = likeCountSnapshot.value as? Int else { return }
+            guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
+            self.likeStatusesRef().child(questionID).child(currentUserID).observeSingleEventOfType(.Value, withBlock: {
+                (likeStatusSnapshot) in
+                let likeStatusDict = likeStatusSnapshot.value as! [String: Int]
+                guard let likeStatus = likeStatusDict[Constants.LikeStatusFields.likeStatus] else { return }
+                if likeStatus == 0 {
+                    let incrementedLikeCount = (currentLikeCount) + 1
+                    self.questionsRef().child("\(questionID)/likeCount").setValue(incrementedLikeCount)
+                    self.likeStatusesRef().child("\(questionID)/\(currentUserID)/likeStatus").setValue(1)
+                } else if likeStatus == 1 {
+                    let decrementedLikeCount = (currentLikeCount) - 1
+                    self.questionsRef().child("\(questionID)/likeCount").setValue(decrementedLikeCount)
+                    self.likeStatusesRef().child("\(questionID)/\(currentUserID)/likeStatus").setValue(0)
+                }
+            })
+        })
+    }
+    
     
 //                        if let photoDownloadURL = self.question[Constants.QuestionFields.photoDownloadURL] as! String? {
 //                            let url = NSURL(string: photoDownloadURL)
@@ -190,7 +218,8 @@ class FirebaseMgr {
     
     deinit {
         self.questionsRef().removeObserverWithHandle(self._questionsRefHandle)
-        self.UsersRef().removeObserverWithHandle(self._usersRefHandle)
+        self.usersRef().removeObserverWithHandle(self._usersNameRefHandle)
+        self.usersRef().removeObserverWithHandle(self._usersPhotoRefHandle)
         self.answersRef().removeObserverWithHandle(self._answersRefHandle)
     }
 }

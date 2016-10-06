@@ -40,19 +40,15 @@ class QuestionCell: UITableViewCell {
     //MARK:
     //MARK: - Instance Methods
     //MARK:
-    func performWithQuestion(question: Question) {
-        
-        self.questionTextView.contentInset = UIEdgeInsetsMake(self.questionTextView.contentInset.top, -5, self.questionTextView.contentInset.bottom, self.questionTextView.contentInset.right)
-        //unpack local question data
-        self.profilePhotoImageButton.setImage(nil, forState: .Normal)
+    func updateViewsWith(question: Question) {
         let questionText = question.text
         let likeCount = question.likeCount
-        
-        self.questionTextView.text = questionText
-        self.likeButtonCountLabel.text = String(likeCount)
         let defaultProfileImage = UIImage(named: "Profile_avatar_placeholder_large")
-        self.profilePhotoImageButton.setImage(defaultProfileImage, forState: .Normal)
         let emptyHeartImage = UIImage(named: "heart-empty")
+        self.questionTextView.text = questionText
+        self.profilePhotoImageButton.setImage(nil, forState: .Normal)
+        self.profilePhotoImageButton.setImage(defaultProfileImage, forState: .Normal)
+        self.likeButtonCountLabel.text = String(likeCount)
         self.likeButton.setImage(emptyHeartImage, forState: .Normal)
 
         
