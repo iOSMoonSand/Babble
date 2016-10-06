@@ -134,6 +134,17 @@ extension HomeScreenViewController: UITableViewDelegate, UITableViewDataSource {
         cell.row = indexPath.row
         let question: Question = self.questionsArray[indexPath.row]
         cell.performWithQuestion(question)
+        FirebaseMgr.shared.retrieveUserDisplayName(question.userID, completion: { (displayName) in
+            cell.displayNameLabel.text = displayName
+        })
+        FirebaseMgr.shared.retrieveUserPhotoDownloadURL(question.userID, completion: { (photoDownloadURL, defaultImage) in
+            if photoDownloadURL != nil {
+                let url = NSURL(string: photoDownloadURL!)
+                cell.profilePhotoImageButton.kf_setImageWithURL(url, forState: .Normal, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"))
+            } else {
+                cell.profilePhotoImageButton.setImage(UIImage(named: "Profile_avatar_placeholder_large"), forState: .Normal)
+            }
+        })
         return cell
     }
     

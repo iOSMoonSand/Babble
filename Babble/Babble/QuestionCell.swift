@@ -37,11 +37,6 @@ class QuestionCell: UITableViewCell {
     var user: User?
     var row: Int?
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        self.registerForNotifications()
-    }
-    
     //MARK:
     //MARK: - Instance Methods
     //MARK:
@@ -49,20 +44,17 @@ class QuestionCell: UITableViewCell {
         
         self.questionTextView.contentInset = UIEdgeInsetsMake(self.questionTextView.contentInset.top, -5, self.questionTextView.contentInset.bottom, self.questionTextView.contentInset.right)
         //unpack local question data
-        let userID = question.userID
-        let userIdDict = ["userID": userID]
-        self.postUserIDNotificationWith(userIdDict)
         self.profilePhotoImageButton.setImage(nil, forState: .Normal)
         let questionText = question.text
-        let questionID = question.questionID
         let likeCount = question.likeCount
         
         self.questionTextView.text = questionText
         self.likeButtonCountLabel.text = String(likeCount)
+        let defaultProfileImage = UIImage(named: "Profile_avatar_placeholder_large")
+        self.profilePhotoImageButton.setImage(defaultProfileImage, forState: .Normal)
         let emptyHeartImage = UIImage(named: "heart-empty")
         self.likeButton.setImage(emptyHeartImage, forState: .Normal)
-        
-        FirebaseMgr.shared.retrieveUsers()
+
         
 //        //retrieve likeCount from Firebase
 //        FirebaseConfigManager.sharedInstance.ref.child("likeCounts").child(questionID).observeEventType(.Value, withBlock: {(likeCountSnapshot) in
@@ -106,21 +98,11 @@ class QuestionCell: UITableViewCell {
     //MARK:
     //MARK: - Notification Registration Methods
     //MARK:
-    func registerForNotifications() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateCellWithUserData), name: Constants.NotifKeys.UserRetrieved, object: nil)
-    }
-    
-    func updateCellWithUserData() {
-        print("update cell here")
-        self.user = FirebaseMgr.shared.user
-        self.displayNameLabel.text = self.user?.displayName
-    }
+
     //MARK:
     //MARK: - Notification Posting Methods
     //MARK:
-    func postUserIDNotificationWith(userIdDict: [String: String]) {
-        NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotifKeys.SendUserID, object: self, userInfo: userIdDict)
-    }
+
     //MARK:
     //MARK: - Button Actions
     //MARK:

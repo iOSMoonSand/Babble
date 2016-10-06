@@ -51,7 +51,7 @@ class FirebaseMgr {
         }
     }
     //MARK:
-    //MARK: - Accessor Methods
+    //MARK: - Firebase Accessor Methods
     //MARK:
     func questionsRef() -> FIRDatabaseReference {
         return self.ref.child("questions")
@@ -116,26 +116,31 @@ class FirebaseMgr {
     //MARK:
     //MARK: - User Data Retrieval Method
     //MARK:
-    func retrieveUsers() {
+    func retrieveUserDisplayName(userID: String, completion: (displayName: String) -> Void) {
         //retrieve userID, displayName, photoURL, userBio, and OPTIONALLY photoDownloadURL
-                self._usersRefHandle = self.UsersRef().child(self.selectedUserID).observeEventType(.Value, withBlock: { (userSnapshot) in
-                    var retrievedUser = userSnapshot.value as! [String: AnyObject]
-                    if self.selectedUserID == userSnapshot.key {
-                        guard let
-                            displayName = retrievedUser[Constants.UserFields.displayName] as? String,
-                            photoURL = retrievedUser[Constants.UserFields.photoURL] as? String,
-                            userBio = retrievedUser[Constants.UserFields.userBio] as? String
-                        else { return }
-                        let user = User(userID: self.selectedUserID, displayName: displayName, photoURL: photoURL, userBio: userBio)
-                        
-                        if let photoDownloadURL = retrievedUser[Constants.UserFields.photoDownloadURL] as? String {
-                            user.photoDownloadURL = photoDownloadURL
-                        }
-                        self.user = user
-                       NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotifKeys.UserRetrieved, object: self, userInfo: nil)
-                    }
-                    })
+        self._usersRefHandle = self.UsersRef().child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
+            var retrievedUser = userSnapshot.value as! [String: AnyObject]
+            if userID == userSnapshot.key {
+                guard let displayName = retrievedUser[Constants.UserFields.displayName] as? String else { return }
+                completion(displayName: displayName)
+            }
+        })
     }
+    
+    func retrieveUserPhotoDownloadURL(userID: String, completion: (photoDownloadURL: String?, defaultImage: UIImage) -> Void) {
+        self._usersRefHandle = self.UsersRef().child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
+            guard let defaultImage = UIImage(named: "Profile_avatar_placeholder_large") else { return }
+            var retrievedUser = userSnapshot.value as! [String: AnyObject]
+            if userID == userSnapshot.key {
+                if let photoDownloadURL = retrievedUser[Constants.UserFields.photoDownloadURL] as? String {
+                    completion(photoDownloadURL: photoDownloadURL, defaultImage: defaultImage)
+                } else {
+                    print("No photoDownloadURL: user has not selected a profile photo.")
+                }
+            }
+        })
+    }
+    
 //                        if let photoDownloadURL = self.question[Constants.QuestionFields.photoDownloadURL] as! String? {
 //                            let url = NSURL(string: photoDownloadURL)
 //                            self.profilePhotoImageButton.kf_setImageWithURL(url, forState: .Normal, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"))
@@ -173,7 +178,6 @@ class FirebaseMgr {
     //MARK: - Notification Registration Methods
     //MARK:
     func registerForNotifications() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(storeUserIdDict(_:)), name: Constants.NotifKeys.SendUserID, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(storeQuestionIdDict(_:)), name: Constants.NotifKeys.SendQuestionID, object: nil)
     }
     
@@ -184,19 +188,23 @@ class FirebaseMgr {
         }
     }
     
-    @objc func storeUserIdDict(notification: NSNotification) {
-        if let userInfo = notification.userInfo {
-            guard let userID = userInfo["userID"] as? String else { return }
-            self.selectedUserID = userID
-        }
-    }
-    
     deinit {
         self.questionsRef().removeObserverWithHandle(self._questionsRefHandle)
         self.UsersRef().removeObserverWithHandle(self._usersRefHandle)
         self.answersRef().removeObserverWithHandle(self._answersRefHandle)
     }
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

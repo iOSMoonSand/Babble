@@ -12,7 +12,6 @@ struct Constants {
         static let SendUserID = "SendUserID"
         static let SendQuestionID = "SendQuestionID"
         static let QuestionsRetrieved = "QuestionsRetrieved"
-        static let UserRetrieved = "UserRetrieved"
         static let AnswersRetrieved = "AnswersRetrieved"
     }
     
