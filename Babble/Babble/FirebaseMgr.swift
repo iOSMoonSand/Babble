@@ -34,19 +34,17 @@ class FirebaseMgr {
     private var selectedUserID = String()
     //
     // Questions Array
-    //
     var questionsArray = [Question]() {
         didSet {
-            self.questionsArray.sortInPlace {($0.likeCount > $1.likeCount)}
+            //self.questionsArray.sortInPlace {($0.likeCount > $1.likeCount)}
             NSNotificationCenter.defaultCenter().postNotification((NSNotification(name: Constants.NotifKeys.QuestionsRetrieved, object: nil)))
         }
     }
     //
     // Answers Array
-    //
     var answersArray = [Answer]() {
         didSet {
-            self.answersArray.sortInPlace {($0.likeCount > $1.likeCount)}
+            //self.answersArray.sortInPlace {($0.likeCount > $1.likeCount)}
             NSNotificationCenter.defaultCenter().postNotification((NSNotification(name: Constants.NotifKeys.AnswersRetrieved, object: nil)))
         }
     }
@@ -74,8 +72,8 @@ class FirebaseMgr {
     func retrieveQuestions() {
         //TODO: look up why use [weak self] in closure
         //TODO: use _refHandle in other places?
-        self._questionsRefHandle = self.questionsRef().observeEventType(.Value, withBlock: { (questionSnapshot) in
-            self.questionsArray = [Question]()//make a new clean array
+        self.questionsRef().observeSingleEventOfType(.Value, withBlock: { (questionSnapshot) in
+            //self.questionsArray = [Question]()//make a new clean array
             let retrievedQuestions = questionSnapshot.value as! [String: [String: AnyObject]]
             var retrievedQuestion = [String: AnyObject]()
             for (key, value) in retrievedQuestions {
@@ -147,61 +145,50 @@ class FirebaseMgr {
     //MARK:
     //MARK: - Saving Like Count Data
     //MARK:
-    func saveNewLikeCount(questionID: String) {
+    func saveNewLikeCount(questionID: String, completion: (wantedQuestionIndex: Int, newLikeCount: Int) -> Void) {
+        var incrementedLikeCount = Int()
         self.questionsRef().child("\(questionID)/likeCount").observeSingleEventOfType(.Value, withBlock: { (likeCountSnapshot) in
             guard let currentLikeCount = likeCountSnapshot.value as? Int else { return }
             guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
-            self.likeStatusesRef().child(questionID).child(currentUserID).observeSingleEventOfType(.Value, withBlock: {
-                (likeStatusSnapshot) in
-                let likeStatusDict = likeStatusSnapshot.value as! [String: Int]
-                guard let likeStatus = likeStatusDict[Constants.LikeStatusFields.likeStatus] else { return }
-                if likeStatus == 0 {
-                    let incrementedLikeCount = (currentLikeCount) + 1
+            self.likeStatusesRef().child(questionID).observeSingleEventOfType(.Value, withBlock: { (likeStatusesSnapshot) in
+                if likeStatusesSnapshot.hasChild(currentUserID) {
+                    self.likeStatusesRef().child(questionID).child(currentUserID).observeSingleEventOfType(.Value, withBlock: {
+                        (likeStatusSnapshot) in
+                        let likeStatusDict = likeStatusSnapshot.value as! [String: Int]
+                        guard let likeStatus = likeStatusDict[Constants.LikeStatusFields.likeStatus] else { return }
+                        if likeStatus == 0 {
+                            incrementedLikeCount = (currentLikeCount) + 1
+                            self.questionsRef().child("\(questionID)/likeCount").setValue(incrementedLikeCount)
+                            self.likeStatusesRef().child("\(questionID)/\(currentUserID)/likeStatus").setValue(1)
+                            
+                            let wantedQuestionIndex = self.questionsArray.indexOf { $0.questionID == "\(questionID)" }
+                            print(wantedQuestionIndex!)
+                            completion(wantedQuestionIndex: wantedQuestionIndex!, newLikeCount: incrementedLikeCount)
+                            
+                        } else if likeStatus == 1 {
+                            let decrementedLikeCount = (currentLikeCount) - 1
+                            self.questionsRef().child("\(questionID)/likeCount").setValue(decrementedLikeCount)
+                            self.likeStatusesRef().child("\(questionID)/\(currentUserID)/likeStatus").setValue(0)
+                            
+                            let wantedQuestionIndex = self.questionsArray.indexOf { $0.questionID == "\(questionID)" }
+                            print(wantedQuestionIndex!)
+                            completion(wantedQuestionIndex: wantedQuestionIndex!, newLikeCount: decrementedLikeCount)
+                            
+                        }
+                    })
+                } else {
+                    incrementedLikeCount = (currentLikeCount) + 1
                     self.questionsRef().child("\(questionID)/likeCount").setValue(incrementedLikeCount)
                     self.likeStatusesRef().child("\(questionID)/\(currentUserID)/likeStatus").setValue(1)
-                } else if likeStatus == 1 {
-                    let decrementedLikeCount = (currentLikeCount) - 1
-                    self.questionsRef().child("\(questionID)/likeCount").setValue(decrementedLikeCount)
-                    self.likeStatusesRef().child("\(questionID)/\(currentUserID)/likeStatus").setValue(0)
+                    
+                    let wantedQuestionIndex = self.questionsArray.indexOf { $0.questionID == "\(questionID)" }
+                    print(wantedQuestionIndex!)
+                    completion(wantedQuestionIndex: wantedQuestionIndex!, newLikeCount: incrementedLikeCount)
+                    
                 }
             })
         })
     }
-    
-    
-//                        if let photoDownloadURL = self.question[Constants.QuestionFields.photoDownloadURL] as! String? {
-//                            let url = NSURL(string: photoDownloadURL)
-//                            self.profilePhotoImageButton.kf_setImageWithURL(url, forState: .Normal, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"))
-//                        } else if let photoUrl = self.question[Constants.QuestionFields.photoUrl] {
-//                            let image = UIImage(named: "Profile_avatar_placeholder_large")
-//                            self.profilePhotoImageButton.setImage(image, forState: .Normal)
-//                        } else if let photoUrl = self.question[Constants.QuestionFields.photoUrl] {
-//                            FIRStorage.storage().referenceForURL(photoUrl as! String).dataWithMaxSize(INT64_MAX) { (data, error) in
-//                                self.profilePhotoImageButton.setImage(nil, forState: .Normal)
-//                                if error != nil {
-//                                    print("Error downloading: \(error)")
-//                                    return
-//                                } else {
-//                                    let image = UIImage(data: data!)
-//                                    self.profilePhotoImageButton.setImage(image, forState: .Normal)
-//                                }
-//                            }
-//                        }
-//        
-//                    } else if let photoUrl = self.question[Constants.QuestionFields.photoUrl], url = NSURL(string:photoUrl as! String), data = NSData(contentsOfURL: url) {
-//                        let image = UIImage(data: data)
-//                        self.profilePhotoImageButton.setImage(image, forState: .Normal)
-//        
-//                    }
-//                    self.profilePhotoImageButton.imageView?.contentMode = .ScaleAspectFill
-//                    self.profilePhotoImageButton.layer.borderWidth = 1
-//                    self.profilePhotoImageButton.layer.masksToBounds = false
-//                    self.profilePhotoImageButton.layer.borderColor = UIColor.blackColor().CGColor
-//                    self.profilePhotoImageButton.layer.cornerRadius = self.profilePhotoImageButton.bounds.width/2
-//                    self.profilePhotoImageButton.clipsToBounds = true
-//                })
-//
-//    }
     //MARK:
     //MARK: - Notification Registration Methods
     //MARK:

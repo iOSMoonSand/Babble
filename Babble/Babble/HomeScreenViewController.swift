@@ -11,7 +11,7 @@
  
  //MARK: -
  //MARK: - HomeScreenViewController Class
- //MARK: -
+ //MARK-
  class HomeScreenViewController: UIViewController {
     //MARK: -
     //MARK: - Properties
@@ -22,9 +22,26 @@
     var selectedIndexRow: Int?
     var questionsArray = [Question]() {
         didSet{
-            if questionsArray.count > 0 {
+            if oldValue.count == 0 {
                 self.tableView.reloadData()
+            } else {
+                let rowDifference = self.questionsArray.count - oldValue.count
+                changeRowsForDifference(rowDifference, inSection: 0)
             }
+        }
+    }
+    
+    private func changeRowsForDifference(difference: Int, inSection section: Int){
+        var indexPaths: [NSIndexPath] = []
+        
+        let rowOffSet = self.questionsArray.count-1
+        
+        for i in 0..<abs(difference) {
+            indexPaths.append(NSIndexPath(forRow: i + rowOffSet, inSection: section))
+        }
+        
+        if difference > 0 {
+            self.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
         }
     }
     //MARK: -
@@ -116,10 +133,13 @@
         cell.delegate = self
         cell.row = indexPath.row
         let question: Question = self.questionsArray[indexPath.row]
+        //
         cell.updateViewsWith(question)
+        //
         FirebaseMgr.shared.retrieveUserDisplayName(question.userID, completion: { (displayName) in
             cell.displayNameLabel.text = displayName
         })
+        //
         FirebaseMgr.shared.retrieveUserPhotoDownloadURL(question.userID, completion: { (photoDownloadURL, defaultImage) in
             if photoDownloadURL != nil {
                 let url = NSURL(string: photoDownloadURL!)
@@ -150,7 +170,13 @@
     //
     func handleLikeButtonTapOn(row: Int) {
         let question = self.questionsArray[row]
-        FirebaseMgr.shared.saveNewLikeCount(question.questionID)
+        FirebaseMgr.shared.saveNewLikeCount(question.questionID, completion: { (wantedQuestionIndex, newLikeCount) in
+            
+            self.questionsArray[wantedQuestionIndex].likeCount = newLikeCount
+            let indexPath = NSIndexPath(forRow: wantedQuestionIndex, inSection: 0)
+            self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+            
+        })
     }
  }
  
@@ -161,7 +187,37 @@
  
  
  
- 
+ //if let photoDownloadURL = self.question[Constants.QuestionFields.photoDownloadURL] as! String? {
+ //                            let url = NSURL(string: photoDownloadURL)
+ //                            self.profilePhotoImageButton.kf_setImageWithURL(url, forState: .Normal, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"))
+ //                        } else if let photoUrl = self.question[Constants.QuestionFields.photoUrl] {
+ //                            let image = UIImage(named: "Profile_avatar_placeholder_large")
+ //                            self.profilePhotoImageButton.setImage(image, forState: .Normal)
+ //                        } else if let photoUrl = self.question[Constants.QuestionFields.photoUrl] {
+ //                            FIRStorage.storage().referenceForURL(photoUrl as! String).dataWithMaxSize(INT64_MAX) { (data, error) in
+ //                                self.profilePhotoImageButton.setImage(nil, forState: .Normal)
+ //                                if error != nil {
+ //                                    print("Error downloading: \(error)")
+ //                                    return
+ //                                } else {
+ //                                    let image = UIImage(data: data!)
+ //                                    self.profilePhotoImageButton.setImage(image, forState: .Normal)
+ //                                }
+ //                            }
+ //                        }
+ //
+ //                    } else if let photoUrl = self.question[Constants.QuestionFields.photoUrl], url = NSURL(string:photoUrl as! String), data = NSData(contentsOfURL: url) {
+ //                        let image = UIImage(data: data)
+ //                        self.profilePhotoImageButton.setImage(image, forState: .Normal)
+ //
+ //                    }
+ //                    self.profilePhotoImageButton.imageView?.contentMode = .ScaleAspectFill
+ //                    self.profilePhotoImageButton.layer.borderWidth = 1
+ //                    self.profilePhotoImageButton.layer.masksToBounds = false
+ //                    self.profilePhotoImageButton.layer.borderColor = UIColor.blackColor().CGColor
+ //                    self.profilePhotoImageButton.layer.cornerRadius = self.profilePhotoImageButton.bounds.width/2
+ //                    self.profilePhotoImageButton.clipsToBounds = true
+ //                })
  
  
  
