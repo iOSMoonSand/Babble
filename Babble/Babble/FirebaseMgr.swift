@@ -27,6 +27,7 @@ class FirebaseMgr {
     lazy var storageRef: FIRStorageReference! = {
         FIRStorage.storage().referenceForURL("gs://babble-8b668.appspot.com/")
     }()
+    private var _questionsRefHandle: FIRDatabaseHandle!
     private var _answersRefHandle: FIRDatabaseHandle!
     private var _usersNameRefHandle: FIRDatabaseHandle!
     private var _usersPhotoRefHandle: FIRDatabaseHandle!
@@ -71,45 +72,34 @@ class FirebaseMgr {
     //MARK:
     func retrieveQuestions() {
         //TODO: look up why use [weak self] in closure
-        self.questionsRef().observeSingleEventOfType(.Value, withBlock: { (questionSnapshot) in
-            let retrievedQuestions = questionSnapshot.value as! [String: [String: AnyObject]]
-            var retrievedQuestion = [String: AnyObject]()
-            for (key, value) in retrievedQuestions {
-                retrievedQuestion = value
-                retrievedQuestion[Constants.QuestionFields.questionID] = key
+        self._questionsRefHandle = self.questionsRef().observeEventType(.ChildAdded, withBlock: { (questionSnapshot) in
+            let retrievedQuestion = questionSnapshot.value as! [String: AnyObject]
+            let questionID = questionSnapshot.key
                 guard let
-                    questionID = retrievedQuestion[Constants.QuestionFields.questionID] as? String,
                     text = retrievedQuestion[Constants.QuestionFields.text] as? String,
                     userID = retrievedQuestion[Constants.QuestionFields.userID] as? String,
                     likeCount = retrievedQuestion[Constants.QuestionFields.likeCount] as? Int
                     else { return }
                 let question = Question(questionID: questionID, text: text, userID: userID, likeCount: likeCount)
                 self.questionsArray.append(question)
-            }
         })
     }
     //MARK:
     //MARK: - Answer Data Retrieval
     //MARK:
     func retrieveAnswers() {
-        self._answersRefHandle = self.answersRef().child(self.selectedQuestionID).observeEventType(.Value, withBlock: { (answerSnapshot) in
-            self.answersArray = [Answer]()//make a new clean array
+        self._answersRefHandle = self.answersRef().child(self.selectedQuestionID).observeEventType(.ChildAdded, withBlock: { (answerSnapshot) in
             if answerSnapshot.value is NSNull {
             } else {
-                let retrievedAnswers = answerSnapshot.value as! [String: [String: AnyObject]]
-                var retrievedAnswer = [String: AnyObject]()
-                for (key, value) in retrievedAnswers {
-                    retrievedAnswer = value
-                    retrievedAnswer[Constants.AnswerFields.answerID] = key
+                let retrievedAnswer = answerSnapshot.value as! [String: AnyObject]
+                let answerID = answerSnapshot.key
                     guard let
-                        answerID = retrievedAnswer[Constants.AnswerFields.answerID] as? String,
                         text = retrievedAnswer[Constants.AnswerFields.text] as? String,
                         userID = retrievedAnswer[Constants.AnswerFields.userID] as? String,
                         likeCount = retrievedAnswer[Constants.AnswerFields.likeCount] as? Int
                         else { return }
                     let answer = Answer(answerID: answerID, text: text, userID: userID, likeCount: likeCount)
                     self.answersArray.append(answer)
-                }
             }
         })
     }
@@ -235,19 +225,19 @@ class FirebaseMgr {
                         guard let likeStatus = likeStatusDict[Constants.LikeStatusFields.likeStatus] else { return }
                         if likeStatus == 0 {
                             incrementedLikeCount = (currentLikeCount) + 1
-                            self.questionsRef().child("\(answerID)/likeCount").setValue(incrementedLikeCount)
+                            self.answersRef().child("\(questionID)/\(answerID)/likeCount").setValue(incrementedLikeCount)
                             self.likeStatusesRef().child("\(answerID)/\(currentUserID)/likeStatus").setValue(1)
                             completion(newLikeCount: incrementedLikeCount)
                         } else if likeStatus == 1 {
                             let decrementedLikeCount = (currentLikeCount) - 1
-                            self.questionsRef().child("\(answerID)/likeCount").setValue(decrementedLikeCount)
+                            self.answersRef().child("\(questionID)/\(answerID)/likeCount").setValue(decrementedLikeCount)
                             self.likeStatusesRef().child("\(answerID)/\(currentUserID)/likeStatus").setValue(0)
                             completion(newLikeCount: decrementedLikeCount)
                         }
                     })
                 } else {
                     incrementedLikeCount = (currentLikeCount) + 1
-                    self.questionsRef().child("\(answerID)/likeCount").setValue(incrementedLikeCount)
+                    self.answersRef().child("\(questionID)/\(answerID)/likeCount").setValue(incrementedLikeCount)
                     self.likeStatusesRef().child("\(answerID)/\(currentUserID)/likeStatus").setValue(1)
                     completion(newLikeCount: incrementedLikeCount)
                 }
@@ -298,6 +288,7 @@ class FirebaseMgr {
     deinit {
         self.usersRef().removeObserverWithHandle(self._usersNameRefHandle)
         self.usersRef().removeObserverWithHandle(self._usersPhotoRefHandle)
+        self.questionsRef().removeObserverWithHandle(self._questionsRefHandle)
         self.answersRef().removeObserverWithHandle(self._answersRefHandle)
     }
 }
