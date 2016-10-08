@@ -13,7 +13,7 @@ class Answer {
     let answerID: String
     let text: String
     let userID: String
-    let likeCount: Int
+    var likeCount: Int
     
     init(answerID: String, text: String, userID: String, likeCount: Int){
         self.answerID = answerID

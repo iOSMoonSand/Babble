@@ -87,23 +87,20 @@
     // MARK:
     // MARK: - Button Actions
     // MARK:
-    //    @IBAction func didTapPostAddQuestion(segue:UIStoryboardSegue) {
-    //        //Unwind segue from AddQuestion to HomeScreen
-    //        //Identifier: PostNewQuestionToHome
-    //        let data = [Constants.QuestionFields.text: self.newQuestion! as String]
-    //        postQuestion(data)
-    //    }
+        @IBAction func didTapPostAddQuestion(segue:UIStoryboardSegue) {
+            //Unwind segue from AddQuestion to HomeScreen
+            //Identifier: PostNewQuestionToHome
+            let data = [Constants.QuestionFields.text: self.newQuestion! as String]
+            postQuestion(data)
+        }
     
-    //    func postQuestion(data: [String: AnyObject]) {
-    //        var questionDataDict = data
-    //        guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
-    //        questionDataDict[Constants.QuestionFields.userID] = currentUserID
-    //        let key = self.ref.child("questions").childByAutoId().key
-    //        let childUpdates = ["questions/\(key)": questionDataDict,
-    //                            "likeCounts/\(key)/likeCount": 0,
-    //                            "likeStatuses/\(key)/\(currentUserID)/likeStatus": 0]
-    //        self.ref.updateChildValues(childUpdates as! [String : AnyObject])
-    //    }
+        func postQuestion(data: [String: AnyObject]) {
+            var questionDataDict = data
+            guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
+            questionDataDict[Constants.QuestionFields.userID] = currentUserID
+            questionDataDict[Constants.QuestionFields.likeCount] = 0
+            FirebaseMgr.shared.saveNewQuestion(questionDataDict, userID: currentUserID)
+        }
     // MARK:
     // MARK: - Unwind Segues
     // MARK:
@@ -160,7 +157,6 @@
                 let emptyHeartImage = UIImage(named: "heart-empty")
                 cell.likeButton.setImage(emptyHeartImage, forState: .Normal)
             }
-
         })
         return cell
     }
@@ -195,7 +191,7 @@
     //
     func handleLikeButtonTapOn(row: Int, cell: QuestionCell) {
         let question = self.questionsArray[row]
-        FirebaseMgr.shared.saveNewLikeCount(question.questionID, completion: { (newLikeCount) in
+        FirebaseMgr.shared.saveNewQuestionLikeCount(question.questionID, completion: { (newLikeCount) in
             //cell.likeButton.setImage(nil, forState: .Normal)
             self.questionsArray[row].likeCount = newLikeCount
             let indexPath = NSIndexPath(forRow: row, inSection: 0)

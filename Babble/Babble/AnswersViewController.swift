@@ -14,7 +14,7 @@ import Firebase
 // MARK:
 class AnswersViewController: UIViewController {
     // MARK:
-    // MARK: - Attributes
+    // MARK: - Properties
     // MARK:
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var textField: UITextField!
@@ -31,30 +31,27 @@ class AnswersViewController: UIViewController {
             }
         }
     }
-    
+    //TODO: understand logic below
     private func changeRowsForDifference(difference: Int, inSection section: Int){
         var indexPaths: [NSIndexPath] = []
         
-        let rowOffSet = section == 0 ? self.answersArray.count-1 : self.answersArray.count-1
+        let rowOffSet = self.answersArray.count-1
         
         for i in 0..<abs(difference) {
             indexPaths.append(NSIndexPath(forRow: i + rowOffSet, inSection: section))
         }
         
         if difference > 0 {
-            self.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Top)
-        } else {
-            self.tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: .Top)
+            self.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
         }
-    }
-    // MARK:
+    }    // MARK:
     // MARK: - UIViewController Methods
     // MARK:
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.delegate = self
         self.tableView.dataSource = self
-//        self.textField.delegate = self
+        self.textField.delegate = self
         self.registerForNotifications()
         self.postNotifications()
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tableViewCell")
@@ -88,40 +85,17 @@ class AnswersViewController: UIViewController {
         NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotifKeys.SendQuestionID, object: self, userInfo: self.selectedQuestionIdDict)
     }
     // MARK:
-    // MARK: - Firebase Database Retrieval
+    // MARK: - Button Actions
     // MARK:
-//    func retrieveAnswerData() {
-//        _refHandle = self.ref.child("answers").child(questionRef!).observeEventType(.Value, withBlock: { (answerSnapshot) in
-//            self.answersArray = [[String: AnyObject]]()//make new clean array
-//            if answerSnapshot.value is NSNull {
-//            } else {
-//                let answers = answerSnapshot.value as! [String: [String:AnyObject]]
-//                for (key, value) in answers {
-//                    var answer = value
-//                    answer[Constants.AnswerFields.questionID] = self.questionRef! as String
-//                    answer[Constants.AnswerFields.answerID] = key as String
-//                    //answer object includes: text, userID, questionID, answerID
-//                    self.answersArray.append(answer)
-//                }
-//            }
-//            self.answersArray.sortInPlace {
-//                (($0 as [String: AnyObject])["likeCount"] as? Int) > (($1 as [String: AnyObject])["likeCount"] as? Int)
-//            }
-//            self.tableView.reloadData()
-//        })
-//    }
-//    // MARK:
-//    // MARK: - Button Actions
-//    // MARK:
-//    @IBAction func didTapSendAnswerButton(sender: UIButton) {
-//        textFieldShouldReturn(self.textField)
-//    }
-//    // MARK:
-//    // MARK: - Unwind Segues
-//    // MARK:
-//    @IBAction func didTapBackProfilesToAnswers(segue:UIStoryboardSegue) {
-//        //From UserProfiles to Answers
-//    }
+    @IBAction func didTapSendAnswerButton(sender: UIButton) {
+        textFieldShouldReturn(self.textField)
+    }
+    // MARK:
+    // MARK: - Unwind Segues
+    // MARK:
+    @IBAction func didTapBackProfilesToAnswers(segue:UIStoryboardSegue) {
+        //From UserProfiles to Answers
+    }
 }
     
 // MARK:
@@ -140,58 +114,53 @@ extension AnswersViewController: UITableViewDelegate, UITableViewDataSource {
         cell.delegate = self
         cell.row = indexPath.row
         let answer: Answer = self.answersArray[indexPath.row]
-        cell.performWithAnswer(answer)
+        //
+        cell.updateViewsWith(answer)
+        //
+        FirebaseMgr.shared.retrieveUserDisplayName(answer.userID, completion: { (displayName) in
+            cell.displayNameLabel.text = displayName
+        })
+        //
+        FirebaseMgr.shared.retrieveUserPhotoDownloadURL(answer.userID, completion: { (photoDownloadURL, defaultImage) in
+            cell.profilePhotoImageButton.setImage(nil, forState: .Normal)
+            if photoDownloadURL != nil {
+                let url = NSURL(string: photoDownloadURL!)
+                cell.profilePhotoImageButton.kf_setImageWithURL(url, forState: .Normal, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"))
+                self.formatImage(cell)
+            } else {
+                cell.profilePhotoImageButton.setImage(UIImage(named: "Profile_avatar_placeholder_large"), forState: .Normal)
+                self.formatImage(cell)
+            }
+        })
+        //
+        FirebaseMgr.shared.retrieveLikeStatus(answer.answerID, completion: { (likeStatus) in
+            if likeStatus == 1 {
+                let fullHeartImage = UIImage(named: "heart-full")
+                cell.likeButton.setImage(fullHeartImage, forState: .Normal)
+            } else if likeStatus == 0 {
+                let emptyHeartImage = UIImage(named: "heart-empty")
+                cell.likeButton.setImage(emptyHeartImage, forState: .Normal)
+            }
+            
+        })
         return cell
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
+    // MARK:
+    // MARK: - Image Formatting
+    // MARK:
+    func formatImage(cell: AnswerCell) {
+        cell.profilePhotoImageButton.imageView?.contentMode = .ScaleAspectFill
+        cell.profilePhotoImageButton.layer.borderWidth = 1
+        cell.profilePhotoImageButton.layer.masksToBounds = false
+        cell.profilePhotoImageButton.layer.borderColor = UIColor.blackColor().CGColor
+        cell.profilePhotoImageButton.layer.cornerRadius = cell.profilePhotoImageButton.bounds.width/2
+        cell.profilePhotoImageButton.clipsToBounds = true
+    }
 }
-//// MARK:
-//// MARK: - UITextFieldDelegate Protocol
-//// MARK:
-//extension AnswersViewController: UITextFieldDelegate {
-//    // MARK:
-//    // MARK: - UITextFieldDelegate Methods
-//    // MARK:
-//    func textFieldDidBeginEditing(textField: UITextField) {
-//        print("textFieldDidBeginEditing")
-//        self.tableView.allowsSelection = false
-//        self.tapOutsideTextView = UITapGestureRecognizer(target: self, action: #selector(self.didTapOutsideTextViewWhenEditing))
-//        self.view.addGestureRecognizer(tapOutsideTextView)
-//    }
-//    
-//    func didTapOutsideTextViewWhenEditing() {
-//        self.view.endEditing(true)
-//    }
-//    
-//    func textFieldDidEndEditing(textField: UITextField) {
-//        print("textFieldDidEndEditing")
-//        self.tableView.allowsSelection = true
-//        self.view.removeGestureRecognizer(tapOutsideTextView)
-//    }
-//    
-//    func textFieldShouldReturn(textField: UITextField) -> Bool {
-//        let data = [Constants.AnswerFields.text: textField.text! as String]
-//        sendAnswer(data)
-//        textField.resignFirstResponder()
-//        self.tableView.allowsSelection = true
-//        self.view.removeGestureRecognizer(tapOutsideTextView)
-//        return true
-//    }
-//    
-//    func sendAnswer(data: [String: String]) {
-//        var answerDataDict = data
-//        let currentUserID = FIRAuth.auth()?.currentUser?.uid
-//        answerDataDict[Constants.AnswerFields.userID] = currentUserID
-//        let key = self.ref.child("answers").child(questionRef!).childByAutoId().key
-//        let childUpdates = ["answers/\(questionRef!)/\(key)": answerDataDict,
-//                            "likeCounts/\(key)/likeCount": 0,
-//                            "likeStatuses/\(key)/likeStatus": 1]
-//        self.ref.updateChildValues(childUpdates as! [String : AnyObject])
-//    }
-//}
 // MARK:
 // MARK: - AnswerCellDelegate Protocol
 // MARK:
@@ -200,33 +169,63 @@ extension AnswersViewController: AnswerCellDelegate {
     //MARK: - AnswerCellDelegate Methods
     //MARK:
     func handleProfileImageButtonTapOn(row: Int) {
-//        self.selectedIndexRow = row
-//        performSegueWithIdentifier(Constants.Segues.AnswersToProfiles, sender: self)
+        //        self.selectedIndexRow = row
+        //        performSegueWithIdentifier(Constants.Segues.HomeToProfiles, sender: self)
     }
-//
-    func handleLikeButtonTapOn(row: Int) {
-//        let answer = self.answersArray[row]
-//        let answerID = answer[Constants.AnswerFields.answerID] as! String
-//        //increment question likeCount
-//        self.ref.child("likeCounts").child(answerID).observeSingleEventOfType(.Value, withBlock: { (likeCountSnapshot) in
-//            let likeCountDict = likeCountSnapshot.value as! [String: AnyObject]
-//            guard let currentLikeCount = likeCountDict[Constants.LikeCountFields.likeCount] as! Int? else { return }
-//            guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
-//            self.ref.child("likeStatuses").child(answerID).child(currentUserID).observeSingleEventOfType(.Value, withBlock: {
-//                (likeStatusSnapshot) in
-//                let likeStatusDict = likeStatusSnapshot.value as! [String: Int]
-//                guard let likeStatus = likeStatusDict[Constants.LikeStatusFields.likeStatus] else { return }
-//                if likeStatus == 0 {
-//                    let incrementedLikeCount = (currentLikeCount) + 1
-//                    self.ref.child("likeCounts/\(answerID)/likeCount").setValue(incrementedLikeCount)
-//                    self.ref.child("likeStatuses/\(answerID)/\(currentUserID)/likeStatus").setValue(1)
-//                } else if likeStatus == 1 {
-//                    let decrementedLikeCount = (currentLikeCount) - 1
-//                    self.ref.child("likeCounts/\(answerID)/likeCount").setValue(decrementedLikeCount)
-//                    self.ref.child("likeStatuses/\(answerID)/\(currentUserID)/likeStatus").setValue(0)
-//                }
-//            })
-//        })
+    
+    func handleLikeButtonTapOn(row: Int, cell: AnswerCell) {
+        let answer = self.answersArray[row]
+        guard let questionID = self.selectedQuestionIdDict?["questionID"] else { return }
+        FirebaseMgr.shared.saveNewAnswerLikeCount(questionID, answerID: answer.answerID, completion: { (newLikeCount) in
+            self.answersArray[row].likeCount = newLikeCount
+            let indexPath = NSIndexPath(forRow: row, inSection: 0)
+            self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+        })
+    }
+}
+
+// MARK:
+// MARK: - UITextFieldDelegate Protocol
+// MARK:
+extension AnswersViewController: UITextFieldDelegate {
+    // MARK:
+    // MARK: - UITextFieldDelegate Methods
+    // MARK:
+    func textFieldDidBeginEditing(textField: UITextField) {
+        print("textFieldDidBeginEditing")
+        self.tableView.allowsSelection = false
+        self.tapOutsideTextView = UITapGestureRecognizer(target: self, action: #selector(self.didTapOutsideTextViewWhenEditing))
+        self.view.addGestureRecognizer(tapOutsideTextView)
+    }
+    
+    func didTapOutsideTextViewWhenEditing() {
+        self.view.endEditing(true)
+    }
+    
+    func textFieldDidEndEditing(textField: UITextField) {
+        print("textFieldDidEndEditing")
+        self.tableView.allowsSelection = true
+        self.view.removeGestureRecognizer(tapOutsideTextView)
+    }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        let data = [Constants.AnswerFields.text: textField.text! as String]
+        sendAnswer(data)
+        textField.resignFirstResponder()
+        self.tableView.allowsSelection = true
+        self.view.removeGestureRecognizer(tapOutsideTextView)
+        return true
+    }
+    
+    func sendAnswer(data: [String: String]) {
+//        var answerDataDict = data
+//        let currentUserID = FIRAuth.auth()?.currentUser?.uid
+//        answerDataDict[Constants.AnswerFields.userID] = currentUserID
+//        let key = self.ref.child("answers").child(questionRef!).childByAutoId().key
+//        let childUpdates = ["answers/\(questionRef!)/\(key)": answerDataDict,
+//                            "likeCounts/\(key)/likeCount": 0,
+//                            "likeStatuses/\(key)/likeStatus": 1]
+//        self.ref.updateChildValues(childUpdates as! [String : AnyObject])
     }
 }
 
