@@ -155,7 +155,7 @@
 				5E8BA9571D5E717E00FB530E /* Sign In */,
 				5E753B111D4FCBAE001D82B8 /* Home */,
 				5EAC6AAE1D9AEAE000A4432F /* Discover */,
-				5E753B121D4FCBCB001D82B8 /* Me */,
+				5E753B121D4FCBCB001D82B8 /* My Profile */,
 				5EA2ED271D6CBD830031003C /* User Profiles */,
 			);
 			name = "View Controllers";
@@ -181,12 +181,12 @@
 			name = Home;
 			sourceTree = "<group>";
 		};
-		5E753B121D4FCBCB001D82B8 /* Me */ = {
+		5E753B121D4FCBCB001D82B8 /* My Profile */ = {
 			isa = PBXGroup;
 			children = (
 				5E753B0D1D4BD123001D82B8 /* MeViewController.swift */,
 			);
-			name = Me;
+			name = "My Profile";
 			sourceTree = "<group>";
 		};
 		5E8BA9561D5E715600FB530E /* Table View Cells */ = {

@@ -11,6 +11,7 @@
 
 import UIKit
 import Firebase
+import Kingfisher
 
 //MARK:
 //MARK: - FirebaseMgr Class Singleton
@@ -26,7 +27,6 @@ class FirebaseMgr {
     lazy var storageRef: FIRStorageReference! = {
         FIRStorage.storage().referenceForURL("gs://babble-8b668.appspot.com/")
     }()
-    private var _questionsRefHandle: FIRDatabaseHandle!
     private var _answersRefHandle: FIRDatabaseHandle!
     private var _usersNameRefHandle: FIRDatabaseHandle!
     private var _usersPhotoRefHandle: FIRDatabaseHandle!
@@ -71,9 +71,7 @@ class FirebaseMgr {
     //MARK:
     func retrieveQuestions() {
         //TODO: look up why use [weak self] in closure
-        //TODO: use _refHandle in other places?
         self.questionsRef().observeSingleEventOfType(.Value, withBlock: { (questionSnapshot) in
-            //self.questionsArray = [Question]()//make a new clean array
             let retrievedQuestions = questionSnapshot.value as! [String: [String: AnyObject]]
             var retrievedQuestion = [String: AnyObject]()
             for (key, value) in retrievedQuestions {
@@ -142,10 +140,41 @@ class FirebaseMgr {
             }
         })
     }
+    
+    func retrieveUserBio(userID: String, completion: (userBio: String?) -> Void) {
+        self.usersRef().child("\(userID)/userBio").observeSingleEventOfType(.Value, withBlock: { (userBioSnapshot) in
+            let retrievedUserBio = userBioSnapshot.value as! String
+            completion(userBio: retrievedUserBio)
+        })
+    }
     //MARK:
-    //MARK: - Saving Like Count Data
+    //MARK: - LikeStatus Data Retrieval
     //MARK:
-    func saveNewLikeCount(questionID: String, completion: (wantedQuestionIndex: Int, newLikeCount: Int) -> Void) {
+    func retrieveLikeStatus(questionID: String, completion: (likeStatus: Int) -> Void) {
+        guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
+        self.likeStatusesRef().child(questionID).observeSingleEventOfType(.Value, withBlock: { (likeStatusesSnapshot) in
+            if likeStatusesSnapshot.hasChild(currentUserID) {
+                self.likeStatusesRef().child(questionID).child(currentUserID).observeSingleEventOfType(.Value, withBlock: { (likeStatusSnapshot) in
+                    var retrievedLikeStatus = likeStatusSnapshot.value as! [String: Int]
+                    if currentUserID == likeStatusSnapshot.key {
+                        guard let likeStatus = retrievedLikeStatus[Constants.LikeStatusFields.likeStatus] else { return }
+                        print("questionID: \(questionID) | likeStatus: \(likeStatus)")
+                        completion(likeStatus: likeStatus)
+                    }
+                })
+            }
+        })
+    }
+    //MARK:
+    //MARK: - User Data Upload
+    //MARK:
+    func saveNewBio(userID: String, bioText: String) {
+        self.usersRef().child("\(userID)/userBio").setValue(bioText)
+    }
+    //MARK:
+    //MARK: - Like Count Data Upload
+    //MARK:
+    func saveNewLikeCount(questionID: String, completion: (newLikeCount: Int) -> Void) {
         var incrementedLikeCount = Int()
         self.questionsRef().child("\(questionID)/likeCount").observeSingleEventOfType(.Value, withBlock: { (likeCountSnapshot) in
             guard let currentLikeCount = likeCountSnapshot.value as? Int else { return }
@@ -160,34 +189,49 @@ class FirebaseMgr {
                             incrementedLikeCount = (currentLikeCount) + 1
                             self.questionsRef().child("\(questionID)/likeCount").setValue(incrementedLikeCount)
                             self.likeStatusesRef().child("\(questionID)/\(currentUserID)/likeStatus").setValue(1)
-                            
-                            let wantedQuestionIndex = self.questionsArray.indexOf { $0.questionID == "\(questionID)" }
-                            print(wantedQuestionIndex!)
-                            completion(wantedQuestionIndex: wantedQuestionIndex!, newLikeCount: incrementedLikeCount)
-                            
+                            completion(newLikeCount: incrementedLikeCount)
                         } else if likeStatus == 1 {
                             let decrementedLikeCount = (currentLikeCount) - 1
                             self.questionsRef().child("\(questionID)/likeCount").setValue(decrementedLikeCount)
                             self.likeStatusesRef().child("\(questionID)/\(currentUserID)/likeStatus").setValue(0)
-                            
-                            let wantedQuestionIndex = self.questionsArray.indexOf { $0.questionID == "\(questionID)" }
-                            print(wantedQuestionIndex!)
-                            completion(wantedQuestionIndex: wantedQuestionIndex!, newLikeCount: decrementedLikeCount)
-                            
+                            completion(newLikeCount: decrementedLikeCount)
                         }
                     })
                 } else {
                     incrementedLikeCount = (currentLikeCount) + 1
                     self.questionsRef().child("\(questionID)/likeCount").setValue(incrementedLikeCount)
                     self.likeStatusesRef().child("\(questionID)/\(currentUserID)/likeStatus").setValue(1)
-                    
-                    let wantedQuestionIndex = self.questionsArray.indexOf { $0.questionID == "\(questionID)" }
-                    print(wantedQuestionIndex!)
-                    completion(wantedQuestionIndex: wantedQuestionIndex!, newLikeCount: incrementedLikeCount)
-                    
+                    completion(newLikeCount: incrementedLikeCount)
                 }
             })
         })
+    }
+    //MARK:
+    //MARK: - Image Data Upload
+    //MARK:
+    func uploadSelectedImageData(photoRef: FIRStorageReference, imageData: NSData, metaData: FIRStorageMetadata) {
+        photoRef.putData(imageData, metadata: metaData) { metadata, error in
+            if let error = error {
+                print("Error uploading:\(error.localizedDescription)")
+                return
+            } else {
+                //guard let downloadURL = metadata!.downloadURL() else { return }
+                guard let downloadURLString = metadata!.downloadURL()?.absoluteString else { return }
+                //self.imageView.kf_setImageWithURL(downloadURL, placeholderImage: nil, optionsInfo: nil)
+                AppState.sharedInstance.photoDownloadURL = downloadURLString
+                
+                if let currentUserUID = FIRAuth.auth()?.currentUser?.uid {
+                    self.usersRef().child("\(currentUserUID)/photoDownloadURL").setValue(downloadURLString)
+                }
+                
+                let prefetchPhotoDownloadURL = [downloadURLString].map { NSURL(string: $0)! }
+                let prefetcher = ImagePrefetcher(urls: prefetchPhotoDownloadURL, optionsInfo: nil, progressBlock: nil, completionHandler: {
+                    (skippedResources, failedResources, completedResources) -> () in
+                    print("These resources are prefetched: \(completedResources)")
+                })
+                prefetcher.start()
+            }
+        }
     }
     //MARK:
     //MARK: - Notification Registration Methods
@@ -204,7 +248,6 @@ class FirebaseMgr {
     }
     
     deinit {
-        self.questionsRef().removeObserverWithHandle(self._questionsRefHandle)
         self.usersRef().removeObserverWithHandle(self._usersNameRefHandle)
         self.usersRef().removeObserverWithHandle(self._usersPhotoRefHandle)
         self.answersRef().removeObserverWithHandle(self._answersRefHandle)

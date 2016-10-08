@@ -28,6 +28,11 @@ struct Constants {
         static let DiscoverToProfiles = "DiscoverToProfiles"
     }
     
+    struct ImageData {
+        static let ImageName = "profileImage.jpg"
+        static let ContentTypeJPEG = "image/jpeg"
+    }
+    
     struct QuestionFields {
         static let questionID = "questionID"
         static let text = "text"

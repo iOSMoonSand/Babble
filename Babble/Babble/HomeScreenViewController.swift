@@ -30,7 +30,7 @@
             }
         }
     }
-    
+    //TODO: understand logic below
     private func changeRowsForDifference(difference: Int, inSection section: Int){
         var indexPaths: [NSIndexPath] = []
         
@@ -141,12 +141,26 @@
         })
         //
         FirebaseMgr.shared.retrieveUserPhotoDownloadURL(question.userID, completion: { (photoDownloadURL, defaultImage) in
+            cell.profilePhotoImageButton.setImage(nil, forState: .Normal)
             if photoDownloadURL != nil {
                 let url = NSURL(string: photoDownloadURL!)
                 cell.profilePhotoImageButton.kf_setImageWithURL(url, forState: .Normal, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"))
+                self.formatImage(cell)
             } else {
                 cell.profilePhotoImageButton.setImage(UIImage(named: "Profile_avatar_placeholder_large"), forState: .Normal)
+                self.formatImage(cell)
             }
+        })
+        //
+        FirebaseMgr.shared.retrieveLikeStatus(question.questionID, completion: { (likeStatus) in
+            if likeStatus == 1 {
+                let fullHeartImage = UIImage(named: "heart-full")
+                cell.likeButton.setImage(fullHeartImage, forState: .Normal)
+            } else if likeStatus == 0 {
+                let emptyHeartImage = UIImage(named: "heart-empty")
+                cell.likeButton.setImage(emptyHeartImage, forState: .Normal)
+            }
+
         })
         return cell
     }
@@ -154,6 +168,17 @@
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         performSegueWithIdentifier(Constants.Segues.HomeToAnswers, sender: self)
         self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
+    // MARK:
+    // MARK: - Image Formatting
+    // MARK:
+    func formatImage(cell: QuestionCell) {
+        cell.profilePhotoImageButton.imageView?.contentMode = .ScaleAspectFill
+        cell.profilePhotoImageButton.layer.borderWidth = 1
+        cell.profilePhotoImageButton.layer.masksToBounds = false
+        cell.profilePhotoImageButton.layer.borderColor = UIColor.blackColor().CGColor
+        cell.profilePhotoImageButton.layer.cornerRadius = cell.profilePhotoImageButton.bounds.width/2
+        cell.profilePhotoImageButton.clipsToBounds = true
     }
  }
  // MARK:
@@ -168,14 +193,13 @@
         //        performSegueWithIdentifier(Constants.Segues.HomeToProfiles, sender: self)
     }
     //
-    func handleLikeButtonTapOn(row: Int) {
+    func handleLikeButtonTapOn(row: Int, cell: QuestionCell) {
         let question = self.questionsArray[row]
-        FirebaseMgr.shared.saveNewLikeCount(question.questionID, completion: { (wantedQuestionIndex, newLikeCount) in
-            
-            self.questionsArray[wantedQuestionIndex].likeCount = newLikeCount
-            let indexPath = NSIndexPath(forRow: wantedQuestionIndex, inSection: 0)
+        FirebaseMgr.shared.saveNewLikeCount(question.questionID, completion: { (newLikeCount) in
+            //cell.likeButton.setImage(nil, forState: .Normal)
+            self.questionsArray[row].likeCount = newLikeCount
+            let indexPath = NSIndexPath(forRow: row, inSection: 0)
             self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-            
         })
     }
  }
@@ -211,12 +235,6 @@
  //                        self.profilePhotoImageButton.setImage(image, forState: .Normal)
  //
  //                    }
- //                    self.profilePhotoImageButton.imageView?.contentMode = .ScaleAspectFill
- //                    self.profilePhotoImageButton.layer.borderWidth = 1
- //                    self.profilePhotoImageButton.layer.masksToBounds = false
- //                    self.profilePhotoImageButton.layer.borderColor = UIColor.blackColor().CGColor
- //                    self.profilePhotoImageButton.layer.cornerRadius = self.profilePhotoImageButton.bounds.width/2
- //                    self.profilePhotoImageButton.clipsToBounds = true
  //                })
  
  

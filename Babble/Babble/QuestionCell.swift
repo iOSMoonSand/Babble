@@ -18,7 +18,7 @@ protocol QuestionCellDelegate: class {
     //MARK: - QuestionCellDelegate Methods
     //MARK:
     func handleProfileImageButtonTapOn(row: Int)
-    func handleLikeButtonTapOn(row: Int)
+    func handleLikeButtonTapOn(row: Int, cell: QuestionCell)
 }
 //MARK:
 //MARK: - QuestionCell Class
@@ -44,12 +44,10 @@ class QuestionCell: UITableViewCell {
         let questionText = question.text
         let likeCount = question.likeCount
         let defaultProfileImage = UIImage(named: "Profile_avatar_placeholder_large")
-        let emptyHeartImage = UIImage(named: "heart-empty")
         self.questionTextView.text = questionText
         self.profilePhotoImageButton.setImage(nil, forState: .Normal)
         self.profilePhotoImageButton.setImage(defaultProfileImage, forState: .Normal)
         self.likeButtonCountLabel.text = String(likeCount)
-        self.likeButton.setImage(emptyHeartImage, forState: .Normal)
 
         
 //        //retrieve likeCount from Firebase
@@ -109,6 +107,6 @@ class QuestionCell: UITableViewCell {
     
     @IBAction func likeButtonTapped(sender: UIButton) {
         guard let row = self.row else { return }
-        delegate?.handleLikeButtonTapOn(row)
+        delegate?.handleLikeButtonTapOn(row, cell: self)
     }
 }
