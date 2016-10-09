@@ -298,6 +298,15 @@ class FirebaseMgr {
         })
     }
     //MARK:
+    //MARK: - New Answer Data Upload
+    //MARK:
+    func saveNewAnswer(dataDict: [String: AnyObject], questionID: String, userID: String) {
+        let key = self.answersRef().child(questionID).childByAutoId().key
+        let childUpdates = ["answers/\(questionID)/\(key)": dataDict,
+                            "likeStatuses/\(key)/\(userID)/likeStatus": 0]
+        self.ref.updateChildValues(childUpdates as! [String : AnyObject])
+    }
+    //MARK:
     //MARK: - Image Data Upload
     //MARK:
     func uploadSelectedImageData(photoRef: FIRStorageReference, imageData: NSData, metaData: FIRStorageMetadata) {

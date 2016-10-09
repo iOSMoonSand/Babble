@@ -217,15 +217,16 @@ extension DiscoverAnswersViewController: UITextFieldDelegate {
         return true
     }
     
-    func sendAnswer(data: [String: String]) {
-        //        var answerDataDict = data
-        //        let currentUserID = FIRAuth.auth()?.currentUser?.uid
-        //        answerDataDict[Constants.AnswerFields.userID] = currentUserID
-        //        let key = self.ref.child("answers").child(questionRef!).childByAutoId().key
-        //        let childUpdates = ["answers/\(questionRef!)/\(key)": answerDataDict,
-        //                            "likeCounts/\(key)/likeCount": 0,
-        //                            "likeStatuses/\(key)/likeStatus": 1]
-        //        self.ref.updateChildValues(childUpdates as! [String : AnyObject])
+    func sendAnswer(data: [String: AnyObject]) {
+        var answerDataDict = data
+        guard let
+            currentUserID = FIRAuth.auth()?.currentUser?.uid,
+            questionID = self.selectedQuestionIdDict?["questionID"]
+            else { return }
+        answerDataDict[Constants.AnswerFields.likeCount] = 0
+        answerDataDict[Constants.AnswerFields.userID] = currentUserID
+        
+        FirebaseMgr.shared.saveNewAnswer(answerDataDict, questionID: questionID, userID: currentUserID)
     }
 }
 
