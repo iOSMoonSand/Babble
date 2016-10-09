@@ -21,7 +21,7 @@ class ProfileImageManager {
     
     func fileInDocumentsDirectory(filename: String) -> String {
         let fileURL = getDocumentsURL().URLByAppendingPathComponent(filename)
-        return fileURL.path!
+        return fileURL!.path!
     }
     
     func saveImage(image: UIImage, path: String) -> Bool {

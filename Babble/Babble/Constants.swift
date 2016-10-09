@@ -6,13 +6,16 @@
 //  Copyright © 2016 Alexis Schreier. All rights reserved.
 //
 
-//"https://babble-8b668.firebaseio.com/"
-
 struct Constants {
     
-//    struct NotificationKeys {
-//        static let SignedIn = "SignInCompleted"
-//    }
+    struct NotifKeys {
+        static let SendUserID = "SendUserID"
+        static let SendQuestionID = "SendQuestionID"
+        static let HomeQuestionsRetrieved = "HomeQuestionsRetrieved"
+        static let DiscoverQuestionsRetrieved = "DiscoverQuestionsRetrieved"
+        static let HomeAnswersRetrieved = "HomeAnswersRetrieved"
+        static let DiscoverAnswersRetrieved = "DiscoverAnswersRetrieved"
+    }
     
     struct Segues {
         static let SignInToHome = "SignInToHome"
@@ -23,8 +26,13 @@ struct Constants {
         static let ProfilePhotoToMyProfile = "ProfilePhotoToMyProfile"
         static let HomeToProfiles = "HomeToProfiles"
         static let AnswersToProfiles = "AnswersToProfiles"
-        static let DiscoverToAnswers = "DiscoverToAnswers"
+        static let DiscoverToDiscoverAnswers = "DiscoverToDiscoverAnswers"
         static let DiscoverToProfiles = "DiscoverToProfiles"
+    }
+    
+    struct ImageData {
+        static let ImageName = "profileImage.jpg"
+        static let ContentTypeJPEG = "image/jpeg"
     }
     
     struct QuestionFields {

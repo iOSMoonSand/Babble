@@ -21,15 +21,18 @@
 		5E753B0C1D498C54001D82B8 /* AddQuestionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E753B0B1D498C54001D82B8 /* AddQuestionViewController.swift */; };
 		5E753B0E1D4BD123001D82B8 /* MeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E753B0D1D4BD123001D82B8 /* MeViewController.swift */; };
 		5E753B101D4EA23F001D82B8 /* ProfilePhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E753B0F1D4EA23F001D82B8 /* ProfilePhotoViewController.swift */; };
+		5E753DFC1D9F073200DB5BCE /* FirebaseMgr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E753DFB1D9F073200DB5BCE /* FirebaseMgr.swift */; };
+		5E753E001D9F139A00DB5BCE /* Question.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E753DFF1D9F139A00DB5BCE /* Question.swift */; };
+		5E753E021D9F157600DB5BCE /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E753E011D9F157600DB5BCE /* User.swift */; };
 		5E8BA9511D5E553000FB530E /* QuestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8BA9501D5E553000FB530E /* QuestionCell.swift */; };
 		5E8BA9531D5E5AAA00FB530E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5E8BA9521D5E5AAA00FB530E /* Assets.xcassets */; };
 		5E8BA9551D5E715000FB530E /* AnswerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8BA9541D5E715000FB530E /* AnswerCell.swift */; };
-		5EA2ED241D6B83760031003C /* FirebaseConfigManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA2ED231D6B83760031003C /* FirebaseConfigManager.swift */; };
+		5EA4B52D1DA43010007316AB /* Answer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA4B52C1DA43010007316AB /* Answer.swift */; };
 		5EAC6AB01D9AEAFA00A4432F /* DiscoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AAF1D9AEAFA00A4432F /* DiscoverViewController.swift */; };
 		5EAC6AB21D9AEEC200A4432F /* DiscoverQuestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AB11D9AEEC200A4432F /* DiscoverQuestionCell.swift */; };
 		5EAC6AB41D9AF8A600A4432F /* DiscoverToProfilesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AB31D9AF8A600A4432F /* DiscoverToProfilesViewController.swift */; };
-		5EAC6AB61D9AFDC700A4432F /* DiscoverAnswersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AB51D9AFDC700A4432F /* DiscoverAnswersViewController.swift */; };
 		5EAC6AB81D9AFEC700A4432F /* DiscoverAnswersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AB71D9AFEC700A4432F /* DiscoverAnswersCell.swift */; };
+		5EB27A9F1DAADA1B002F6FCE /* DiscoverAnswersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB27A9E1DAADA1B002F6FCE /* DiscoverAnswersViewController.swift */; };
 		5EBD4DE41D7F525E004DA8DD /* HomeToProfilesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBD4DE31D7F525E004DA8DD /* HomeToProfilesViewController.swift */; };
 		5EBD4DE61D7F52A8004DA8DD /* AnswersToProfilesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBD4DE51D7F52A8004DA8DD /* AnswersToProfilesViewController.swift */; };
 		5ECC913B1D482B3E001221C4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5ECC913A1D482B3E001221C4 /* GoogleService-Info.plist */; };
@@ -56,15 +59,18 @@
 		5E753B0B1D498C54001D82B8 /* AddQuestionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddQuestionViewController.swift; sourceTree = "<group>"; };
 		5E753B0D1D4BD123001D82B8 /* MeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeViewController.swift; sourceTree = "<group>"; };
 		5E753B0F1D4EA23F001D82B8 /* ProfilePhotoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfilePhotoViewController.swift; sourceTree = "<group>"; };
+		5E753DFB1D9F073200DB5BCE /* FirebaseMgr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseMgr.swift; sourceTree = "<group>"; };
+		5E753DFF1D9F139A00DB5BCE /* Question.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
+		5E753E011D9F157600DB5BCE /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		5E8BA9501D5E553000FB530E /* QuestionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuestionCell.swift; sourceTree = "<group>"; };
 		5E8BA9521D5E5AAA00FB530E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5E8BA9541D5E715000FB530E /* AnswerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnswerCell.swift; sourceTree = "<group>"; };
-		5EA2ED231D6B83760031003C /* FirebaseConfigManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseConfigManager.swift; sourceTree = "<group>"; };
+		5EA4B52C1DA43010007316AB /* Answer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Answer.swift; sourceTree = "<group>"; };
 		5EAC6AAF1D9AEAFA00A4432F /* DiscoverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverViewController.swift; sourceTree = "<group>"; };
 		5EAC6AB11D9AEEC200A4432F /* DiscoverQuestionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverQuestionCell.swift; sourceTree = "<group>"; };
 		5EAC6AB31D9AF8A600A4432F /* DiscoverToProfilesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverToProfilesViewController.swift; sourceTree = "<group>"; };
-		5EAC6AB51D9AFDC700A4432F /* DiscoverAnswersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverAnswersViewController.swift; sourceTree = "<group>"; };
 		5EAC6AB71D9AFEC700A4432F /* DiscoverAnswersCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverAnswersCell.swift; sourceTree = "<group>"; };
+		5EB27A9E1DAADA1B002F6FCE /* DiscoverAnswersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverAnswersViewController.swift; sourceTree = "<group>"; };
 		5EBD4DE31D7F525E004DA8DD /* HomeToProfilesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeToProfilesViewController.swift; sourceTree = "<group>"; };
 		5EBD4DE51D7F52A8004DA8DD /* AnswersToProfilesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnswersToProfilesViewController.swift; sourceTree = "<group>"; };
 		5ECC913A1D482B3E001221C4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -134,11 +140,9 @@
 		5E2E6F1E1D25A794003588DC /* Babble */ = {
 			isa = PBXGroup;
 			children = (
-				5E3E77021D284421006E5EA4 /* View Controllers */,
-				5E8BA9561D5E715600FB530E /* Table View Cells */,
-				5EA2ED231D6B83760031003C /* FirebaseConfigManager.swift */,
-				5E47756B1D2601B900A5E9B0 /* Constants.swift */,
-				5E753B091D493F72001D82B8 /* AppState.swift */,
+				5EA4B52E1DA484EE007316AB /* Models */,
+				5EA4B52F1DA4850E007316AB /* Views */,
+				5EA4B5301DA48544007316AB /* Controllers */,
 				5E2E6F231D25A794003588DC /* Main.storyboard */,
 				5E8BA9521D5E5AAA00FB530E /* Assets.xcassets */,
 			);
@@ -151,7 +155,7 @@
 				5E8BA9571D5E717E00FB530E /* Sign In */,
 				5E753B111D4FCBAE001D82B8 /* Home */,
 				5EAC6AAE1D9AEAE000A4432F /* Discover */,
-				5E753B121D4FCBCB001D82B8 /* Me */,
+				5E753B121D4FCBCB001D82B8 /* My Profile */,
 				5EA2ED271D6CBD830031003C /* User Profiles */,
 			);
 			name = "View Controllers";
@@ -177,12 +181,12 @@
 			name = Home;
 			sourceTree = "<group>";
 		};
-		5E753B121D4FCBCB001D82B8 /* Me */ = {
+		5E753B121D4FCBCB001D82B8 /* My Profile */ = {
 			isa = PBXGroup;
 			children = (
 				5E753B0D1D4BD123001D82B8 /* MeViewController.swift */,
 			);
-			name = Me;
+			name = "My Profile";
 			sourceTree = "<group>";
 		};
 		5E8BA9561D5E715600FB530E /* Table View Cells */ = {
@@ -216,11 +220,40 @@
 			name = "User Profiles";
 			sourceTree = "<group>";
 		};
+		5EA4B52E1DA484EE007316AB /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5E753DFF1D9F139A00DB5BCE /* Question.swift */,
+				5EA4B52C1DA43010007316AB /* Answer.swift */,
+				5E753E011D9F157600DB5BCE /* User.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		5EA4B52F1DA4850E007316AB /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				5E8BA9561D5E715600FB530E /* Table View Cells */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		5EA4B5301DA48544007316AB /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				5E3E77021D284421006E5EA4 /* View Controllers */,
+				5E753DFB1D9F073200DB5BCE /* FirebaseMgr.swift */,
+				5E47756B1D2601B900A5E9B0 /* Constants.swift */,
+				5E753B091D493F72001D82B8 /* AppState.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
 		5EAC6AAE1D9AEAE000A4432F /* Discover */ = {
 			isa = PBXGroup;
 			children = (
 				5EAC6AAF1D9AEAFA00A4432F /* DiscoverViewController.swift */,
-				5EAC6AB51D9AFDC700A4432F /* DiscoverAnswersViewController.swift */,
+				5EB27A9E1DAADA1B002F6FCE /* DiscoverAnswersViewController.swift */,
 			);
 			name = Discover;
 			sourceTree = "<group>";
@@ -255,12 +288,13 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Alexis Schreier";
 				TargetAttributes = {
 					5E2E6F1B1D25A794003588DC = {
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = Q7DNMW64ZP;
+						LastSwiftMigration = 0800;
 					};
 				};
 			};
@@ -351,12 +385,15 @@
 			files = (
 				5E753B101D4EA23F001D82B8 /* ProfilePhotoViewController.swift in Sources */,
 				5E59CCDD1D518A9300708053 /* ProfileImageManager.swift in Sources */,
+				5E753DFC1D9F073200DB5BCE /* FirebaseMgr.swift in Sources */,
 				5EAC6AB41D9AF8A600A4432F /* DiscoverToProfilesViewController.swift in Sources */,
 				5E1190A31D41CBB600F05B9F /* AnswersViewController.swift in Sources */,
 				5E8BA9551D5E715000FB530E /* AnswerCell.swift in Sources */,
 				5E47756C1D2601B900A5E9B0 /* Constants.swift in Sources */,
+				5EA4B52D1DA43010007316AB /* Answer.swift in Sources */,
 				5EAC6AB81D9AFEC700A4432F /* DiscoverAnswersCell.swift in Sources */,
 				5E753B0E1D4BD123001D82B8 /* MeViewController.swift in Sources */,
+				5EB27A9F1DAADA1B002F6FCE /* DiscoverAnswersViewController.swift in Sources */,
 				5E753B0A1D493F72001D82B8 /* AppState.swift in Sources */,
 				5E3CFE361D88EC93005D0109 /* MeVCTextViewCell.swift in Sources */,
 				5E2E6F201D25A794003588DC /* AppDelegate.swift in Sources */,
@@ -366,10 +403,10 @@
 				5EAC6AB21D9AEEC200A4432F /* DiscoverQuestionCell.swift in Sources */,
 				5E8BA9511D5E553000FB530E /* QuestionCell.swift in Sources */,
 				5E3E77041D284CB5006E5EA4 /* SignInViewController.swift in Sources */,
-				5EAC6AB61D9AFDC700A4432F /* DiscoverAnswersViewController.swift in Sources */,
+				5E753E001D9F139A00DB5BCE /* Question.swift in Sources */,
+				5E753E021D9F157600DB5BCE /* User.swift in Sources */,
 				5E3CFE341D88EC7F005D0109 /* MeVCImageCell.swift in Sources */,
 				5E753B0C1D498C54001D82B8 /* AddQuestionViewController.swift in Sources */,
-				5EA2ED241D6B83760031003C /* FirebaseConfigManager.swift in Sources */,
 				5E3E77011D2843B7006E5EA4 /* HomeScreenViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -410,8 +447,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -456,8 +495,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -476,6 +517,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -485,15 +527,16 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 05ECB09160E9B9F1CFEAAC06 /* Pods-Babble.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Babble/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.MoonSandApps.Babble;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -501,15 +544,16 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 082DA9B7534698C643D204B5 /* Pods-Babble.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Babble/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.MoonSandApps.Babble;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};

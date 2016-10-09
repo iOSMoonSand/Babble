@@ -19,10 +19,17 @@ class SignInViewController: UIViewController {
     //MARK:
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
+    let ref = FirebaseMgr.shared.ref
+    let storageRef = FirebaseMgr.shared.storageRef
     var tapOutsideTextView = UITapGestureRecognizer()
     //MARK:
     //MARK: - UIViewController Methods
     //MARK:
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        FirebaseMgr.shared.registerForNotifications()
+    }
+    
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
         self.emailField.delegate = self
@@ -39,7 +46,7 @@ class SignInViewController: UIViewController {
         AppState.sharedInstance.displayName = user?.displayName ?? user?.email
         AppState.sharedInstance.signedIn = true
         let userID = user!.uid
-        FirebaseConfigManager.sharedInstance.ref.child("users").child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
+        self.ref.child("users").child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
             var user = userSnapshot.value as! [String: AnyObject]
             AppState.sharedInstance.photoDownloadURL = nil
             if let photoDownloadURL = user[Constants.UserFields.photoDownloadURL] as! String? {
@@ -101,7 +108,7 @@ class SignInViewController: UIViewController {
                 print(error.localizedDescription)
                 return
             }
-            let placeholderPhotoRef = FirebaseConfigManager.sharedInstance.storageRef.child("Profile_avatar_placeholder_large.png")
+            guard let placeholderPhotoRef = self?.storageRef.child("Profile_avatar_placeholder_large.png") else { return }
             let placeholderPhotoRefString = "gs://babble-8b668.appspot.com/" + placeholderPhotoRef.fullPath ?? ""
             AppState.sharedInstance.defaultPhotoURL = placeholderPhotoRefString
             let userDataDict = [Constants.UserFields.photoURL: placeholderPhotoRefString]
@@ -115,7 +122,7 @@ class SignInViewController: UIViewController {
         let displayName = FIRAuth.auth()?.currentUser?.displayName
         userDataDict[Constants.UserFields.displayName] = displayName
         if let currentUserUID = FIRAuth.auth()?.currentUser?.uid {
-            FirebaseConfigManager.sharedInstance.ref.child("users").child(currentUserUID).setValue(userDataDict)
+            self.ref.child("users").child(currentUserUID).setValue(userDataDict)
         }
     }
     // MARK:
