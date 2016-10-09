@@ -32,6 +32,7 @@
 		5EAC6AB21D9AEEC200A4432F /* DiscoverQuestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AB11D9AEEC200A4432F /* DiscoverQuestionCell.swift */; };
 		5EAC6AB41D9AF8A600A4432F /* DiscoverToProfilesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AB31D9AF8A600A4432F /* DiscoverToProfilesViewController.swift */; };
 		5EAC6AB81D9AFEC700A4432F /* DiscoverAnswersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AB71D9AFEC700A4432F /* DiscoverAnswersCell.swift */; };
+		5EB27A9F1DAADA1B002F6FCE /* DiscoverAnswersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB27A9E1DAADA1B002F6FCE /* DiscoverAnswersViewController.swift */; };
 		5EBD4DE41D7F525E004DA8DD /* HomeToProfilesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBD4DE31D7F525E004DA8DD /* HomeToProfilesViewController.swift */; };
 		5EBD4DE61D7F52A8004DA8DD /* AnswersToProfilesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBD4DE51D7F52A8004DA8DD /* AnswersToProfilesViewController.swift */; };
 		5ECC913B1D482B3E001221C4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5ECC913A1D482B3E001221C4 /* GoogleService-Info.plist */; };
@@ -69,6 +70,7 @@
 		5EAC6AB11D9AEEC200A4432F /* DiscoverQuestionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverQuestionCell.swift; sourceTree = "<group>"; };
 		5EAC6AB31D9AF8A600A4432F /* DiscoverToProfilesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverToProfilesViewController.swift; sourceTree = "<group>"; };
 		5EAC6AB71D9AFEC700A4432F /* DiscoverAnswersCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverAnswersCell.swift; sourceTree = "<group>"; };
+		5EB27A9E1DAADA1B002F6FCE /* DiscoverAnswersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverAnswersViewController.swift; sourceTree = "<group>"; };
 		5EBD4DE31D7F525E004DA8DD /* HomeToProfilesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeToProfilesViewController.swift; sourceTree = "<group>"; };
 		5EBD4DE51D7F52A8004DA8DD /* AnswersToProfilesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnswersToProfilesViewController.swift; sourceTree = "<group>"; };
 		5ECC913A1D482B3E001221C4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -251,6 +253,7 @@
 			isa = PBXGroup;
 			children = (
 				5EAC6AAF1D9AEAFA00A4432F /* DiscoverViewController.swift */,
+				5EB27A9E1DAADA1B002F6FCE /* DiscoverAnswersViewController.swift */,
 			);
 			name = Discover;
 			sourceTree = "<group>";
@@ -390,6 +393,7 @@
 				5EA4B52D1DA43010007316AB /* Answer.swift in Sources */,
 				5EAC6AB81D9AFEC700A4432F /* DiscoverAnswersCell.swift in Sources */,
 				5E753B0E1D4BD123001D82B8 /* MeViewController.swift in Sources */,
+				5EB27A9F1DAADA1B002F6FCE /* DiscoverAnswersViewController.swift in Sources */,
 				5E753B0A1D493F72001D82B8 /* AppState.swift in Sources */,
 				5E3CFE361D88EC93005D0109 /* MeVCTextViewCell.swift in Sources */,
 				5E2E6F201D25A794003588DC /* AppDelegate.swift in Sources */,

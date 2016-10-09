@@ -13,7 +13,8 @@ struct Constants {
         static let SendQuestionID = "SendQuestionID"
         static let HomeQuestionsRetrieved = "HomeQuestionsRetrieved"
         static let DiscoverQuestionsRetrieved = "DiscoverQuestionsRetrieved"
-        static let AnswersRetrieved = "AnswersRetrieved"
+        static let HomeAnswersRetrieved = "HomeAnswersRetrieved"
+        static let DiscoverAnswersRetrieved = "DiscoverAnswersRetrieved"
     }
     
     struct Segues {
@@ -25,7 +26,7 @@ struct Constants {
         static let ProfilePhotoToMyProfile = "ProfilePhotoToMyProfile"
         static let HomeToProfiles = "HomeToProfiles"
         static let AnswersToProfiles = "AnswersToProfiles"
-        static let DiscoverToAnswers = "DiscoverToAnswers"
+        static let DiscoverToDiscoverAnswers = "DiscoverToDiscoverAnswers"
         static let DiscoverToProfiles = "DiscoverToProfiles"
     }
     

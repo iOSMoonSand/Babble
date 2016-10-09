@@ -1,8 +1,8 @@
 //
-//  AnswersViewController.swift
+//  DiscoverAnswersViewController.swift
 //  Babble
 //
-//  Created by Alexis Schreier on 07/21/16.
+//  Created by Alexis Schreier on 10/09/16.
 //  Copyright © 2016 Alexis Schreier. All rights reserved.
 //
 
@@ -10,9 +10,9 @@ import UIKit
 import Firebase
 
 // MARK:
-// MARK: - AnswersViewController Class
+// MARK: - DiscoverAnswersViewController Class
 // MARK:
-class AnswersViewController: UIViewController {
+class DiscoverAnswersViewController: UIViewController {
     // MARK:
     // MARK: - Properties
     // MARK:
@@ -55,28 +55,28 @@ class AnswersViewController: UIViewController {
         self.registerForNotifications()
         self.postNotifications()
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tableViewCell")
-        FirebaseMgr.shared.retrieveHomeAnswers()
+        FirebaseMgr.shared.retrieveDiscoverAnswers()
     }
     
-//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-//        
-//        if segue.identifier == Constants.Segues.AnswersToProfiles {
-//            guard let selectedIndexRow = selectedIndexRow else { return }
-//            var answer: [String : AnyObject] = self.answersArray[selectedIndexRow]
-//            let userID = answer[Constants.QuestionFields.userID]
-//            guard let destinationVC = segue.destinationViewController as? AnswersToProfilesViewController else { return }
-//            destinationVC.userIDRef = userID as? String
-//        }
-//    }
+    //    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    //
+    //        if segue.identifier == Constants.Segues.AnswersToProfiles {
+    //            guard let selectedIndexRow = selectedIndexRow else { return }
+    //            var answer: [String : AnyObject] = self.answersArray[selectedIndexRow]
+    //            let userID = answer[Constants.QuestionFields.userID]
+    //            guard let destinationVC = segue.destinationViewController as? AnswersToProfilesViewController else { return }
+    //            destinationVC.userIDRef = userID as? String
+    //        }
+    //    }
     // MARK:
     // MARK: - Notification Registration Methods
     // MARK:
     func registerForNotifications() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateAnswersArray), name: Constants.NotifKeys.HomeAnswersRetrieved, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateAnswersArray), name: Constants.NotifKeys.DiscoverAnswersRetrieved, object: nil)
     }
     
     func updateAnswersArray() {
-        self.answersArray = FirebaseMgr.shared.homeAnswersArray
+        self.answersArray = FirebaseMgr.shared.discoverAnswersArray
     }
     // MARK:
     // MARK: - Notification Post Methods
@@ -97,11 +97,11 @@ class AnswersViewController: UIViewController {
         //From UserProfiles to Answers
     }
 }
-    
+
 // MARK:
 // MARK: - UITableViewDataSource & UITableViewDelegate Protocols
 // MARK:
-extension AnswersViewController: UITableViewDelegate, UITableViewDataSource {
+extension DiscoverAnswersViewController: UITableViewDelegate, UITableViewDataSource {
     // MARK:
     // MARK: - UITableViewDataSource & UITableViewDelegate Methods
     // MARK:
@@ -145,7 +145,7 @@ extension AnswersViewController: UITableViewDelegate, UITableViewDataSource {
         })
         return cell
     }
-
+    
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
@@ -164,7 +164,7 @@ extension AnswersViewController: UITableViewDelegate, UITableViewDataSource {
 // MARK:
 // MARK: - AnswerCellDelegate Protocol
 // MARK:
-extension AnswersViewController: AnswerCellDelegate {
+extension DiscoverAnswersViewController: AnswerCellDelegate {
     //MARK:
     //MARK: - AnswerCellDelegate Methods
     //MARK:
@@ -187,7 +187,7 @@ extension AnswersViewController: AnswerCellDelegate {
 // MARK:
 // MARK: - UITextFieldDelegate Protocol
 // MARK:
-extension AnswersViewController: UITextFieldDelegate {
+extension DiscoverAnswersViewController: UITextFieldDelegate {
     // MARK:
     // MARK: - UITextFieldDelegate Methods
     // MARK:
@@ -218,14 +218,14 @@ extension AnswersViewController: UITextFieldDelegate {
     }
     
     func sendAnswer(data: [String: String]) {
-//        var answerDataDict = data
-//        let currentUserID = FIRAuth.auth()?.currentUser?.uid
-//        answerDataDict[Constants.AnswerFields.userID] = currentUserID
-//        let key = self.ref.child("answers").child(questionRef!).childByAutoId().key
-//        let childUpdates = ["answers/\(questionRef!)/\(key)": answerDataDict,
-//                            "likeCounts/\(key)/likeCount": 0,
-//                            "likeStatuses/\(key)/likeStatus": 1]
-//        self.ref.updateChildValues(childUpdates as! [String : AnyObject])
+        //        var answerDataDict = data
+        //        let currentUserID = FIRAuth.auth()?.currentUser?.uid
+        //        answerDataDict[Constants.AnswerFields.userID] = currentUserID
+        //        let key = self.ref.child("answers").child(questionRef!).childByAutoId().key
+        //        let childUpdates = ["answers/\(questionRef!)/\(key)": answerDataDict,
+        //                            "likeCounts/\(key)/likeCount": 0,
+        //                            "likeStatuses/\(key)/likeStatus": 1]
+        //        self.ref.updateChildValues(childUpdates as! [String : AnyObject])
     }
 }
 

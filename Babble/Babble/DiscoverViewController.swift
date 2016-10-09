@@ -57,12 +57,12 @@ class DiscoverViewController: UIViewController {
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
-        if segue.identifier == Constants.Segues.DiscoverToAnswers {
+        if segue.identifier == Constants.Segues.DiscoverToDiscoverAnswers {
             guard let selectedIndexPath = self.tableView.indexPathForSelectedRow else { return }
             let selectedQuestion = self.questionsArray[selectedIndexPath.row]
             let questionID = selectedQuestion.questionID
             let questionIdDict = ["questionID": questionID]
-            guard let destinationVC = segue.destinationViewController as? AnswersViewController else { return }
+            guard let destinationVC = segue.destinationViewController as? DiscoverAnswersViewController else { return }
             destinationVC.selectedQuestionIdDict = questionIdDict
         }
         
@@ -104,15 +104,10 @@ class DiscoverViewController: UIViewController {
     // MARK:
     // MARK: - Unwind Segues
     // MARK:
-    @IBAction func didTapBackDiscoverAnswers(segue:UIStoryboardSegue) {
-        //From AddQuestion to HomeScreen
+    @IBAction func myUnwindAction(unwindSegue: UIStoryboardSegue){
+        print("help me")
     }
-    @IBAction func didTapCancelAddQuestion(segue:UIStoryboardSegue) {
-        //From AddQuestion to HomeScreen
-    }
-    @IBAction func didTapBackDiscoverToProfiles(segue:UIStoryboardSegue) {
-        //From DiscoverToProfiles to Discover
-    }
+    
 }
 // MARK:
 // MARK: - UITableViewDelegate & UITableViewDataSource Protocols
@@ -161,7 +156,7 @@ extension DiscoverViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        performSegueWithIdentifier(Constants.Segues.DiscoverToAnswers, sender: self)
+        performSegueWithIdentifier(Constants.Segues.DiscoverToDiscoverAnswers, sender: self)
         self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
     // MARK:
