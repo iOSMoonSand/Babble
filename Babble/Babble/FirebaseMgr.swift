@@ -34,11 +34,19 @@ class FirebaseMgr {
     private var selectedQuestionID = String()
     private var selectedUserID = String()
     //
-    // Questions Array
-    var questionsArray = [Question]() {
+    // Home Questions Array
+    var homeQuestionsArray = [Question]() {
         didSet {
             //self.questionsArray.sortInPlace {($0.likeCount > $1.likeCount)}
-            NSNotificationCenter.defaultCenter().postNotification((NSNotification(name: Constants.NotifKeys.QuestionsRetrieved, object: nil)))
+            NSNotificationCenter.defaultCenter().postNotification((NSNotification(name: Constants.NotifKeys.HomeQuestionsRetrieved, object: nil)))
+        }
+    }
+    //
+    // Discover Questions Array
+    var discoverQuestionsArray = [Question]() {
+        didSet {
+            //self.questionsArray.sortInPlace {($0.likeCount > $1.likeCount)}
+            NSNotificationCenter.defaultCenter().postNotification((NSNotification(name: Constants.NotifKeys.DiscoverQuestionsRetrieved, object: nil)))
         }
     }
     //
@@ -70,7 +78,7 @@ class FirebaseMgr {
     //MARK:
     //MARK: - Questions Data Retrieval
     //MARK:
-    func retrieveQuestions() {
+    func retrieveHomeQuestions() {
         //TODO: look up why use [weak self] in closure
         self._questionsRefHandle = self.questionsRef().observeEventType(.ChildAdded, withBlock: { (questionSnapshot) in
             let retrievedQuestion = questionSnapshot.value as! [String: AnyObject]
@@ -81,7 +89,22 @@ class FirebaseMgr {
                     likeCount = retrievedQuestion[Constants.QuestionFields.likeCount] as? Int
                     else { return }
                 let question = Question(questionID: questionID, text: text, userID: userID, likeCount: likeCount)
-                self.questionsArray.append(question)
+                self.homeQuestionsArray.append(question)
+        })
+    }
+    
+    func retrieveDiscoverQuestions() {
+        //TODO: look up why use [weak self] in closure
+        self._questionsRefHandle = self.questionsRef().observeEventType(.ChildAdded, withBlock: { (questionSnapshot) in
+            let retrievedQuestion = questionSnapshot.value as! [String: AnyObject]
+            let questionID = questionSnapshot.key
+            guard let
+                text = retrievedQuestion[Constants.QuestionFields.text] as? String,
+                userID = retrievedQuestion[Constants.QuestionFields.userID] as? String,
+                likeCount = retrievedQuestion[Constants.QuestionFields.likeCount] as? Int
+                else { return }
+            let question = Question(questionID: questionID, text: text, userID: userID, likeCount: likeCount)
+            self.discoverQuestionsArray.append(question)
         })
     }
     //MARK:

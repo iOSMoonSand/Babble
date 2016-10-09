@@ -31,7 +31,6 @@
 		5EAC6AB01D9AEAFA00A4432F /* DiscoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AAF1D9AEAFA00A4432F /* DiscoverViewController.swift */; };
 		5EAC6AB21D9AEEC200A4432F /* DiscoverQuestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AB11D9AEEC200A4432F /* DiscoverQuestionCell.swift */; };
 		5EAC6AB41D9AF8A600A4432F /* DiscoverToProfilesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AB31D9AF8A600A4432F /* DiscoverToProfilesViewController.swift */; };
-		5EAC6AB61D9AFDC700A4432F /* DiscoverAnswersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AB51D9AFDC700A4432F /* DiscoverAnswersViewController.swift */; };
 		5EAC6AB81D9AFEC700A4432F /* DiscoverAnswersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AB71D9AFEC700A4432F /* DiscoverAnswersCell.swift */; };
 		5EBD4DE41D7F525E004DA8DD /* HomeToProfilesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBD4DE31D7F525E004DA8DD /* HomeToProfilesViewController.swift */; };
 		5EBD4DE61D7F52A8004DA8DD /* AnswersToProfilesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBD4DE51D7F52A8004DA8DD /* AnswersToProfilesViewController.swift */; };
@@ -69,7 +68,6 @@
 		5EAC6AAF1D9AEAFA00A4432F /* DiscoverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverViewController.swift; sourceTree = "<group>"; };
 		5EAC6AB11D9AEEC200A4432F /* DiscoverQuestionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverQuestionCell.swift; sourceTree = "<group>"; };
 		5EAC6AB31D9AF8A600A4432F /* DiscoverToProfilesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverToProfilesViewController.swift; sourceTree = "<group>"; };
-		5EAC6AB51D9AFDC700A4432F /* DiscoverAnswersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverAnswersViewController.swift; sourceTree = "<group>"; };
 		5EAC6AB71D9AFEC700A4432F /* DiscoverAnswersCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverAnswersCell.swift; sourceTree = "<group>"; };
 		5EBD4DE31D7F525E004DA8DD /* HomeToProfilesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeToProfilesViewController.swift; sourceTree = "<group>"; };
 		5EBD4DE51D7F52A8004DA8DD /* AnswersToProfilesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnswersToProfilesViewController.swift; sourceTree = "<group>"; };
@@ -253,7 +251,6 @@
 			isa = PBXGroup;
 			children = (
 				5EAC6AAF1D9AEAFA00A4432F /* DiscoverViewController.swift */,
-				5EAC6AB51D9AFDC700A4432F /* DiscoverAnswersViewController.swift */,
 			);
 			name = Discover;
 			sourceTree = "<group>";
@@ -402,7 +399,6 @@
 				5E8BA9511D5E553000FB530E /* QuestionCell.swift in Sources */,
 				5E3E77041D284CB5006E5EA4 /* SignInViewController.swift in Sources */,
 				5E753E001D9F139A00DB5BCE /* Question.swift in Sources */,
-				5EAC6AB61D9AFDC700A4432F /* DiscoverAnswersViewController.swift in Sources */,
 				5E753E021D9F157600DB5BCE /* User.swift in Sources */,
 				5E3CFE341D88EC7F005D0109 /* MeVCImageCell.swift in Sources */,
 				5E753B0C1D498C54001D82B8 /* AddQuestionViewController.swift in Sources */,

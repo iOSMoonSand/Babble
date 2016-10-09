@@ -53,7 +53,7 @@
         self.tableView.dataSource = self
         self.registerForNotifications()
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tableViewCell")
-        FirebaseMgr.shared.retrieveQuestions()
+        FirebaseMgr.shared.retrieveHomeQuestions()
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -78,11 +78,11 @@
     // MARK: - Notification Registration Methods
     // MARK:
     func registerForNotifications() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateQuestionsArray), name: Constants.NotifKeys.QuestionsRetrieved, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateQuestionsArray), name: Constants.NotifKeys.HomeQuestionsRetrieved, object: nil)
     }
     
     func updateQuestionsArray(){
-        self.questionsArray = FirebaseMgr.shared.questionsArray
+        self.questionsArray = FirebaseMgr.shared.homeQuestionsArray
     }
     // MARK:
     // MARK: - Button Actions
@@ -188,7 +188,7 @@
         //        self.selectedIndexRow = row
         //        performSegueWithIdentifier(Constants.Segues.HomeToProfiles, sender: self)
     }
-    //
+    
     func handleLikeButtonTapOn(row: Int, cell: QuestionCell) {
         let question = self.questionsArray[row]
         FirebaseMgr.shared.saveNewQuestionLikeCount(question.questionID, completion: { (newLikeCount) in

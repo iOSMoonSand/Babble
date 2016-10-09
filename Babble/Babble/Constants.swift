@@ -11,7 +11,8 @@ struct Constants {
     struct NotifKeys {
         static let SendUserID = "SendUserID"
         static let SendQuestionID = "SendQuestionID"
-        static let QuestionsRetrieved = "QuestionsRetrieved"
+        static let HomeQuestionsRetrieved = "HomeQuestionsRetrieved"
+        static let DiscoverQuestionsRetrieved = "DiscoverQuestionsRetrieved"
         static let AnswersRetrieved = "AnswersRetrieved"
     }
     
