@@ -15,18 +15,21 @@
 //
 
 #import <FirebaseAuthUI/FIRAuthUI.h>
-
+@class FBSDKLoginManager;
 NS_ASSUME_NONNULL_BEGIN
 
 /** @class FIRFacebookAuthUI
     @brief AuthUI components for Facebook Login.
  */
 @interface FIRFacebookAuthUI : NSObject <FIRAuthProviderUI>
+{
+  @protected
+  /** @var _loginManager
+   @brief The Facebook login manager.
+   */
+  FBSDKLoginManager *_loginManager;
 
-/** @property appId
-    @brief The Facebook App ID.
- */
-@property(nonatomic, readonly, copy) NSString *appID;
+}
 
 /** @property scopes
     @brief The scopes to use with Facebook Login.
@@ -35,23 +38,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, readonly, copy) NSArray<NSString *> *scopes;
 
 /** @fn init
-    @brief Please use initWithAppId:
- */
-- (instancetype)init NS_UNAVAILABLE;
-
-/** @fn initWithAppID:
     @brief Conevenience initializer. Uses a default permission of `@[ "email" ]`.
-    @param appID The Facebook App ID.
  */
-- (instancetype)initWithAppID:(NSString *)appID;
+- (instancetype)init;
 
-/** @fn initWithAppID:permissions:
+/** @fn initWithPermissions:
     @brief Designated initializer.
-    @param appID The Facebook App ID.
     @param permissions The permissions of the app. This array must be an array of specific string values
       as defined in https://developers.facebook.com/docs/facebook-login/permissions/
  */
-- (instancetype)initWithAppID:(NSString *)appID permissions:(NSArray *)permissions NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithPermissions:(NSArray *)permissions NS_DESIGNATED_INITIALIZER;
 
 @end
 
