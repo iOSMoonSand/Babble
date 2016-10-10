@@ -23,11 +23,12 @@ class AnswersViewController: UIViewController {
     var tapOutsideTextView = UITapGestureRecognizer()
     var answersArray = [Answer]() {
         didSet{
-            if oldValue.count == 0 {
+            if answersArray.count == 0 {
                 self.tableView.reloadData()
             } else {
-                let rowDifference = self.answersArray.count - oldValue.count
-                changeRowsForDifference(rowDifference, inSection: 0)
+                var indexPaths: [NSIndexPath] = []
+                indexPaths.append(NSIndexPath(forRow:0, inSection: 0))
+                self.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
             }
         }
     }

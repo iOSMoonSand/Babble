@@ -113,7 +113,6 @@
 				5E2E6F281D25A794003588DC /* LaunchScreen.storyboard */,
 				5ECC913A1D482B3E001221C4 /* GoogleService-Info.plist */,
 				5E2E6F2B1D25A794003588DC /* Info.plist */,
-				5E2E6F1F1D25A794003588DC /* AppDelegate.swift */,
 			);
 			name = "Support Files";
 			path = Babble;
@@ -123,7 +122,7 @@
 			isa = PBXGroup;
 			children = (
 				5E2E6F1E1D25A794003588DC /* Babble */,
-				5E7427CF1D839AE7003F2CBD /* Old */,
+				5EB27AA41DAC3949002F6FCE /* *Old */,
 				5E1190A11D4040BA00F05B9F /* Support Files */,
 				5E2E6F1D1D25A794003588DC /* Products */,
 				1E5059947B2692634C64B41A /* Pods */,
@@ -142,6 +141,7 @@
 		5E2E6F1E1D25A794003588DC /* Babble */ = {
 			isa = PBXGroup;
 			children = (
+				5EB27AA31DAC38A0002F6FCE /* Post MVP */,
 				5EA4B52E1DA484EE007316AB /* Models */,
 				5EA4B52F1DA4850E007316AB /* Views */,
 				5EA4B5301DA48544007316AB /* Controllers */,
@@ -156,21 +156,10 @@
 			children = (
 				5E8BA9571D5E717E00FB530E /* Sign In */,
 				5E753B111D4FCBAE001D82B8 /* Home */,
-				5EAC6AAE1D9AEAE000A4432F /* Discover */,
 				5E753B121D4FCBCB001D82B8 /* My Profile */,
 				5EA2ED271D6CBD830031003C /* User Profiles */,
 			);
 			name = "View Controllers";
-			sourceTree = "<group>";
-		};
-		5E7427CF1D839AE7003F2CBD /* Old */ = {
-			isa = PBXGroup;
-			children = (
-				5E753B0F1D4EA23F001D82B8 /* ProfilePhotoViewController.swift */,
-				5E59CCDC1D518A9300708053 /* ProfileImageManager.swift */,
-			);
-			name = Old;
-			path = Babble;
 			sourceTree = "<group>";
 		};
 		5E753B111D4FCBAE001D82B8 /* Home */ = {
@@ -198,8 +187,6 @@
 				5E8BA9541D5E715000FB530E /* AnswerCell.swift */,
 				5E3CFE331D88EC7F005D0109 /* MeVCImageCell.swift */,
 				5E3CFE351D88EC93005D0109 /* MeVCTextViewCell.swift */,
-				5EAC6AB11D9AEEC200A4432F /* DiscoverQuestionCell.swift */,
-				5EAC6AB71D9AFEC700A4432F /* DiscoverAnswersCell.swift */,
 			);
 			name = "Table View Cells";
 			sourceTree = "<group>";
@@ -215,9 +202,6 @@
 		5EA2ED271D6CBD830031003C /* User Profiles */ = {
 			isa = PBXGroup;
 			children = (
-				5EBD4DE31D7F525E004DA8DD /* HomeToProfilesViewController.swift */,
-				5EBD4DE51D7F52A8004DA8DD /* AnswersToProfilesViewController.swift */,
-				5EAC6AB31D9AF8A600A4432F /* DiscoverToProfilesViewController.swift */,
 				5EB27AA01DAB199A002F6FCE /* UserProfileViewController.swift */,
 			);
 			name = "User Profiles";
@@ -244,6 +228,7 @@
 		5EA4B5301DA48544007316AB /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				5E2E6F1F1D25A794003588DC /* AppDelegate.swift */,
 				5EB27AA21DAC0782002F6FCE /* Shared */,
 				5E3E77021D284421006E5EA4 /* View Controllers */,
 			);
@@ -253,6 +238,8 @@
 		5EAC6AAE1D9AEAE000A4432F /* Discover */ = {
 			isa = PBXGroup;
 			children = (
+				5EAC6AB11D9AEEC200A4432F /* DiscoverQuestionCell.swift */,
+				5EAC6AB71D9AFEC700A4432F /* DiscoverAnswersCell.swift */,
 				5EAC6AAF1D9AEAFA00A4432F /* DiscoverViewController.swift */,
 				5EB27A9E1DAADA1B002F6FCE /* DiscoverAnswersViewController.swift */,
 			);
@@ -267,6 +254,27 @@
 				5E753B091D493F72001D82B8 /* AppState.swift */,
 			);
 			name = Shared;
+			sourceTree = "<group>";
+		};
+		5EB27AA31DAC38A0002F6FCE /* Post MVP */ = {
+			isa = PBXGroup;
+			children = (
+				5EAC6AAE1D9AEAE000A4432F /* Discover */,
+			);
+			name = "Post MVP";
+			sourceTree = "<group>";
+		};
+		5EB27AA41DAC3949002F6FCE /* *Old */ = {
+			isa = PBXGroup;
+			children = (
+				5E753B0F1D4EA23F001D82B8 /* ProfilePhotoViewController.swift */,
+				5E59CCDC1D518A9300708053 /* ProfileImageManager.swift */,
+				5EBD4DE31D7F525E004DA8DD /* HomeToProfilesViewController.swift */,
+				5EBD4DE51D7F52A8004DA8DD /* AnswersToProfilesViewController.swift */,
+				5EAC6AB31D9AF8A600A4432F /* DiscoverToProfilesViewController.swift */,
+			);
+			name = "*Old";
+			path = Babble;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

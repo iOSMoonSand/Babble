@@ -17,34 +17,17 @@
     //MARK: - Properties
     //MARK: -
     @IBOutlet weak var tableView: UITableView!
-    //var top10QuestionsArray = ArraySlice<[Question]>()
     var newQuestion: String?
     var selectedIndexRow: Int?
     var questionsArray = [Question]() {
         didSet{
+            if questionsArray.count == 0 {
+                self.tableView.reloadData()
+            } else {
             var indexPaths: [NSIndexPath] = []
             indexPaths.append(NSIndexPath(forRow:0, inSection: 0))
             self.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
-//            if oldValue.count == 0 {
-//                self.tableView.reloadData()
-//            } else {
-//                let rowDifference = self.questionsArray.count - oldValue.count
-//                changeRowsForDifference(rowDifference, inSection: 0)
-//            }
-        }
-    }
-    //TODO: understand logic below
-    private func changeRowsForDifference(difference: Int, inSection section: Int){
-        var indexPaths: [NSIndexPath] = []
-        
-        let rowOffSet = self.questionsArray.count-1
-        
-        for i in 0..<abs(difference) {
-            indexPaths.append(NSIndexPath(forRow: i + rowOffSet, inSection: section))
-        }
-        
-        if difference > 0 {
-            self.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
+            }
         }
     }
     //MARK: -
