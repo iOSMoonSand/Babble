@@ -33,7 +33,6 @@ class DiscoverQuestionCell: UITableViewCell {
     @IBOutlet weak var likeButtonCountLabel: UILabel!
     @IBOutlet weak var likeButton: UIButton!
     weak var delegate: DiscoverQuestionCellDelegate?
-    var question = [String : AnyObject]()
     var row: Int?
     //MARK:
     //MARK: - Instance Methods

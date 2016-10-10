@@ -195,7 +195,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="tableView" destination="q6J-fg-ivJ" id="J9a-z2-HB0"/>
-                        <segue destination="F8b-cg-WOr" kind="show" identifier="HomeToProfiles" id="QwQ-w1-0Hh"/>
+                        <segue destination="F8b-cg-WOr" kind="show" identifier="HomeToUserProfiles" id="QwQ-w1-0Hh"/>
                         <segue destination="poZ-ay-L4x" kind="show" identifier="HomeToAnswers" id="JQr-Sf-wPc"/>
                     </connections>
                 </viewController>
@@ -377,7 +377,7 @@
                     <connections>
                         <outlet property="tableView" destination="gU6-cE-rnK" id="Dkj-ha-jNW"/>
                         <outlet property="textField" destination="Ted-B4-8py" id="iJY-p7-bve"/>
-                        <segue destination="doB-mi-eyH" kind="show" identifier="AnswersToProfiles" id="KYW-i1-39G"/>
+                        <segue destination="F8b-cg-WOr" kind="show" identifier="AnswersToUserProfiles" id="ZLE-zz-6po"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="496-jz-myh" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -397,7 +397,7 @@
                             <tableViewSection id="LWy-ft-qJf">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="288" id="sle-fP-5JS">
-                                        <rect key="frame" x="0.0" y="64" width="375" height="288"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="288"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="sle-fP-5JS" id="hZV-Kk-5bJ">
                                             <frame key="frameInset" width="375" height="287"/>
@@ -418,7 +418,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="199" id="BNU-j2-szt">
-                                        <rect key="frame" x="0.0" y="352" width="375" height="199"/>
+                                        <rect key="frame" x="0.0" y="288" width="375" height="199"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="BNU-j2-szt" id="YB7-PQ-ZmY">
                                             <frame key="frameInset" width="375" height="198"/>
@@ -462,7 +462,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="90u-zk-5Nn" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="bfG-uh-JCB" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2935" y="763"/>
+            <point key="canvasLocation" x="3791" y="672"/>
         </scene>
         <!--Home Screen Nav Controller-->
         <scene sceneID="8Pp-gF-lBE">
@@ -501,10 +501,10 @@
             </objects>
             <point key="canvasLocation" x="2935" y="-692"/>
         </scene>
-        <!--Home To Profiles View Controller-->
+        <!--User Profile-->
         <scene sceneID="M06-Xo-mNc">
             <objects>
-                <tableViewController title="Home To Profiles View Controller" id="F8b-cg-WOr" customClass="HomeToProfilesViewController" customModule="Babble" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="F8b-cg-WOr" customClass="UserProfileViewController" customModule="Babble" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="Q1m-YZ-K5L">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -559,8 +559,8 @@
                             </tableViewSection>
                         </sections>
                         <connections>
-                            <outlet property="dataSource" destination="F8b-cg-WOr" id="glR-xd-mUH"/>
-                            <outlet property="delegate" destination="F8b-cg-WOr" id="X2Z-Qx-kVM"/>
+                            <outlet property="dataSource" destination="F8b-cg-WOr" id="GRc-OE-hIo"/>
+                            <outlet property="delegate" destination="F8b-cg-WOr" id="Nn7-FN-0Vh"/>
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="User Profile" id="xsk-K9-vW0">
@@ -571,14 +571,14 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="userProfileImageView" destination="v98-Ky-fc6" id="MvZ-Vt-ynV"/>
-                        <outlet property="userProfileTextView" destination="bbc-SN-eWA" id="1Qt-QM-MhP"/>
+                        <outlet property="userProfileImageView" destination="v98-Ky-fc6" id="eNV-6j-rSi"/>
+                        <outlet property="userProfileTextView" destination="bbc-SN-eWA" id="RZt-CV-pTX"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="e9g-LE-RyC" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="zW9-G6-WLH" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2935" y="30"/>
+            <point key="canvasLocation" x="3196" y="29"/>
         </scene>
         <!--Discover To Profiles View Controller-->
         <scene sceneID="LuY-TN-gnU">
@@ -592,7 +592,7 @@
                             <tableViewSection id="OjB-JI-sOJ">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="288" id="aLG-g3-2Mb">
-                                        <rect key="frame" x="0.0" y="64" width="375" height="288"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="288"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="aLG-g3-2Mb" id="f50-jR-KjN">
                                             <frame key="frameInset" width="375" height="287"/>
@@ -613,7 +613,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="199" id="sRc-gw-s1u">
-                                        <rect key="frame" x="0.0" y="352" width="375" height="199"/>
+                                        <rect key="frame" x="0.0" y="288" width="375" height="199"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="sRc-gw-s1u" id="ivD-o9-GgN">
                                             <frame key="frameInset" width="375" height="198"/>
@@ -657,7 +657,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NeG-31-h6A" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="QNf-0X-Ejc" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2217" y="2220"/>
+            <point key="canvasLocation" x="3548" y="2192"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="srM-sM-nvA">
@@ -665,6 +665,7 @@
                 <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="oeQ-l5-H0n" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="WSV-UJ-kba">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                     </tabBar>
@@ -755,11 +756,12 @@
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="MeVCTextViewCell" rowHeight="199" id="xv2-0i-R60" customClass="MeVCTextViewCell" customModule="Babble" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="380" width="560" height="199"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="xv2-0i-R60" id="Bmo-to-LYP">
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" tableViewCell="xv2-0i-R60" id="Bmo-to-LYP">
                                             <frame key="frameInset" width="560" height="198"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" keyboardDismissMode="interactive" text="Write your bio here!" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="6LP-iy-Aif">
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" keyboardDismissMode="interactive" text="Write your bio here!" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="6LP-iy-Aif">
+                                                    <frame key="frameInset" minX="8" minY="8.5" width="544" height="183"/>
                                                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="183" id="MfZ-Yb-Dw1"/>
@@ -824,7 +826,7 @@
                                 <frame key="frameInset" minY="64" width="600" height="487"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="QuestionCell" rowHeight="137" id="X1E-Jo-NeC" customClass="QuestionCell" customModule="Babble" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DiscoverQuestionCell" rowHeight="137" id="X1E-Jo-NeC" customClass="DiscoverQuestionCell" customModule="Babble" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="600" height="137"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="X1E-Jo-NeC" id="fI6-Zj-VlQ">
@@ -841,6 +843,9 @@
                                                         <constraint firstAttribute="width" constant="46" id="G4A-yD-XYz"/>
                                                         <constraint firstAttribute="height" constant="46" id="mm1-cs-dy5"/>
                                                     </constraints>
+                                                    <connections>
+                                                        <action selector="profileImageButtonTapped:" destination="X1E-Jo-NeC" eventType="touchUpInside" id="YpS-Q8-YBD"/>
+                                                    </connections>
                                                 </button>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" misplaced="YES" editable="NO" text="Text View" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="WkT-cm-8SD">
                                                     <frame key="frameInset" minX="8" minY="62" width="584" height="32.5"/>
@@ -855,7 +860,7 @@
                                                         <constraint firstAttribute="width" constant="24" id="aPR-Ev-f1x"/>
                                                     </constraints>
                                                     <connections>
-                                                        <action selector="likeButtonTapped:" destination="X1E-Jo-NeC" eventType="touchUpInside" id="Hpw-5u-t0X"/>
+                                                        <action selector="likeButtonTapped:" destination="X1E-Jo-NeC" eventType="touchUpInside" id="Cft-0X-wDG"/>
                                                     </connections>
                                                 </button>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" enabled="NO" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="B7c-8s-lOR" userLabel="Like Button Count">
@@ -883,11 +888,11 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="displayNameLabel" destination="kTO-RP-n1j" id="ugI-Uy-7Ao"/>
-                                            <outlet property="likeButton" destination="IjV-9m-PTV" id="b02-li-Kzg"/>
-                                            <outlet property="likeButtonCountLabel" destination="B7c-8s-lOR" id="FlT-eG-vOT"/>
-                                            <outlet property="profilePhotoImageButton" destination="m3a-dp-MIo" id="3m4-Rm-QP2"/>
-                                            <outlet property="questionTextView" destination="WkT-cm-8SD" id="yLy-d3-RKs"/>
+                                            <outlet property="displayNameLabel" destination="kTO-RP-n1j" id="K7F-49-Yry"/>
+                                            <outlet property="likeButton" destination="IjV-9m-PTV" id="oCN-bZ-4QA"/>
+                                            <outlet property="likeButtonCountLabel" destination="B7c-8s-lOR" id="cvC-xi-KJl"/>
+                                            <outlet property="profilePhotoImageButton" destination="m3a-dp-MIo" id="GtC-NA-8cy"/>
+                                            <outlet property="questionTextView" destination="WkT-cm-8SD" id="Bau-T8-Hpz"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -906,9 +911,9 @@
                     </navigationItem>
                     <connections>
                         <outlet property="tableView" destination="pw6-L0-A8u" id="epa-EQ-Fvj"/>
-                        <segue destination="BFe-bp-EH5" kind="show" identifier="DiscoverToProfiles" id="0VE-8W-9CS"/>
                         <segue destination="poZ-ay-L4x" kind="show" identifier="DiscoverToAnswers" id="J00-gL-eWJ"/>
                         <segue destination="jVJ-5S-XWY" kind="show" identifier="DiscoverToDiscoverAnswers" id="zXD-AD-Oxk"/>
+                        <segue destination="F8b-cg-WOr" kind="show" identifier="DiscoverToUserProfiles" id="VkQ-2p-Mp6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PIz-gv-YyU" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -966,7 +971,7 @@
                                 <frame key="frameInset" minY="64" width="600" height="440"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="AnswerCell" rowHeight="138" id="UcZ-PB-n0B" customClass="AnswerCell" customModule="Babble" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="DiscoverAnswersCell" rowHeight="138" id="UcZ-PB-n0B" customClass="DiscoverAnswersCell" customModule="Babble" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="600" height="138"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="UcZ-PB-n0B" id="t7d-B8-9NS">
@@ -983,12 +988,18 @@
                                                         <constraint firstAttribute="height" constant="46" id="Giw-Ky-r8h"/>
                                                         <constraint firstAttribute="width" constant="46" id="T13-R4-iNA"/>
                                                     </constraints>
+                                                    <connections>
+                                                        <action selector="profileImageButtonTapped:" destination="UcZ-PB-n0B" eventType="touchUpInside" id="k6X-qW-2C2"/>
+                                                    </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dly-Cn-g6l">
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="24" id="UNW-bw-8iN"/>
                                                         <constraint firstAttribute="width" constant="24" id="pbS-Yz-D8V"/>
                                                     </constraints>
+                                                    <connections>
+                                                        <action selector="likeButtonTapped:" destination="UcZ-PB-n0B" eventType="touchUpInside" id="PiU-fP-BPH"/>
+                                                    </connections>
                                                 </button>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" editable="NO" text="Text View" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="4lT-ke-LWW">
                                                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -1020,11 +1031,11 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="answerTextView" destination="4lT-ke-LWW" id="Bgh-wl-0sO"/>
-                                            <outlet property="displayNameLabel" destination="KRa-cJ-aEG" id="LJy-Rp-ICB"/>
-                                            <outlet property="likeButton" destination="dly-Cn-g6l" id="CKj-Eq-4lk"/>
-                                            <outlet property="likeButtonCountLabel" destination="tg0-Nf-8i0" id="jhV-ji-z7Z"/>
-                                            <outlet property="profilePhotoImageButton" destination="ZII-iv-FX2" id="7h7-5d-hIZ"/>
+                                            <outlet property="answerTextView" destination="4lT-ke-LWW" id="bDp-jJ-VsP"/>
+                                            <outlet property="displayNameLabel" destination="KRa-cJ-aEG" id="sWs-Aa-1eM"/>
+                                            <outlet property="likeButton" destination="dly-Cn-g6l" id="c5j-zO-Zm7"/>
+                                            <outlet property="likeButtonCountLabel" destination="tg0-Nf-8i0" id="gRE-h0-Kjs"/>
+                                            <outlet property="profilePhotoImageButton" destination="ZII-iv-FX2" id="OA1-S6-L4h"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -1053,12 +1064,13 @@
                     <connections>
                         <outlet property="tableView" destination="ncK-nC-BgZ" id="vEN-9t-hO6"/>
                         <outlet property="textField" destination="3qS-44-QoD" id="Y1p-LA-6Zx"/>
+                        <segue destination="F8b-cg-WOr" kind="show" identifier="DiscoverAnswersToUserProfiles" id="4XZ-GH-7nf"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jyg-B4-hqW" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="Xpo-ke-iKX" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1364" y="2967"/>
+            <point key="canvasLocation" x="2217" y="2220"/>
         </scene>
     </scenes>
     <resources>
@@ -1069,5 +1081,6 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="J00-gL-eWJ"/>
+        <segue reference="VkQ-2p-Mp6"/>
     </inferredMetricsTieBreakers>
 </document>

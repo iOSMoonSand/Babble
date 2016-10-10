@@ -98,7 +98,7 @@ class FirebaseMgr {
                     likeCount = retrievedQuestion[Constants.QuestionFields.likeCount] as? Int
                     else { return }
                 let question = Question(questionID: questionID, text: text, userID: userID, likeCount: likeCount)
-                self.homeQuestionsArray.append(question)
+                self.homeQuestionsArray.insert(question, atIndex: 0)
         })
     }
     
@@ -201,7 +201,6 @@ class FirebaseMgr {
                     var retrievedLikeStatus = likeStatusSnapshot.value as! [String: Int]
                     if currentUserID == likeStatusSnapshot.key {
                         guard let likeStatus = retrievedLikeStatus[Constants.LikeStatusFields.likeStatus] else { return }
-                        print("objectID: \(objectID) | likeStatus: \(likeStatus)")
                         completion(likeStatus: likeStatus)
                     }
                 })
