@@ -58,16 +58,16 @@ class DiscoverAnswersViewController: UIViewController {
         FirebaseMgr.shared.retrieveDiscoverAnswers()
     }
     
-    //    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-    //
-    //        if segue.identifier == Constants.Segues.AnswersToProfiles {
-    //            guard let selectedIndexRow = selectedIndexRow else { return }
-    //            var answer: [String : AnyObject] = self.answersArray[selectedIndexRow]
-    //            let userID = answer[Constants.QuestionFields.userID]
-    //            guard let destinationVC = segue.destinationViewController as? AnswersToProfilesViewController else { return }
-    //            destinationVC.userIDRef = userID as? String
-    //        }
-    //    }
+        override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    
+            if segue.identifier == Constants.Segues.DiscoverAnswersToUserProfiles {
+                guard let selectedIndexRow = self.selectedIndexRow else { return }
+                let question = self.answersArray[selectedIndexRow]
+                let userID = question.userID
+                guard let destinationVC = segue.destinationViewController as? UserProfileViewController else { return }
+                destinationVC.selectedUserID = userID
+            }
+        }
     // MARK:
     // MARK: - Notification Registration Methods
     // MARK:
@@ -110,7 +110,7 @@ extension DiscoverAnswersViewController: UITableViewDelegate, UITableViewDataSou
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = self.tableView.dequeueReusableCellWithIdentifier("AnswerCell", forIndexPath: indexPath) as! AnswerCell
+        let cell = self.tableView.dequeueReusableCellWithIdentifier("DiscoverAnswersCell", forIndexPath: indexPath) as! DiscoverAnswersCell
         cell.delegate = self
         cell.row = indexPath.row
         let answer: Answer = self.answersArray[indexPath.row]
@@ -152,7 +152,7 @@ extension DiscoverAnswersViewController: UITableViewDelegate, UITableViewDataSou
     // MARK:
     // MARK: - Image Formatting
     // MARK:
-    func formatImage(cell: AnswerCell) {
+    func formatImage(cell: DiscoverAnswersCell) {
         cell.profilePhotoImageButton.imageView?.contentMode = .ScaleAspectFill
         cell.profilePhotoImageButton.layer.borderWidth = 1
         cell.profilePhotoImageButton.layer.masksToBounds = false
@@ -162,18 +162,18 @@ extension DiscoverAnswersViewController: UITableViewDelegate, UITableViewDataSou
     }
 }
 // MARK:
-// MARK: - AnswerCellDelegate Protocol
+// MARK: - DiscoverAnswersCellDelegate Protocol
 // MARK:
-extension DiscoverAnswersViewController: AnswerCellDelegate {
+extension DiscoverAnswersViewController: DiscoverAnswersCellDelegate {
     //MARK:
-    //MARK: - AnswerCellDelegate Methods
+    //MARK: - DiscoverAnswersCellDelegate Methods
     //MARK:
     func handleProfileImageButtonTapOn(row: Int) {
-        //        self.selectedIndexRow = row
-        //        performSegueWithIdentifier(Constants.Segues.HomeToProfiles, sender: self)
+        self.selectedIndexRow = row
+        performSegueWithIdentifier(Constants.Segues.DiscoverAnswersToUserProfiles, sender: self)
     }
     
-    func handleLikeButtonTapOn(row: Int, cell: AnswerCell) {
+    func handleLikeButtonTapOn(row: Int, cell: DiscoverAnswersCell) {
         let answer = self.answersArray[row]
         guard let questionID = self.selectedQuestionIdDict?["questionID"] else { return }
         FirebaseMgr.shared.saveNewAnswerLikeCount(questionID, answerID: answer.answerID, completion: { (newLikeCount) in

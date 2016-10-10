@@ -24,10 +24,12 @@ struct Constants {
         static let PostNewQuestionToHome = "PostNewQuestionToHome"
         static let MyProfileToProfilePhoto = "MyProfileToProfilePhoto"
         static let ProfilePhotoToMyProfile = "ProfilePhotoToMyProfile"
-        static let HomeToProfiles = "HomeToProfiles"
-        static let AnswersToProfiles = "AnswersToProfiles"
         static let DiscoverToDiscoverAnswers = "DiscoverToDiscoverAnswers"
-        static let DiscoverToProfiles = "DiscoverToProfiles"
+        
+        static let HomeToUserProfiles = "HomeToUserProfiles"
+        static let AnswersToUserProfiles = "AnswersToUserProfiles"
+        static let DiscoverToUserProfiles = "DiscoverToUserProfiles"
+        static let DiscoverAnswersToUserProfiles = "DiscoverAnswersToUserProfiles"
     }
     
     struct ImageData {

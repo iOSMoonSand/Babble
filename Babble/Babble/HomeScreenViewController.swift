@@ -22,12 +22,15 @@
     var selectedIndexRow: Int?
     var questionsArray = [Question]() {
         didSet{
-            if oldValue.count == 0 {
-                self.tableView.reloadData()
-            } else {
-                let rowDifference = self.questionsArray.count - oldValue.count
-                changeRowsForDifference(rowDifference, inSection: 0)
-            }
+            var indexPaths: [NSIndexPath] = []
+            indexPaths.append(NSIndexPath(forRow:0, inSection: 0))
+            self.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
+//            if oldValue.count == 0 {
+//                self.tableView.reloadData()
+//            } else {
+//                let rowDifference = self.questionsArray.count - oldValue.count
+//                changeRowsForDifference(rowDifference, inSection: 0)
+//            }
         }
     }
     //TODO: understand logic below
@@ -65,14 +68,14 @@
             guard let destinationVC = segue.destinationViewController as? AnswersViewController else { return }
             destinationVC.selectedQuestionIdDict = questionIdDict
         }
-        //
-        //        if segue.identifier == Constants.Segues.HomeToProfiles {
-        //            guard let selectedIndexRow = selectedIndexRow else { return }
-        //            var question: [String : AnyObject] = self.top10QuestionsArray[selectedIndexRow]
-        //            let userID = question[Constants.QuestionFields.userID]
-        //            guard let destinationVC = segue.destinationViewController as? HomeToProfilesViewController else { return }
-        //            destinationVC.userIDRef = userID as? String
-        //        }
+        
+        if segue.identifier == Constants.Segues.HomeToUserProfiles {
+            guard let selectedIndexRow = self.selectedIndexRow else { return }
+            let question = self.questionsArray[selectedIndexRow]
+            let userID = question.userID
+            guard let destinationVC = segue.destinationViewController as? UserProfileViewController else { return }
+            destinationVC.selectedUserID = userID
+        }
     }
     // MARK:
     // MARK: - Notification Registration Methods
@@ -185,8 +188,8 @@
     //MARK: - QuestionCellDelegate Methods
     //MARK:
     func handleProfileImageButtonTapOn(row: Int) {
-        //        self.selectedIndexRow = row
-        //        performSegueWithIdentifier(Constants.Segues.HomeToProfiles, sender: self)
+        self.selectedIndexRow = row
+        performSegueWithIdentifier(Constants.Segues.HomeToUserProfiles, sender: self)
     }
     
     func handleLikeButtonTapOn(row: Int, cell: QuestionCell) {

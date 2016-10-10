@@ -58,16 +58,16 @@ class AnswersViewController: UIViewController {
         FirebaseMgr.shared.retrieveHomeAnswers()
     }
     
-//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-//        
-//        if segue.identifier == Constants.Segues.AnswersToProfiles {
-//            guard let selectedIndexRow = selectedIndexRow else { return }
-//            var answer: [String : AnyObject] = self.answersArray[selectedIndexRow]
-//            let userID = answer[Constants.QuestionFields.userID]
-//            guard let destinationVC = segue.destinationViewController as? AnswersToProfilesViewController else { return }
-//            destinationVC.userIDRef = userID as? String
-//        }
-//    }
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        if segue.identifier == Constants.Segues.AnswersToUserProfiles {
+            guard let selectedIndexRow = self.selectedIndexRow else { return }
+            let question = self.answersArray[selectedIndexRow]
+            let userID = question.userID
+            guard let destinationVC = segue.destinationViewController as? UserProfileViewController else { return }
+            destinationVC.selectedUserID = userID
+        }
+    }
     // MARK:
     // MARK: - Notification Registration Methods
     // MARK:
@@ -169,8 +169,8 @@ extension AnswersViewController: AnswerCellDelegate {
     //MARK: - AnswerCellDelegate Methods
     //MARK:
     func handleProfileImageButtonTapOn(row: Int) {
-        //        self.selectedIndexRow = row
-        //        performSegueWithIdentifier(Constants.Segues.HomeToProfiles, sender: self)
+        self.selectedIndexRow = row
+        performSegueWithIdentifier(Constants.Segues.AnswersToUserProfiles, sender: self)
     }
     
     func handleLikeButtonTapOn(row: Int, cell: AnswerCell) {

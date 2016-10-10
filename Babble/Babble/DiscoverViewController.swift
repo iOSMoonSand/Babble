@@ -66,13 +66,13 @@ class DiscoverViewController: UIViewController {
             destinationVC.selectedQuestionIdDict = questionIdDict
         }
         
-//        if segue.identifier == Constants.Segues.DiscoverToProfiles {
-//            guard let selectedIndexRow = selectedIndexRow else { return }
-//            var question: [String : AnyObject] = self.questionsArray[selectedIndexRow]
-//            let userID = question[Constants.QuestionFields.userID]
-//            guard let destinationVC = segue.destinationViewController as? DiscoverToProfilesViewController else { return }
-//            destinationVC.userIDRef = userID as? String
-//        }
+        if segue.identifier == Constants.Segues.DiscoverToUserProfiles {
+            guard let selectedIndexRow = self.selectedIndexRow else { return }
+            let question = self.questionsArray[selectedIndexRow]
+            let userID = question.userID
+            guard let destinationVC = segue.destinationViewController as? UserProfileViewController else { return }
+            destinationVC.selectedUserID = userID
+        }
     }
     // MARK:
     // MARK: - Notification Registration Methods
@@ -121,7 +121,7 @@ extension DiscoverViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = self.tableView.dequeueReusableCellWithIdentifier("QuestionCell", forIndexPath: indexPath) as! QuestionCell
+        let cell = self.tableView.dequeueReusableCellWithIdentifier("DiscoverQuestionCell", forIndexPath: indexPath) as! DiscoverQuestionCell
         cell.delegate = self
         cell.row = indexPath.row
         let question: Question = self.questionsArray[indexPath.row]
@@ -162,7 +162,7 @@ extension DiscoverViewController: UITableViewDelegate, UITableViewDataSource {
     // MARK:
     // MARK: - Image Formatting
     // MARK:
-    func formatImage(cell: QuestionCell) {
+    func formatImage(cell: DiscoverQuestionCell) {
         cell.profilePhotoImageButton.imageView?.contentMode = .ScaleAspectFill
         cell.profilePhotoImageButton.layer.borderWidth = 1
         cell.profilePhotoImageButton.layer.masksToBounds = false
@@ -175,16 +175,16 @@ extension DiscoverViewController: UITableViewDelegate, UITableViewDataSource {
 // MARK:
 // MARK: - DiscoverQuestionCellDelegate Protocol
 // MARK:
-extension DiscoverViewController: QuestionCellDelegate {
+extension DiscoverViewController: DiscoverQuestionCellDelegate {
     //MARK:
     //MARK: - DiscoverQuestionCellDelegate Methods
     //MARK:
     func handleProfileImageButtonTapOn(row: Int) {
-//        self.selectedIndexRow = row
-//        performSegueWithIdentifier(Constants.Segues.DiscoverToProfiles, sender: self)
+        self.selectedIndexRow = row
+        performSegueWithIdentifier(Constants.Segues.DiscoverToUserProfiles, sender: self)
     }
     
-    func handleLikeButtonTapOn(row: Int, cell: QuestionCell) {
+    func handleLikeButtonTapOn(row: Int, cell: DiscoverQuestionCell) {
         let question = self.questionsArray[row]
         FirebaseMgr.shared.saveNewQuestionLikeCount(question.questionID, completion: { (newLikeCount) in
             //cell.likeButton.setImage(nil, forState: .Normal)

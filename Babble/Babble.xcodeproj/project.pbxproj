@@ -33,6 +33,7 @@
 		5EAC6AB41D9AF8A600A4432F /* DiscoverToProfilesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AB31D9AF8A600A4432F /* DiscoverToProfilesViewController.swift */; };
 		5EAC6AB81D9AFEC700A4432F /* DiscoverAnswersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AB71D9AFEC700A4432F /* DiscoverAnswersCell.swift */; };
 		5EB27A9F1DAADA1B002F6FCE /* DiscoverAnswersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB27A9E1DAADA1B002F6FCE /* DiscoverAnswersViewController.swift */; };
+		5EB27AA11DAB199A002F6FCE /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB27AA01DAB199A002F6FCE /* UserProfileViewController.swift */; };
 		5EBD4DE41D7F525E004DA8DD /* HomeToProfilesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBD4DE31D7F525E004DA8DD /* HomeToProfilesViewController.swift */; };
 		5EBD4DE61D7F52A8004DA8DD /* AnswersToProfilesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBD4DE51D7F52A8004DA8DD /* AnswersToProfilesViewController.swift */; };
 		5ECC913B1D482B3E001221C4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5ECC913A1D482B3E001221C4 /* GoogleService-Info.plist */; };
@@ -71,6 +72,7 @@
 		5EAC6AB31D9AF8A600A4432F /* DiscoverToProfilesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverToProfilesViewController.swift; sourceTree = "<group>"; };
 		5EAC6AB71D9AFEC700A4432F /* DiscoverAnswersCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverAnswersCell.swift; sourceTree = "<group>"; };
 		5EB27A9E1DAADA1B002F6FCE /* DiscoverAnswersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverAnswersViewController.swift; sourceTree = "<group>"; };
+		5EB27AA01DAB199A002F6FCE /* UserProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
 		5EBD4DE31D7F525E004DA8DD /* HomeToProfilesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeToProfilesViewController.swift; sourceTree = "<group>"; };
 		5EBD4DE51D7F52A8004DA8DD /* AnswersToProfilesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnswersToProfilesViewController.swift; sourceTree = "<group>"; };
 		5ECC913A1D482B3E001221C4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -216,6 +218,7 @@
 				5EBD4DE31D7F525E004DA8DD /* HomeToProfilesViewController.swift */,
 				5EBD4DE51D7F52A8004DA8DD /* AnswersToProfilesViewController.swift */,
 				5EAC6AB31D9AF8A600A4432F /* DiscoverToProfilesViewController.swift */,
+				5EB27AA01DAB199A002F6FCE /* UserProfileViewController.swift */,
 			);
 			name = "User Profiles";
 			sourceTree = "<group>";
@@ -241,10 +244,8 @@
 		5EA4B5301DA48544007316AB /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				5EB27AA21DAC0782002F6FCE /* Shared */,
 				5E3E77021D284421006E5EA4 /* View Controllers */,
-				5E753DFB1D9F073200DB5BCE /* FirebaseMgr.swift */,
-				5E47756B1D2601B900A5E9B0 /* Constants.swift */,
-				5E753B091D493F72001D82B8 /* AppState.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -256,6 +257,16 @@
 				5EB27A9E1DAADA1B002F6FCE /* DiscoverAnswersViewController.swift */,
 			);
 			name = Discover;
+			sourceTree = "<group>";
+		};
+		5EB27AA21DAC0782002F6FCE /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				5E753DFB1D9F073200DB5BCE /* FirebaseMgr.swift */,
+				5E47756B1D2601B900A5E9B0 /* Constants.swift */,
+				5E753B091D493F72001D82B8 /* AppState.swift */,
+			);
+			name = Shared;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -404,6 +415,7 @@
 				5E8BA9511D5E553000FB530E /* QuestionCell.swift in Sources */,
 				5E3E77041D284CB5006E5EA4 /* SignInViewController.swift in Sources */,
 				5E753E001D9F139A00DB5BCE /* Question.swift in Sources */,
+				5EB27AA11DAB199A002F6FCE /* UserProfileViewController.swift in Sources */,
 				5E753E021D9F157600DB5BCE /* User.swift in Sources */,
 				5E3CFE341D88EC7F005D0109 /* MeVCImageCell.swift in Sources */,
 				5E753B0C1D498C54001D82B8 /* AddQuestionViewController.swift in Sources */,
