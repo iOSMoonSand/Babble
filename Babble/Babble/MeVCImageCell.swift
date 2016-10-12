@@ -20,30 +20,14 @@ class MeVCImageCell: UITableViewCell {
     override func awakeFromNib() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.imageTapped))
         self.profileImageView.addGestureRecognizer(tapGesture)
-        self.profileImageView.layer.borderWidth = 1
-        self.profileImageView.layer.masksToBounds = false
-        self.profileImageView.layer.borderColor = UIColor.blackColor().CGColor
-        self.profileImageView.layer.cornerRadius = profileImageView.bounds.width/2
-        self.profileImageView.clipsToBounds = true
-        
+//        self.profileImageView.layer.borderWidth = 1
+//        self.profileImageView.layer.masksToBounds = false
+//        self.profileImageView.layer.borderColor = UIColor.blackColor().CGColor
+//        self.profileImageView.layer.cornerRadius = profileImageView.bounds.width/2
+//        self.profileImageView.clipsToBounds = true
     }
     
     func imageTapped() {
         delegate?.didTapProfilePhotoImageView()
-    }
-    
-    func display(chosenImage: UIImage) {
-        profileImageView.image = chosenImage
-    }
-    
-    func downloadImage() {
-        if let photoDownloadURL = AppState.sharedInstance.photoDownloadURL {
-            self.profileImageView.kf_setImageWithURL(NSURL(string: photoDownloadURL)!,
-                                                     placeholderImage: nil,
-                                                     optionsInfo: nil)
-        } else {
-            let image = UIImage(named: "Profile_avatar_placeholder_large")
-            self.profileImageView.image = image
-        }
     }
 }

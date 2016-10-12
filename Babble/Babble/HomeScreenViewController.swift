@@ -71,6 +71,12 @@
         self.questionsArray = FirebaseMgr.shared.homeQuestionsArray
     }
     // MARK:
+    // MARK: - Notification Unregistration Methods
+    // MARK:
+    func unregisterForNotifications() {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    // MARK:
     // MARK: - Button Actions
     // MARK:
         @IBAction func didTapPostAddQuestion(segue:UIStoryboardSegue) {
@@ -98,6 +104,12 @@
     }
     @IBAction func didTapBackProfilesToHome(segue:UIStoryboardSegue) {
         //From UserProfiles to HomeScreen
+    }
+    // MARK:
+    // MARK: - Unwind Segues
+    // MARK:
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
  }
  // MARK:

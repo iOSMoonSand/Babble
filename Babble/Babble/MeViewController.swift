@@ -24,8 +24,6 @@ class MeViewController: UIViewController {
     var tapOutsideTextView = UITapGestureRecognizer()
     var chosenProfileImage: UIImage?
     var userBio = ""
-    var isKeyboardOpen = false
-    var kbHeight: CGFloat!
     //MARK:
     //MARK: - UIViewController Methods
     //MARK:
@@ -35,6 +33,7 @@ class MeViewController: UIViewController {
         self.tableView.dataSource = self
         self.defineTableViewRowHeight()
         self.createGestureRecognizers()
+        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tableViewCell")
         self.tableView.reloadData()
     }
     //MARK:
@@ -42,7 +41,7 @@ class MeViewController: UIViewController {
     //MARK:
     func defineTableViewRowHeight() {
         tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 300.0
+//        tableView.estimatedRowHeight = 300.0
     }
     
     func createGestureRecognizers() {
@@ -86,6 +85,21 @@ extension MeViewController: UITableViewDelegate, UITableViewDataSource {
     //MARK: -
     //MARK: - UITableViewDelegate & UITableViewDataSource Methods
     //MARK: -
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        
+        var height: CGFloat?
+        
+        if indexPath.row == 0 {
+            height = 296.0
+        }
+        
+        if indexPath.row == 1 {
+            height = 230.0
+        }
+        
+        return height!
+    }
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 2
     }
@@ -95,15 +109,18 @@ extension MeViewController: UITableViewDelegate, UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCellWithIdentifier("MeVCImageCell", forIndexPath: indexPath) as? MeVCImageCell else { return UITableViewCell() }
             cell.delegate = self
             cell.selectionStyle = .None
-            //
-            //
-            if let chosenProfileImage = chosenProfileImage {
-                cell.display(chosenProfileImage)
+            if let chosenProfileImage = self.chosenProfileImage {
+                cell.profileImageView.image = chosenProfileImage
             } else {
-                cell.downloadImage()
+                if let photoDownloadURL = AppState.sharedInstance.photoDownloadURL {
+                    cell.profileImageView.kf_setImageWithURL(NSURL(string: photoDownloadURL)!,
+                                                             placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"),
+                                                             optionsInfo: nil)
+                } else {
+                    let image = UIImage(named: "Profile_avatar_placeholder_large")
+                    cell.profileImageView.image = image
+                }
             }
-            //
-            //
             return cell
         } else if indexPath.row == 1 {
             guard let cell = tableView.dequeueReusableCellWithIdentifier("MeVCTextViewCell", forIndexPath: indexPath) as? MeVCTextViewCell else { return UITableViewCell() }
