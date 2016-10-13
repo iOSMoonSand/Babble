@@ -98,14 +98,17 @@ class MyProfileViewController: UIViewController {
         let actionSheet = UIAlertController.init(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
         //.PhotoLibrary
         let choosePhotoAction = UIAlertAction.init(title: "Choose Photo", style: UIAlertActionStyle.Default) { (action) in
+            
             let imagePickerController = UIImagePickerController()
-            imagePickerController.sourceType = .PhotoLibrary
             imagePickerController.delegate = self
+            imagePickerController.sourceType = .PhotoLibrary
+            
             self.presentViewController(imagePickerController, animated: true, completion: nil)
         }
         //.Carmera
         let takePhotoAction = UIAlertAction.init(title: "Take Photo", style: UIAlertActionStyle.Default) { (action) in
             let imagePickerController = UIImagePickerController()
+            imagePickerController.delegate = self
             if UIImagePickerController.isSourceTypeAvailable(.Camera) {
                 imagePickerController.sourceType = .Camera
                 self.presentViewController(imagePickerController, animated: true, completion: nil)

@@ -233,7 +233,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="New Babble" id="60M-vS-Pnc">
-                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="yeq-lz-UAc"/>
+                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="yeq-lz-UAc">
+                            <connections>
+                                <segue destination="LGN-m6-g4H" kind="unwind" unwindAction="didTapCancelAddQuestion:" id="Z5O-vc-dKs"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Post" id="BqX-x2-fgR">
                             <connections>
                                 <segue destination="LGN-m6-g4H" kind="unwind" identifier="PostNewQuestionToHome" unwindAction="didTapPostAddQuestion:" id="kmF-d5-lDy"/>
@@ -391,7 +395,7 @@
                 <navigationController title="Home Screen Nav Controller" automaticallyAdjustsScrollViewInsets="NO" id="3SC-o7-hNK" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Home" image="home-7" id="EHK-Rg-rp1"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="Ew9-dR-6dE">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Ew9-dR-6dE">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -409,7 +413,7 @@
             <objects>
                 <navigationController title="Add Question Nav Controller" automaticallyAdjustsScrollViewInsets="NO" id="tbe-LJ-qw2" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="hTs-Ri-JJn">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="hTs-Ri-JJn">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -720,7 +724,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="LJb-nB-OT6" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Profile" image="circle-user-7" id="X7H-Mp-7eM"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="alg-vB-K3O">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="alg-vB-K3O">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>

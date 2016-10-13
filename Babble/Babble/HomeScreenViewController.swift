@@ -99,9 +99,11 @@
     @IBAction func didTapBackAnswers(segue:UIStoryboardSegue) {
         //From AddQuestion to HomeScreen
     }
-    @IBAction func didTapCancelAddQuestion(segue:UIStoryboardSegue) {
-        //From AddQuestion to HomeScreen
+    
+    @IBAction func didTapCancelAddQuestion(_ segue: UIStoryboardSegue) {
+        
     }
+    
     @IBAction func didTapBackProfilesToHome(segue:UIStoryboardSegue) {
         //From UserProfiles to HomeScreen
     }
