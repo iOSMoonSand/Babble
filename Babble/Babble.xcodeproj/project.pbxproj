@@ -124,6 +124,7 @@
 			isa = PBXGroup;
 			children = (
 				5E2E6F1E1D25A794003588DC /* Babble */,
+				5EB27AA31DAC38A0002F6FCE /* Post MVP */,
 				5EB27AA41DAC3949002F6FCE /* *Old */,
 				5E1190A11D4040BA00F05B9F /* Support Files */,
 				5E2E6F1D1D25A794003588DC /* Products */,
@@ -143,7 +144,6 @@
 		5E2E6F1E1D25A794003588DC /* Babble */ = {
 			isa = PBXGroup;
 			children = (
-				5EB27AA31DAC38A0002F6FCE /* Post MVP */,
 				5EA4B52E1DA484EE007316AB /* Models */,
 				5EA4B52F1DA4850E007316AB /* Views */,
 				5EA4B5301DA48544007316AB /* Controllers */,
@@ -262,6 +262,7 @@
 				5EAC6AAE1D9AEAE000A4432F /* Discover */,
 			);
 			name = "Post MVP";
+			path = Babble;
 			sourceTree = "<group>";
 		};
 		5EB27AA41DAC3949002F6FCE /* *Old */ = {

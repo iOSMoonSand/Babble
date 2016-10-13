@@ -31,6 +31,12 @@ class AnswerCell: UITableViewCell {
     @IBOutlet weak var answerTextView: UITextView!
     @IBOutlet weak var likeButton: UIButton!
     @IBOutlet weak var likeButtonCountLabel: UILabel!
+    
+//    @IBOutlet weak var profilePhotoImageButton: UIButton!
+//    @IBOutlet weak var displayNameLabel: UILabel!
+//    @IBOutlet weak var answerTextView: UITextView!
+//    @IBOutlet weak var likeButton: UIButton!
+//    @IBOutlet weak var likeButtonCountLabel: UILabel!
     weak var delegate: AnswerCellDelegate?
     var answer = [String: AnyObject]()
     var row: Int?
