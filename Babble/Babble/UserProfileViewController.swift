@@ -25,10 +25,6 @@ class UserProfileViewController: UITableViewController {
         self.retrieveUserProfileData()
     }
     
-    override func viewWillAppear(animated: Bool) {
-        
-    }
-    
     func retrieveUserProfileData() {
         guard let userID = self.selectedUserID else { return }
         

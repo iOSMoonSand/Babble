@@ -34,6 +34,7 @@
 		5EAC6AB81D9AFEC700A4432F /* DiscoverAnswersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AB71D9AFEC700A4432F /* DiscoverAnswersCell.swift */; };
 		5EB27A9F1DAADA1B002F6FCE /* DiscoverAnswersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB27A9E1DAADA1B002F6FCE /* DiscoverAnswersViewController.swift */; };
 		5EB27AA11DAB199A002F6FCE /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB27AA01DAB199A002F6FCE /* UserProfileViewController.swift */; };
+		5EB27AA61DAEE171002F6FCE /* MyProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB27AA51DAEE171002F6FCE /* MyProfileViewController.swift */; };
 		5EBD4DE41D7F525E004DA8DD /* HomeToProfilesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBD4DE31D7F525E004DA8DD /* HomeToProfilesViewController.swift */; };
 		5EBD4DE61D7F52A8004DA8DD /* AnswersToProfilesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBD4DE51D7F52A8004DA8DD /* AnswersToProfilesViewController.swift */; };
 		5ECC913B1D482B3E001221C4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5ECC913A1D482B3E001221C4 /* GoogleService-Info.plist */; };
@@ -73,6 +74,7 @@
 		5EAC6AB71D9AFEC700A4432F /* DiscoverAnswersCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverAnswersCell.swift; sourceTree = "<group>"; };
 		5EB27A9E1DAADA1B002F6FCE /* DiscoverAnswersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverAnswersViewController.swift; sourceTree = "<group>"; };
 		5EB27AA01DAB199A002F6FCE /* UserProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
+		5EB27AA51DAEE171002F6FCE /* MyProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyProfileViewController.swift; sourceTree = "<group>"; };
 		5EBD4DE31D7F525E004DA8DD /* HomeToProfilesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeToProfilesViewController.swift; sourceTree = "<group>"; };
 		5EBD4DE51D7F52A8004DA8DD /* AnswersToProfilesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnswersToProfilesViewController.swift; sourceTree = "<group>"; };
 		5ECC913A1D482B3E001221C4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -175,7 +177,7 @@
 		5E753B121D4FCBCB001D82B8 /* My Profile */ = {
 			isa = PBXGroup;
 			children = (
-				5E753B0D1D4BD123001D82B8 /* MeViewController.swift */,
+				5EB27AA51DAEE171002F6FCE /* MyProfileViewController.swift */,
 			);
 			name = "My Profile";
 			sourceTree = "<group>";
@@ -185,8 +187,6 @@
 			children = (
 				5E8BA9501D5E553000FB530E /* QuestionCell.swift */,
 				5E8BA9541D5E715000FB530E /* AnswerCell.swift */,
-				5E3CFE331D88EC7F005D0109 /* MeVCImageCell.swift */,
-				5E3CFE351D88EC93005D0109 /* MeVCTextViewCell.swift */,
 			);
 			name = "Table View Cells";
 			sourceTree = "<group>";
@@ -267,6 +267,9 @@
 		5EB27AA41DAC3949002F6FCE /* *Old */ = {
 			isa = PBXGroup;
 			children = (
+				5E3CFE331D88EC7F005D0109 /* MeVCImageCell.swift */,
+				5E3CFE351D88EC93005D0109 /* MeVCTextViewCell.swift */,
+				5E753B0D1D4BD123001D82B8 /* MeViewController.swift */,
 				5E753B0F1D4EA23F001D82B8 /* ProfilePhotoViewController.swift */,
 				5E59CCDC1D518A9300708053 /* ProfileImageManager.swift */,
 				5EBD4DE31D7F525E004DA8DD /* HomeToProfilesViewController.swift */,
@@ -414,6 +417,7 @@
 				5E753B0E1D4BD123001D82B8 /* MeViewController.swift in Sources */,
 				5EB27A9F1DAADA1B002F6FCE /* DiscoverAnswersViewController.swift in Sources */,
 				5E753B0A1D493F72001D82B8 /* AppState.swift in Sources */,
+				5EB27AA61DAEE171002F6FCE /* MyProfileViewController.swift in Sources */,
 				5E3CFE361D88EC93005D0109 /* MeVCTextViewCell.swift in Sources */,
 				5E2E6F201D25A794003588DC /* AppDelegate.swift in Sources */,
 				5EAC6AB01D9AEAFA00A4432F /* DiscoverViewController.swift in Sources */,

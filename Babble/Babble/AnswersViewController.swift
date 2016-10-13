@@ -75,6 +75,18 @@ class AnswersViewController: UIViewController {
     func registerForNotifications() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateAnswersArray), name: Constants.NotifKeys.HomeAnswersRetrieved, object: nil)
     }
+    // MARK:
+    // MARK: - Unregister Notifications & Obvservers
+    // MARK:
+    override func viewDidDisappear(animated: Bool) {
+        guard let questionID = self.selectedQuestionIdDict?["questionID"] else { return }
+        FirebaseMgr.shared.removeAnswerObservers(For: questionID)
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
     
     func updateAnswersArray() {
         self.answersArray = FirebaseMgr.shared.homeAnswersArray

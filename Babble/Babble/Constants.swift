@@ -12,9 +12,7 @@ struct Constants {
         static let SendUserID = "SendUserID"
         static let SendQuestionID = "SendQuestionID"
         static let HomeQuestionsRetrieved = "HomeQuestionsRetrieved"
-        static let DiscoverQuestionsRetrieved = "DiscoverQuestionsRetrieved"
         static let HomeAnswersRetrieved = "HomeAnswersRetrieved"
-        static let DiscoverAnswersRetrieved = "DiscoverAnswersRetrieved"
     }
     
     struct Segues {

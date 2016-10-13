@@ -89,9 +89,6 @@ class FirebaseMgr {
     func retrieveHomeAnswers() {
         self.homeAnswersArray = [Answer]()
         self._answersRefHandle = self.answersRef().child(self.selectedQuestionID).observeEventType(.ChildAdded, withBlock: { (answerSnapshot) in
-            if answerSnapshot.value is NSNull {
-            } else {
-            
                 let retrievedAnswer = answerSnapshot.value as! [String: AnyObject]
                 let answerID = answerSnapshot.key
                     guard let
@@ -100,8 +97,7 @@ class FirebaseMgr {
                         likeCount = retrievedAnswer[Constants.AnswerFields.likeCount] as? Int
                         else { return }
                     let answer = Answer(answerID: answerID, text: text, userID: userID, likeCount: likeCount)
-                    self.homeAnswersArray.insert(answer, atIndex: 0)
-            }
+                self.homeAnswersArray.insert(answer, atIndex: 0)
         })
     }
     //MARK:
@@ -134,7 +130,7 @@ class FirebaseMgr {
     
     func retrieveUserBio(userID: String, completion: (userBio: String?) -> Void) {
         self.usersRef().child("\(userID)/userBio").observeSingleEventOfType(.Value, withBlock: { (userBioSnapshot) in
-            let retrievedUserBio = userBioSnapshot.value as! String
+            let retrievedUserBio = userBioSnapshot.value as? String
             completion(userBio: retrievedUserBio)
         })
     }
@@ -293,8 +289,16 @@ class FirebaseMgr {
             self.selectedQuestionID = questionID
         }
     }
+    //MARK:
+    //MARK: - Firebase Ovbserver Removal
+    //MARK:
+    func removeAnswerObservers(For questionID: String) {
+        self.answersRef().removeAllObservers()
+        self.answersRef().child(questionID).removeAllObservers()
+    }
     
     deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
         self.usersRef().removeObserverWithHandle(self._usersNameRefHandle)
         self.usersRef().removeObserverWithHandle(self._usersPhotoRefHandle)
         self.questionsRef().removeObserverWithHandle(self._questionsRefHandle)
