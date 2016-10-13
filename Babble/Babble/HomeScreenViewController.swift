@@ -11,7 +11,7 @@
  
  //MARK: -
  //MARK: - HomeScreenViewController Class
- //MARK-
+ //MARK:-
  class HomeScreenViewController: UIViewController {
     //MARK: -
     //MARK: - Properties

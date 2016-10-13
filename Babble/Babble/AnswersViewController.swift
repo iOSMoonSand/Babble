@@ -18,6 +18,7 @@ class AnswersViewController: UIViewController {
     // MARK:
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var textField: UITextField!
+    scroll view connect
     var selectedQuestionIdDict: [String: String]?
     var selectedIndexRow: Int?
     var tapOutsideTextView = UITapGestureRecognizer()
@@ -74,6 +75,37 @@ class AnswersViewController: UIViewController {
     // MARK:
     func registerForNotifications() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateAnswersArray), name: Constants.NotifKeys.HomeAnswersRetrieved, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWasShown(_:)), name: UIKeyboardWillShowNotification, object:nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillBeHidden(_:)), name: UIKeyboardWillHideNotification, object:nil)
+    }
+    //MARK:
+    //MARK: - NSNotification Methods
+    //MARK:
+    var kbHeight: CGFloat!
+    
+    func keyboardWasShown(notification: NSNotification) {
+        guard let info = notification.userInfo else { return }
+        guard let kbSize = info[UIKeyboardFrameBeginUserInfoKey]!.CGRectValue().size as? CGSize? else { return }
+        
+        let contentInsets = UIEdgeInsetsMake(0.0, 0.0, ((kbSize?.height)! + 8.0), 0.0)
+        self.scrollView.contentInset = contentInsets
+        self.scrollView.scrollIndicatorInsets = contentInsets
+        
+        var aRect = self.view.frame
+        aRect.size.height -= (kbSize?.height)!
+        
+        if (!CGRectContainsPoint(aRect, self.textField.frame.origin)) {
+            self.scrollView.scrollRectToVisible(self.textField.frame, animated: true)
+        }
+        
+        
+        
+    }
+    
+    func keyboardWillBeHidden(notification: NSNotification) {
+        let contentInsets = UIEdgeInsetsZero
+        self.scrollView.contentInset = contentInsets
+        self.scrollView.scrollIndicatorInsets = contentInsets
     }
     // MARK:
     // MARK: - Unregister Notifications & Obvservers
@@ -86,6 +118,8 @@ class AnswersViewController: UIViewController {
     
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object:nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object:nil)
     }
     
     func updateAnswersArray() {
