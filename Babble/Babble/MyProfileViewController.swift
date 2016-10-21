@@ -92,7 +92,7 @@ class MyProfileViewController: UIViewController {
         self.editPhotoButton.setTitleColor(UIColor.grayColor(), forState: .Normal)
     }
     //MARK:
-    //MARK: - Gesture Recognizer Selector Methods
+    //MARK: - Gesture Recognizer Target Methods
     //MARK:
     func didTapProfilePhotoImageView() {
         let actionSheet = UIAlertController.init(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
@@ -128,7 +128,7 @@ class MyProfileViewController: UIViewController {
         actionSheet.addAction(choosePhotoAction)
         actionSheet.addAction(takePhotoAction)
         actionSheet.addAction(cancelAction)
-        presentViewController(actionSheet, animated: true, completion: nil);
+        presentViewController(actionSheet, animated: true, completion: nil)
     }
     
     func didTapOutsideTextViewWhenEditing() {

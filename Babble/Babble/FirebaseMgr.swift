@@ -33,14 +33,13 @@ class FirebaseMgr {
     private var _usersPhotoRefHandle: FIRDatabaseHandle!
     private var selectedQuestionID = String()
     private var selectedUserID = String()
-    //
     // Home Questions Array
     var homeQuestionsArray = [Question]() {
         didSet {
             NSNotificationCenter.defaultCenter().postNotification((NSNotification(name: Constants.NotifKeys.HomeQuestionsRetrieved, object: nil)))
         }
     }
-    //
+
     // Home Answers Array
     var homeAnswersArray = [Answer]() {
         didSet {

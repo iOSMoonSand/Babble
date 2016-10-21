@@ -89,7 +89,6 @@ class SignInViewController: UIViewController {
                 print(error.localizedDescription)
                 return
             }
-            
             self.setDisplayNameAndDefaultPhoto(user!)
             user?.sendEmailVerificationWithCompletion({ (error) in
                 if let error = error {

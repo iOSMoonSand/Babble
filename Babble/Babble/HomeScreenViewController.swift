@@ -108,7 +108,7 @@
         //From UserProfiles to HomeScreen
     }
     // MARK:
-    // MARK: - Unwind Segues
+    // MARK: - Deinit
     // MARK:
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
