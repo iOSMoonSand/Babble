@@ -289,7 +289,7 @@ class FirebaseMgr {
         }
     }
     //MARK:
-    //MARK: - Firebase Ovbserver Removal
+    //MARK: - Firebase Observer Removal
     //MARK:
     func removeAnswerObservers(For questionID: String) {
         self.answersRef().removeAllObservers()
