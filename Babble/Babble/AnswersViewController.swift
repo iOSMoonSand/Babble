@@ -34,7 +34,6 @@ class AnswersViewController: UIViewController {
             }
         }
     }
-    //TODO: understand logic below
     private func changeRowsForDifference(difference: Int, inSection section: Int){
         var indexPaths: [NSIndexPath] = []
         
@@ -47,17 +46,14 @@ class AnswersViewController: UIViewController {
         if difference > 0 {
             self.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
         }
-    }    // MARK:
+    }
+    // MARK:
     // MARK: - UIViewController Methods
     // MARK:
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.delegate = self
         self.tableView.dataSource = self
-        
-        //tableView.rowHeight = UITableViewAutomaticDimension
-        //tableView.estimatedRowHeight = 200.0
-        
         self.sendAnswerTextView.delegate = self
         self.registerForNotifications()
         self.postNotifications()

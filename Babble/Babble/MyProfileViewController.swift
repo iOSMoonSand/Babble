@@ -20,21 +20,25 @@ class MyProfileViewController: UIViewController {
     @IBOutlet weak var profilePhotoImageView: UIImageView!
     @IBOutlet weak var editPhotoButton: UIButton!
     @IBOutlet weak var userBioTextView: UITextView!
+    @IBOutlet weak var scrollView: UIScrollView!
     var tapOutsideTextView = UITapGestureRecognizer()
     var tapImageView = UITapGestureRecognizer()
     var chosenProfileImage: UIImage?
     var userBio = ""
+    var kbHeight: CGFloat!
     //MARK:
     //MARK: - UIViewController Methods
     //MARK:
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.userBioTextView.delegate = self
         self.setDisplayNameLabel()
         self.setImageView()
-        self.formatImageView()
+        
         self.formatEditButton()
         self.setUserBio()
         self.createGestureRecognizers()
+        self.registerForNotifications()
     }
     
     func setDisplayNameLabel() {
@@ -42,27 +46,34 @@ class MyProfileViewController: UIViewController {
         self.displayNameLabel.font = UIFont.boldSystemFontOfSize(22.0)
     }
     
-    func createGestureRecognizers() {
-        self.tapOutsideTextView = UITapGestureRecognizer(target: self, action: #selector(self.didTapOutsideTextViewWhenEditing))
-        self.view.addGestureRecognizer(tapOutsideTextView)
-        self.tapOutsideTextView.cancelsTouchesInView = false
-        
-        self.tapImageView = UITapGestureRecognizer(target: self, action: #selector(self.didTapProfilePhotoImageView))
-        self.profilePhotoImageView.userInteractionEnabled = true
-        self.profilePhotoImageView.addGestureRecognizer(tapImageView)
-    }
-    
     func setImageView() {
         if let chosenProfileImage = self.chosenProfileImage {
             self.profilePhotoImageView.image = chosenProfileImage
+            self.formatImageView()
         } else {
             if let photoDownloadURL = AppState.sharedInstance.photoDownloadURL {
                 self.profilePhotoImageView.kf_setImageWithURL(NSURL(string: photoDownloadURL)!, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"), optionsInfo: nil)
+                self.formatImageView()
             } else {
                 let image = UIImage(named: "Profile_avatar_placeholder_large")
                 self.profilePhotoImageView.image = image
+                self.formatImageView()
             }
         }
+    }
+    
+    func formatImageView() {
+        self.profilePhotoImageView.layoutIfNeeded()
+        self.profilePhotoImageView.layer.borderWidth = 1
+        //self.profilePhotoImageView.layer.masksToBounds = true
+        self.profilePhotoImageView.layer.borderColor = UIColor.blackColor().CGColor
+        self.profilePhotoImageView.layer.cornerRadius = 200
+        self.profilePhotoImageView.clipsToBounds = true
+    }
+    
+    func formatEditButton() {
+        self.editPhotoButton.setTitle("edit photo", forState: .Normal)
+        self.editPhotoButton.setTitleColor(UIColor.grayColor(), forState: .Normal)
     }
     
     func setUserBio() {
@@ -78,18 +89,14 @@ class MyProfileViewController: UIViewController {
         })
     }
     
-    func formatImageView() {
-        self.profilePhotoImageView.layoutIfNeeded()
-        self.profilePhotoImageView.layer.borderWidth = 1
-        self.profilePhotoImageView.layer.masksToBounds = false
-        self.profilePhotoImageView.layer.borderColor = UIColor.blackColor().CGColor
-        self.profilePhotoImageView.layer.cornerRadius = self.profilePhotoImageView.bounds.width/2
-        self.profilePhotoImageView.clipsToBounds = true
-    }
-    
-    func formatEditButton() {
-        self.editPhotoButton.setTitle("edit photo", forState: .Normal)
-        self.editPhotoButton.setTitleColor(UIColor.grayColor(), forState: .Normal)
+    func createGestureRecognizers() {
+        self.tapOutsideTextView = UITapGestureRecognizer(target: self, action: #selector(self.didTapOutsideTextViewWhenEditing))
+        self.view.addGestureRecognizer(tapOutsideTextView)
+        self.tapOutsideTextView.cancelsTouchesInView = false
+        
+        self.tapImageView = UITapGestureRecognizer(target: self, action: #selector(self.didTapProfilePhotoImageView))
+        self.profilePhotoImageView.userInteractionEnabled = true
+        self.profilePhotoImageView.addGestureRecognizer(tapImageView)
     }
     //MARK:
     //MARK: - Gesture Recognizer Target Methods
@@ -134,7 +141,44 @@ class MyProfileViewController: UIViewController {
     func didTapOutsideTextViewWhenEditing() {
         self.userBioTextView.resignFirstResponder()
     }
+    // MARK:
+    // MARK: - Notification Registration Methods
+    // MARK:
+    func registerForNotifications() {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWasShown(_:)), name: UIKeyboardWillShowNotification, object:nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillBeHidden(_:)), name: UIKeyboardWillHideNotification, object:nil)
+    }
+    //MARK:
+    //MARK: - NSNotification Methods
+    //MARK:
+    func keyboardWasShown(notification: NSNotification) {
+        guard let info = notification.userInfo else { return }
+        guard let kbSize = info[UIKeyboardFrameBeginUserInfoKey]!.CGRectValue().size as? CGSize? else { return }
+        let contentInsets = UIEdgeInsetsMake(0.0, 0.0, ((kbSize?.height)! + 8.0), 0.0)
+        self.scrollView.contentInset = contentInsets
+        self.scrollView.scrollIndicatorInsets = contentInsets
+        
+        var aRect = self.view.frame
+        aRect.size.height -= (kbSize?.height)!
+        
+        if (!CGRectContainsPoint(aRect, self.userBioTextView.frame.origin)) {
+            self.scrollView.scrollRectToVisible(self.userBioTextView.frame, animated: true)
+        } else {
+            self.scrollView.scrollRectToVisible(self.userBioTextView.frame, animated: true)
+        }
+    }
     
+    func keyboardWillBeHidden(notification: NSNotification) {
+        let contentInsets = UIEdgeInsetsZero
+        self.scrollView.contentInset = contentInsets
+        self.scrollView.scrollIndicatorInsets = contentInsets
+    }
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object:nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object:nil)
+    }
     //MARK:
     //MARK: - Button Actions
     //MARK:
