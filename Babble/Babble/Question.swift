@@ -14,6 +14,7 @@ class Question {
     let text: String
     let userID: String
     var likeCount: Int
+    var likeStatuses: [String: Bool]?
     
     init(questionID: String, text: String, userID: String, likeCount: Int){
         self.questionID = questionID

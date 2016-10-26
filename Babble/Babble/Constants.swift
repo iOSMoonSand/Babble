@@ -44,6 +44,7 @@ struct Constants {
         static let displayName = "displayName"
         static let likeCountID = "likeCountID"
         static let likeCount = "likeCount"
+        static let likeStatuses = "likeStatuses"
         static let date = "date"
     }
     

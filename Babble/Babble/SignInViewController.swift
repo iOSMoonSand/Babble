@@ -46,6 +46,7 @@ class SignInViewController: UIViewController {
         AppState.sharedInstance.displayName = user?.displayName ?? user?.email
         AppState.sharedInstance.signedIn = true
         let userID = user!.uid
+        AppState.sharedInstance.currentUserID = userID
         self.ref.child("users").child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
             var user = userSnapshot.value as! [String: AnyObject]
             AppState.sharedInstance.photoDownloadURL = nil

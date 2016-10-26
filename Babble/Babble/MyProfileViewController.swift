@@ -65,10 +65,11 @@ class MyProfileViewController: UIViewController {
     func formatImageView() {
         self.profilePhotoImageView.layoutIfNeeded()
         self.profilePhotoImageView.layer.borderWidth = 1
-        //self.profilePhotoImageView.layer.masksToBounds = true
-        self.profilePhotoImageView.layer.borderColor = UIColor.blackColor().CGColor
-        self.profilePhotoImageView.layer.cornerRadius = 200
+        self.profilePhotoImageView.contentMode = UIViewContentMode.ScaleAspectFill
+        self.profilePhotoImageView.layer.cornerRadius = self.profilePhotoImageView.frame.size.width / 2
+        self.profilePhotoImageView.layer.masksToBounds = false
         self.profilePhotoImageView.clipsToBounds = true
+        self.profilePhotoImageView.layer.borderColor = UIColor.blackColor().CGColor
     }
     
     func formatEditButton() {

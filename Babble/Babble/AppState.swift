@@ -16,5 +16,6 @@ class AppState: NSObject {
     var displayName: String?
     var photoDownloadURL: String?
     var defaultPhotoURL: String?
+    var currentUserID: String?
 }
 

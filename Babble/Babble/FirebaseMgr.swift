@@ -39,7 +39,7 @@ class FirebaseMgr {
             NSNotificationCenter.defaultCenter().postNotification((NSNotification(name: Constants.NotifKeys.HomeQuestionsRetrieved, object: nil)))
         }
     }
-
+    
     // Home Answers Array
     var homeAnswersArray = [Answer]() {
         didSet {
@@ -73,13 +73,16 @@ class FirebaseMgr {
         self._questionsRefHandle = self.questionsRef().observeEventType(.ChildAdded, withBlock: { (questionSnapshot) in
             let retrievedQuestion = questionSnapshot.value as! [String: AnyObject]
             let questionID = questionSnapshot.key
-                guard let
-                    text = retrievedQuestion[Constants.QuestionFields.text] as? String,
-                    userID = retrievedQuestion[Constants.QuestionFields.userID] as? String,
-                    likeCount = retrievedQuestion[Constants.QuestionFields.likeCount] as? Int
-                    else { return }
-                let question = Question(questionID: questionID, text: text, userID: userID, likeCount: likeCount)
-                self.homeQuestionsArray.insert(question, atIndex: 0)
+            guard let
+                text = retrievedQuestion[Constants.QuestionFields.text] as? String,
+                userID = retrievedQuestion[Constants.QuestionFields.userID] as? String,
+                likeCount = retrievedQuestion[Constants.QuestionFields.likeCount] as? Int
+                else { return }
+            var question = Question(questionID: questionID, text: text, userID: userID, likeCount: likeCount)
+            if let likeStatuses = retrievedQuestion[Constants.QuestionFields.likeStatuses] as? [String: Bool] {
+                question.likeStatuses = likeStatuses
+            }
+            self.homeQuestionsArray.insert(question, atIndex: 0)
         })
     }
     //MARK:
@@ -88,15 +91,15 @@ class FirebaseMgr {
     func retrieveHomeAnswers() {
         self.homeAnswersArray = [Answer]()
         self._answersRefHandle = self.answersRef().child(self.selectedQuestionID).observeEventType(.ChildAdded, withBlock: { (answerSnapshot) in
-                let retrievedAnswer = answerSnapshot.value as! [String: AnyObject]
-                let answerID = answerSnapshot.key
-                    guard let
-                        text = retrievedAnswer[Constants.AnswerFields.text] as? String,
-                        userID = retrievedAnswer[Constants.AnswerFields.userID] as? String,
-                        likeCount = retrievedAnswer[Constants.AnswerFields.likeCount] as? Int
-                        else { return }
-                    let answer = Answer(answerID: answerID, text: text, userID: userID, likeCount: likeCount)
-                self.homeAnswersArray.insert(answer, atIndex: 0)
+            let retrievedAnswer = answerSnapshot.value as! [String: AnyObject]
+            let answerID = answerSnapshot.key
+            guard let
+                text = retrievedAnswer[Constants.AnswerFields.text] as? String,
+                userID = retrievedAnswer[Constants.AnswerFields.userID] as? String,
+                likeCount = retrievedAnswer[Constants.AnswerFields.likeCount] as? Int
+                else { return }
+            let answer = Answer(answerID: answerID, text: text, userID: userID, likeCount: likeCount)
+            self.homeAnswersArray.insert(answer, atIndex: 0)
         })
     }
     //MARK:
@@ -163,37 +166,67 @@ class FirebaseMgr {
     //MARK:
     //MARK: - Question Like Count Data Upload
     //MARK:
-    func saveNewQuestionLikeCount(questionID: String, completion: (newLikeCount: Int) -> Void) {
+    func saveNewQuestionLikeCount(questionID: String, completion: (newLikeCount: Int, like: Bool) -> Void) {
         var incrementedLikeCount = Int()
-        self.questionsRef().child("\(questionID)/likeCount").observeSingleEventOfType(.Value, withBlock: { (likeCountSnapshot) in
-            guard let currentLikeCount = likeCountSnapshot.value as? Int else { return }
-            guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
-            self.likeStatusesRef().child(questionID).observeSingleEventOfType(.Value, withBlock: { (likeStatusesSnapshot) in
-                if likeStatusesSnapshot.hasChild(currentUserID) {
-                    self.likeStatusesRef().child(questionID).child(currentUserID).observeSingleEventOfType(.Value, withBlock: {
-                        (likeStatusSnapshot) in
-                        let likeStatusDict = likeStatusSnapshot.value as! [String: Int]
-                        guard let likeStatus = likeStatusDict[Constants.LikeStatusFields.likeStatus] else { return }
-                        if likeStatus == 0 {
-                            incrementedLikeCount = (currentLikeCount) + 1
-                            self.questionsRef().child("\(questionID)/likeCount").setValue(incrementedLikeCount)
-                            self.likeStatusesRef().child("\(questionID)/\(currentUserID)/likeStatus").setValue(1)
-                            completion(newLikeCount: incrementedLikeCount)
-                        } else if likeStatus == 1 {
-                            let decrementedLikeCount = (currentLikeCount) - 1
-                            self.questionsRef().child("\(questionID)/likeCount").setValue(decrementedLikeCount)
-                            self.likeStatusesRef().child("\(questionID)/\(currentUserID)/likeStatus").setValue(0)
-                            completion(newLikeCount: decrementedLikeCount)
-                        }
-                    })
-                } else {
-                    incrementedLikeCount = (currentLikeCount) + 1
-                    self.questionsRef().child("\(questionID)/likeCount").setValue(incrementedLikeCount)
-                    self.likeStatusesRef().child("\(questionID)/\(currentUserID)/likeStatus").setValue(1)
-                    completion(newLikeCount: incrementedLikeCount)
+        var decrementedLikeCount = Int()
+        self.questionsRef().child(questionID).observeSingleEventOfType(.Value, withBlock: { (likeCountSnapshot) in
+            guard let retrievedQuestion = likeCountSnapshot.value as? [String: AnyObject] else { return }
+            guard let currentLikeCount = retrievedQuestion[Constants.QuestionFields.likeCount] as? Int else { return }
+            guard let currentUserID = AppState.sharedInstance.currentUserID else { return }
+            if var likeStatusesDict = retrievedQuestion[Constants.QuestionFields.likeStatuses] as? [String: Bool] {
+                for (key, value) in likeStatusesDict {
+                    if key == currentUserID {
+                        self.questionsRef().child("\(questionID)/likeStatuses/\(currentUserID)").removeValue()
+                        decrementedLikeCount = currentLikeCount - 1
+                        self.questionsRef().child("\(questionID)/likeCount").setValue(decrementedLikeCount)
+                        completion(newLikeCount: decrementedLikeCount, like: false)
+                    } else if likeStatusesDict[currentUserID] == nil {
+                        let newLikeStatus = [currentUserID: true]
+                        likeStatusesDict[currentUserID] = true
+                        incrementedLikeCount = currentLikeCount + 1
+                        self.questionsRef().child("\(questionID)/likeCount").setValue(incrementedLikeCount)
+                        self.questionsRef().child(questionID).child("likeStatuses").updateChildValues(newLikeStatus)
+                        completion(newLikeCount: incrementedLikeCount, like: true)
+                    }
                 }
-            })
+            } else {
+                let newLikeStatus = [currentUserID: true]
+                incrementedLikeCount = currentLikeCount + 1
+                self.questionsRef().child("\(questionID)/likeCount").setValue(incrementedLikeCount)
+                self.questionsRef().child(questionID).child("likeStatuses").setValue(newLikeStatus)
+                completion(newLikeCount: incrementedLikeCount, like: true)
+            }
         })
+        
+//        self.questionsRef().child("\(questionID)/likeCount").observeSingleEventOfType(.Value, withBlock: { (likeCountSnapshot) in
+//            guard let currentLikeCount = likeCountSnapshot.value as? Int else { return }
+//            guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
+//            self.likeStatusesRef().child(questionID).observeSingleEventOfType(.Value, withBlock: { (likeStatusesSnapshot) in
+//                if likeStatusesSnapshot.hasChild(currentUserID) {
+//                    self.likeStatusesRef().child(questionID).child(currentUserID).observeSingleEventOfType(.Value, withBlock: {
+//                        (likeStatusSnapshot) in
+//                        let likeStatusDict = likeStatusSnapshot.value as! [String: Int]
+//                        guard let likeStatus = likeStatusDict[Constants.LikeStatusFields.likeStatus] else { return }
+//                        if likeStatus == 0 {
+//                            incrementedLikeCount = (currentLikeCount) + 1
+//                            self.questionsRef().child("\(questionID)/likeCount").setValue(incrementedLikeCount)
+//                            self.likeStatusesRef().child("\(questionID)/\(currentUserID)/likeStatus").setValue(1)
+//                            completion(newLikeCount: incrementedLikeCount)
+//                        } else if likeStatus == 1 {
+//                            let decrementedLikeCount = (currentLikeCount) - 1
+//                            self.questionsRef().child("\(questionID)/likeCount").setValue(decrementedLikeCount)
+//                            self.likeStatusesRef().child("\(questionID)/\(currentUserID)/likeStatus").setValue(0)
+//                            completion(newLikeCount: decrementedLikeCount)
+//                        }
+//                    })
+//                } else {
+//                    incrementedLikeCount = (currentLikeCount) + 1
+//                    self.questionsRef().child("\(questionID)/likeCount").setValue(incrementedLikeCount)
+//                    self.likeStatusesRef().child("\(questionID)/\(currentUserID)/likeStatus").setValue(1)
+//                    completion(newLikeCount: incrementedLikeCount)
+//                }
+//            })
+//        })
     }
     //MARK:
     //MARK: - New Question Data Upload
