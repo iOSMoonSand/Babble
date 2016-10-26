@@ -7,8 +7,6 @@
 //
 
 import Foundation
-import UIKit
-import Kingfisher
 
 class AppState: NSObject {
     
@@ -18,5 +16,6 @@ class AppState: NSObject {
     var displayName: String?
     var photoDownloadURL: String?
     var defaultPhotoURL: String?
+    var currentUserID: String?
 }
 

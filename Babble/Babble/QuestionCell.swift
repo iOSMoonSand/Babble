@@ -18,7 +18,7 @@ protocol QuestionCellDelegate: class {
     //MARK: - QuestionCellDelegate Methods
     //MARK:
     func handleProfileImageButtonTapOn(row: Int)
-    func handleLikeButtonTapOn(row: Int, cell: QuestionCell)
+    func handleLikeButtonTapOn(cell: QuestionCell)
 }
 //MARK:
 //MARK: - QuestionCell Class
@@ -45,17 +45,46 @@ class QuestionCell: UITableViewCell {
         self.profilePhotoImageButton.setImage(nil, forState: .Normal)
         self.profilePhotoImageButton.setImage(defaultProfileImage, forState: .Normal)
         self.likeButtonCountLabel.text = String(likeCount)
+        let currentUserID = AppState.sharedInstance.currentUserID
+        let fullHeart = UIImage(named: "Hearts-Filled-50")
+        let emptyHeart = UIImage(named: "Hearts-50")
+        self.likeButton.setImage(emptyHeart, forState: .Normal)
+        if let likeStatusDict = question.likeStatuses {
+            for (key, value) in likeStatusDict {
+                if key == currentUserID {
+                    self.likeButton.setImage(fullHeart, forState: .Normal)
+                }
+            }
+            //WHAT YOU NEED TO DO NOW: WHEN USER LIKES A QUESTION, ADD HIS USERID TO THE LIKESTATUSES DICT OF THE QUESTION
+            //REPEAT BOTH STEPS ABOVE FOR ANSWERS!!!!!!!!!
+            //CHANGE LIKE BUTTON TITLE TO INCLUDE LIKE COUNT?
+        }
     }
     //MARK:
     //MARK: - Button Actions
     //MARK:
-    @IBAction func profileImageButtonTapped(sender: UIButton) {
-        guard let row = self.row else { return }
-        delegate?.handleProfileImageButtonTapOn(row)
+    @IBAction func didTapProfilePictureButton(sender: UIButton) {
+//        guard let row = self.row else { return }
+//        delegate?.handleProfileImageButtonTapOn(row)
     }
     
-    @IBAction func likeButtonTapped(sender: UIButton) {
-        guard let row = self.row else { return }
-        delegate?.handleLikeButtonTapOn(row, cell: self)
+    @IBAction func didTapLikeButton(sender: UIButton) {
+        delegate?.handleLikeButtonTapOn(self)
     }
-}
+    
+    
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

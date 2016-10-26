@@ -11,7 +11,7 @@
  
  //MARK: -
  //MARK: - HomeScreenViewController Class
- //MARK-
+ //MARK:-
  class HomeScreenViewController: UIViewController {
     //MARK: -
     //MARK: - Properties
@@ -35,6 +35,8 @@
     //MARK: -
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.registerForNotifications()
@@ -108,7 +110,7 @@
         //From UserProfiles to HomeScreen
     }
     // MARK:
-    // MARK: - Unwind Segues
+    // MARK: - Deinit
     // MARK:
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
@@ -128,7 +130,7 @@
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = self.tableView.dequeueReusableCellWithIdentifier("QuestionCell", forIndexPath: indexPath) as! QuestionCell
         cell.delegate = self
-        cell.row = indexPath.row
+        //cell.row = indexPath.row
         let question: Question = self.questionsArray[indexPath.row]
         //
         cell.updateViewsWith(question)
@@ -149,15 +151,28 @@
             }
         })
         //
-        FirebaseMgr.shared.retrieveLikeStatus(question.questionID, completion: { (likeStatus) in
-            if likeStatus == 1 {
-                let fullHeartImage = UIImage(named: "heart-full")
-                cell.likeButton.setImage(fullHeartImage, forState: .Normal)
-            } else if likeStatus == 0 {
-                let emptyHeartImage = UIImage(named: "heart-empty")
-                cell.likeButton.setImage(emptyHeartImage, forState: .Normal)
-            }
-        })
+//        guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return UITableViewCell() }
+//        FirebaseMgr.shared.likeStatusesRef().child(question.questionID).observeSingleEventOfType(.Value, withBlock: { (likeStatusesSnapshot) in
+//            if likeStatusesSnapshot.hasChild(currentUserID) {
+//                FirebaseMgr.shared.likeStatusesRef().child(question.questionID).child(currentUserID).observeSingleEventOfType(.Value, withBlock: { (likeStatusSnapshot) in
+//                    var retrievedLikeStatus = likeStatusSnapshot.value as! [String: Int]
+//                    if currentUserID == likeStatusSnapshot.key {
+//                        guard let likeStatus = retrievedLikeStatus[Constants.LikeStatusFields.likeStatus] else { return }
+//                        if likeStatus == 1 {
+//                            let fullHeartImage = UIImage(named: "heart-full")
+//                            cell.likeButton.setImage(fullHeartImage, forState: .Normal)
+//                        } else if likeStatus == 0 {
+//                            let emptyHeartImage = UIImage(named: "heart-empty")
+//                            cell.likeButton.setImage(emptyHeartImage, forState: .Normal)
+//                        }
+//                    }
+//                })
+//            } else {
+//                FirebaseMgr.shared.likeStatusesRef().child("\(question.questionID)/\(currentUserID)/likeStatus").setValue(0)
+//                let emptyHeartImage = UIImage(named: "heart-empty")
+//                cell.likeButton.setImage(emptyHeartImage, forState: .Normal)
+//            }
+//        })
         return cell
     }
     
@@ -189,12 +204,22 @@
         performSegueWithIdentifier(Constants.Segues.HomeToUserProfiles, sender: self)
     }
     
-    func handleLikeButtonTapOn(row: Int, cell: QuestionCell) {
-        let question = self.questionsArray[row]
-        FirebaseMgr.shared.saveNewQuestionLikeCount(question.questionID, completion: { (newLikeCount) in
-            //cell.likeButton.setImage(nil, forState: .Normal)
-            self.questionsArray[row].likeCount = newLikeCount
-            let indexPath = NSIndexPath(forRow: row, inSection: 0)
+    func handleLikeButtonTapOn(cell: QuestionCell) {
+        var selectedIndexPath: NSIndexPath!
+        selectedIndexPath = self.tableView.indexPathForCell(cell)
+        guard let currentUserID = AppState.sharedInstance.currentUserID else { return }
+        let question = self.questionsArray[selectedIndexPath.row]
+        var likeStatusesDict = self.questionsArray[selectedIndexPath.row].likeStatuses
+        FirebaseMgr.shared.saveNewQuestionLikeCount(question.questionID, completion: { newLikeCount, like in
+            self.questionsArray[selectedIndexPath.row].likeCount = newLikeCount
+            if like == true && likeStatusesDict != nil {
+                self.questionsArray[selectedIndexPath.row].likeStatuses![currentUserID] = true
+            } else if like == true && likeStatusesDict == nil {
+                self.questionsArray[selectedIndexPath.row].likeStatuses = [currentUserID: true]
+            } else if like == false && likeStatusesDict != nil {
+                self.questionsArray[selectedIndexPath.row].likeStatuses![currentUserID] = nil
+            }
+            let indexPath = NSIndexPath(forRow: selectedIndexPath.row, inSection: 0)
             self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
         })
     }

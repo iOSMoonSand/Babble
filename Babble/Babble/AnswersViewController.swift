@@ -17,7 +17,9 @@ class AnswersViewController: UIViewController {
     // MARK: - Properties
     // MARK:
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var textField: UITextField!
+    @IBOutlet weak var sendAnswerTextView: UITextView!
+    @IBOutlet weak var SendAnswerButton: UIButton!
+    @IBOutlet weak var scrollView: UIScrollView!
     var selectedQuestionIdDict: [String: String]?
     var selectedIndexRow: Int?
     var tapOutsideTextView = UITapGestureRecognizer()
@@ -32,7 +34,6 @@ class AnswersViewController: UIViewController {
             }
         }
     }
-    //TODO: understand logic below
     private func changeRowsForDifference(difference: Int, inSection section: Int){
         var indexPaths: [NSIndexPath] = []
         
@@ -45,14 +46,15 @@ class AnswersViewController: UIViewController {
         if difference > 0 {
             self.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
         }
-    }    // MARK:
+    }
+    // MARK:
     // MARK: - UIViewController Methods
     // MARK:
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.delegate = self
         self.tableView.dataSource = self
-        self.textField.delegate = self
+        self.sendAnswerTextView.delegate = self
         self.registerForNotifications()
         self.postNotifications()
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tableViewCell")
@@ -74,6 +76,33 @@ class AnswersViewController: UIViewController {
     // MARK:
     func registerForNotifications() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateAnswersArray), name: Constants.NotifKeys.HomeAnswersRetrieved, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWasShown(_:)), name: UIKeyboardWillShowNotification, object:nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillBeHidden(_:)), name: UIKeyboardWillHideNotification, object:nil)
+    }
+    //MARK:
+    //MARK: - NSNotification Methods
+    //MARK:
+    var kbHeight: CGFloat!
+    
+    func keyboardWasShown(notification: NSNotification) {
+        guard let info = notification.userInfo else { return }
+        guard let kbSize = info[UIKeyboardFrameBeginUserInfoKey]!.CGRectValue().size as? CGSize? else { return }
+        let contentInsets = UIEdgeInsetsMake(0.0, 0.0, ((kbSize?.height)! + 8.0), 0.0)
+        self.scrollView.contentInset = contentInsets
+        self.scrollView.scrollIndicatorInsets = contentInsets
+        
+        var aRect = self.view.frame
+        aRect.size.height -= (kbSize?.height)!
+        
+        if (!CGRectContainsPoint(aRect, self.sendAnswerTextView.frame.origin)) {
+            self.scrollView.scrollRectToVisible(self.sendAnswerTextView.frame, animated: true)
+        }
+    }
+    
+    func keyboardWillBeHidden(notification: NSNotification) {
+        let contentInsets = UIEdgeInsetsZero
+        self.scrollView.contentInset = contentInsets
+        self.scrollView.scrollIndicatorInsets = contentInsets
     }
     // MARK:
     // MARK: - Unregister Notifications & Obvservers
@@ -86,6 +115,8 @@ class AnswersViewController: UIViewController {
     
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object:nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object:nil)
     }
     
     func updateAnswersArray() {
@@ -100,8 +131,28 @@ class AnswersViewController: UIViewController {
     // MARK:
     // MARK: - Button Actions
     // MARK:
+    
+    
     @IBAction func didTapSendAnswerButton(sender: UIButton) {
-        textFieldShouldReturn(self.textField)
+        let data = [Constants.AnswerFields.text: self.sendAnswerTextView.text! as String]
+        sendAnswer(data)
+        self.sendAnswerTextView.resignFirstResponder()
+        self.tableView.allowsSelection = true
+        self.view.removeGestureRecognizer(tapOutsideTextView)
+    }
+    
+    func sendAnswer(data: [String: AnyObject]) {
+        var answerDataDict = data
+        guard let
+            currentUserID = FIRAuth.auth()?.currentUser?.uid,
+            questionID = self.selectedQuestionIdDict?["questionID"]
+            else { return }
+        answerDataDict[Constants.AnswerFields.likeCount] = 0
+        answerDataDict[Constants.AnswerFields.userID] = currentUserID
+        
+        FirebaseMgr.shared.saveNewAnswer(answerDataDict, questionID: questionID, userID: currentUserID)
+        
+        
     }
     // MARK:
     // MARK: - Unwind Segues
@@ -198,14 +249,14 @@ extension AnswersViewController: AnswerCellDelegate {
 }
 
 // MARK:
-// MARK: - UITextFieldDelegate Protocol
+// MARK: - UITextViewDelegate Protocol
 // MARK:
-extension AnswersViewController: UITextFieldDelegate {
+extension AnswersViewController: UITextViewDelegate {
     // MARK:
-    // MARK: - UITextFieldDelegate Methods
+    // MARK: - UITextViewDelegate Methods
     // MARK:
-    func textFieldDidBeginEditing(textField: UITextField) {
-        print("textFieldDidBeginEditing")
+    func textViewDidBeginEditing(textView: UITextView) {
+        print("textViewDidBeginEditing")
         self.tableView.allowsSelection = false
         self.tapOutsideTextView = UITapGestureRecognizer(target: self, action: #selector(self.didTapOutsideTextViewWhenEditing))
         self.view.addGestureRecognizer(tapOutsideTextView)
@@ -215,34 +266,13 @@ extension AnswersViewController: UITextFieldDelegate {
         self.view.endEditing(true)
     }
     
-    func textFieldDidEndEditing(textField: UITextField) {
-        print("textFieldDidEndEditing")
+    func textViewDidEndEditing(textView: UITextView) {
+        print("textViewDidEndEditing")
         self.tableView.allowsSelection = true
         self.view.removeGestureRecognizer(tapOutsideTextView)
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        let data = [Constants.AnswerFields.text: textField.text! as String]
-        sendAnswer(data)
-        textField.resignFirstResponder()
-        self.tableView.allowsSelection = true
-        self.view.removeGestureRecognizer(tapOutsideTextView)
-        return true
-    }
     
-    func sendAnswer(data: [String: AnyObject]) {
-        var answerDataDict = data
-        guard let
-            currentUserID = FIRAuth.auth()?.currentUser?.uid,
-            questionID = self.selectedQuestionIdDict?["questionID"]
-        else { return }
-        answerDataDict[Constants.AnswerFields.likeCount] = 0
-        answerDataDict[Constants.AnswerFields.userID] = currentUserID
-        
-        FirebaseMgr.shared.saveNewAnswer(answerDataDict, questionID: questionID, userID: currentUserID)
-        
-        
-    }
 }
 
 

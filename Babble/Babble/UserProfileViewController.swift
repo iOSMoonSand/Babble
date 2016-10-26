@@ -9,11 +9,12 @@
 import UIKit
 import Kingfisher
 
-class UserProfileViewController: UITableViewController {
+class UserProfileViewController: UIViewController {
 
     //MARK:
     //MARK: - Properties
     //MARK:
+    @IBOutlet weak var displayNameLabel: UILabel!
     @IBOutlet weak var userProfileImageView: UIImageView!
     @IBOutlet weak var userProfileTextView: UITextView!
     var selectedUserID: String?
@@ -27,6 +28,10 @@ class UserProfileViewController: UITableViewController {
     
     func retrieveUserProfileData() {
         guard let userID = self.selectedUserID else { return }
+        
+        FirebaseMgr.shared.retrieveUserDisplayName(userID, completion: { displayName in
+            self.displayNameLabel.text = displayName
+        })
         
         FirebaseMgr.shared.retrieveUserBio(userID, completion: { userBio in
             self.userProfileTextView.text = userBio
