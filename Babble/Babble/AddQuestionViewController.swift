@@ -29,6 +29,8 @@ class AddQuestionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.textView.delegate = self
+        self.textView.text = "Example: Swift 2.2 or Swift 3.0?"
+        self.textView.textColor = UIColor.lightGrayColor()
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -43,8 +45,7 @@ class AddQuestionViewController: UIViewController {
 extension AddQuestionViewController: UITextViewDelegate {
     
     func textViewDidBeginEditing(textView: UITextView) {
-        let placeholderText = "Example: Why do cats meow?"
-        if self.textView.text == placeholderText {
+        if self.textView.text == "Example: Swift 2.2 or Swift 3.0?" {
             self.textView.text = ""
             self.textView.textColor = UIColor.blackColor()
         }
