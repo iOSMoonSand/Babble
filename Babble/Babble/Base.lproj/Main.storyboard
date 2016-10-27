@@ -377,7 +377,7 @@
                 <navigationController title="Home Screen Nav Controller" automaticallyAdjustsScrollViewInsets="NO" id="3SC-o7-hNK" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Home" image="Roofing-32" id="EHK-Rg-rp1"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Ew9-dR-6dE">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="Ew9-dR-6dE">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -395,7 +395,7 @@
             <objects>
                 <navigationController title="Add Question Nav Controller" automaticallyAdjustsScrollViewInsets="NO" id="tbe-LJ-qw2" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="hTs-Ri-JJn">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="hTs-Ri-JJn">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -433,7 +433,7 @@
                 <navigationController title="Me Nav Controller" automaticallyAdjustsScrollViewInsets="NO" id="YAS-QA-Oxe" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Profile" image="User-32" id="LKl-LW-3eW"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="RQo-ul-4Wv">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="RQo-ul-4Wv">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
