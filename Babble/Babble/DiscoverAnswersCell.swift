@@ -38,12 +38,10 @@ class DiscoverAnswersCell: UITableViewCell {
     //MARK:
     func updateViewsWith(answer: Answer) {
         let answerText = answer.text
-        let likeCount = answer.likeCount
         let defaultProfileImage = UIImage(named: "Profile_avatar_placeholder_large")
         self.answerTextView.text = answerText
         self.profilePhotoImageButton.setImage(nil, forState: .Normal)
         self.profilePhotoImageButton.setImage(defaultProfileImage, forState: .Normal)
-        self.likeButtonCountLabel.text = String(likeCount)
     }
     //MARK:
     //MARK: - Button Actions

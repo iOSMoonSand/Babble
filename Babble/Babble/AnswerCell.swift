@@ -17,7 +17,6 @@ protocol AnswerCellDelegate: class {
     //MARK: - AnswerCellDelegate Methods
     //MARK:
     func handleProfileImageButtonTapOn(row: Int)
-    func handleLikeButtonTapOn(row: Int, cell: AnswerCell)
 }
 //MARK:
 //MARK: - AnswerCell Class
@@ -29,8 +28,6 @@ class AnswerCell: UITableViewCell {
     @IBOutlet weak var profilePhotoImageButton: UIButton!
     @IBOutlet weak var displayNameLabel: UILabel!
     @IBOutlet weak var answerTextView: UITextView!
-    @IBOutlet weak var likeButton: UIButton!
-    @IBOutlet weak var likeButtonCountLabel: UILabel!
     
 //    @IBOutlet weak var profilePhotoImageButton: UIButton!
 //    @IBOutlet weak var displayNameLabel: UILabel!
@@ -45,23 +42,38 @@ class AnswerCell: UITableViewCell {
     //MARK:
     func updateViewsWith(answer: Answer) {
         let answerText = answer.text
-        let likeCount = answer.likeCount
         let defaultProfileImage = UIImage(named: "Profile_avatar_placeholder_large")
         self.answerTextView.text = answerText
         self.profilePhotoImageButton.setImage(nil, forState: .Normal)
         self.profilePhotoImageButton.setImage(defaultProfileImage, forState: .Normal)
-        self.likeButtonCountLabel.text = String(likeCount)
     }
     //MARK:
     //MARK: - Button Actions
     //MARK:
-    @IBAction func profileImageButtonTapped(sender: UIButton) {
-        guard let row = self.row else { return }
-        delegate?.handleProfileImageButtonTapOn(row)
-    }
-    
-    @IBAction func likeButtonTapped(sender: UIButton) {
-        guard let row = self.row else { return }
-        delegate?.handleLikeButtonTapOn(row, cell: self)
-    }
+//    @IBAction func profileImageButtonTapped(sender: UIButton) {
+//        guard let row = self.row else { return }
+//        delegate?.handleProfileImageButtonTapOn(row)
+//    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

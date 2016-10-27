@@ -13,12 +13,10 @@ class Answer {
     let answerID: String
     let text: String
     let userID: String
-    var likeCount: Int
     
-    init(answerID: String, text: String, userID: String, likeCount: Int){
+    init(answerID: String, text: String, userID: String){
         self.answerID = answerID
         self.text = text
         self.userID = userID
-        self.likeCount = likeCount
     }
 }

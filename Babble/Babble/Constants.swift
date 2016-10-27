@@ -54,6 +54,7 @@ struct Constants {
         static let photoUrl = "photoURL"
         static let photoDownloadURL = "photoDownloadURL"
         static let likeCount = "likeCount"
+        static let likeStatuses = "likeStatuses"
         static let displayName = "displayName"
         static let answerID = "answerID"
         static let questionID = "questionID"

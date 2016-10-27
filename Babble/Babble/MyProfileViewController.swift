@@ -34,8 +34,8 @@ class MyProfileViewController: UIViewController {
         self.userBioTextView.delegate = self
         self.setDisplayNameLabel()
         self.setImageView()
-        
         self.formatEditButton()
+        self.formatBioTextView()
         self.setUserBio()
         self.createGestureRecognizers()
         self.registerForNotifications()
@@ -75,6 +75,15 @@ class MyProfileViewController: UIViewController {
     func formatEditButton() {
         self.editPhotoButton.setTitle("edit photo", forState: .Normal)
         self.editPhotoButton.setTitleColor(UIColor.grayColor(), forState: .Normal)
+    }
+    
+    func formatBioTextView() {
+        self.userBioTextView.layer.borderWidth = 1
+        self.userBioTextView.layer.borderColor = UIColor.darkGrayColor().CGColor
+        self.userBioTextView.clipsToBounds = true
+        self.userBioTextView.layer.cornerRadius = 6
+        self.userBioTextView.text = "Write your bio here!"
+        self.userBioTextView.textColor = UIColor.lightGrayColor()
     }
     
     func setUserBio() {
@@ -241,8 +250,7 @@ extension MyProfileViewController: UITextViewDelegate {
     //MARK:
     func textViewDidBeginEditing(textView: UITextView) {
         print("textViewDidBeginEditing")
-        let placeholderText = "Write your bio here!"
-        if self.userBioTextView.text == placeholderText {
+        if self.userBioTextView.text == "Write your bio here!" {
             self.userBioTextView.text = ""
             self.userBioTextView.textColor = UIColor.blackColor()
         }
@@ -250,6 +258,11 @@ extension MyProfileViewController: UITextViewDelegate {
     
     func textViewDidEndEditing(textView: UITextView) {
         print("textViewDidEndEditing")
+        if self.userBioTextView.text.isEmpty {
+            self.userBioTextView.text = "Write your bio here!"
+            self.userBioTextView.textColor = UIColor.lightGrayColor()
+            return
+        }
         self.save(textView.text)
     }
     

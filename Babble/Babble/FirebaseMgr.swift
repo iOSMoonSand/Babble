@@ -95,10 +95,9 @@ class FirebaseMgr {
             let answerID = answerSnapshot.key
             guard let
                 text = retrievedAnswer[Constants.AnswerFields.text] as? String,
-                userID = retrievedAnswer[Constants.AnswerFields.userID] as? String,
-                likeCount = retrievedAnswer[Constants.AnswerFields.likeCount] as? Int
-                else { return }
-            let answer = Answer(answerID: answerID, text: text, userID: userID, likeCount: likeCount)
+                userID = retrievedAnswer[Constants.AnswerFields.userID] as? String
+            else { return }
+            let answer = Answer(answerID: answerID, text: text, userID: userID)
             self.homeAnswersArray.insert(answer, atIndex: 0)
         })
     }
@@ -169,8 +168,8 @@ class FirebaseMgr {
     func saveNewQuestionLikeCount(questionID: String, completion: (newLikeCount: Int, like: Bool) -> Void) {
         var incrementedLikeCount = Int()
         var decrementedLikeCount = Int()
-        self.questionsRef().child(questionID).observeSingleEventOfType(.Value, withBlock: { (likeCountSnapshot) in
-            guard let retrievedQuestion = likeCountSnapshot.value as? [String: AnyObject] else { return }
+        self.questionsRef().child(questionID).observeSingleEventOfType(.Value, withBlock: { questionSnapshot in
+            guard let retrievedQuestion = questionSnapshot.value as? [String: AnyObject] else { return }
             guard let currentLikeCount = retrievedQuestion[Constants.QuestionFields.likeCount] as? Int else { return }
             guard let currentUserID = AppState.sharedInstance.currentUserID else { return }
             if var likeStatusesDict = retrievedQuestion[Constants.QuestionFields.likeStatuses] as? [String: Bool] {
@@ -197,36 +196,6 @@ class FirebaseMgr {
                 completion(newLikeCount: incrementedLikeCount, like: true)
             }
         })
-        
-//        self.questionsRef().child("\(questionID)/likeCount").observeSingleEventOfType(.Value, withBlock: { (likeCountSnapshot) in
-//            guard let currentLikeCount = likeCountSnapshot.value as? Int else { return }
-//            guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
-//            self.likeStatusesRef().child(questionID).observeSingleEventOfType(.Value, withBlock: { (likeStatusesSnapshot) in
-//                if likeStatusesSnapshot.hasChild(currentUserID) {
-//                    self.likeStatusesRef().child(questionID).child(currentUserID).observeSingleEventOfType(.Value, withBlock: {
-//                        (likeStatusSnapshot) in
-//                        let likeStatusDict = likeStatusSnapshot.value as! [String: Int]
-//                        guard let likeStatus = likeStatusDict[Constants.LikeStatusFields.likeStatus] else { return }
-//                        if likeStatus == 0 {
-//                            incrementedLikeCount = (currentLikeCount) + 1
-//                            self.questionsRef().child("\(questionID)/likeCount").setValue(incrementedLikeCount)
-//                            self.likeStatusesRef().child("\(questionID)/\(currentUserID)/likeStatus").setValue(1)
-//                            completion(newLikeCount: incrementedLikeCount)
-//                        } else if likeStatus == 1 {
-//                            let decrementedLikeCount = (currentLikeCount) - 1
-//                            self.questionsRef().child("\(questionID)/likeCount").setValue(decrementedLikeCount)
-//                            self.likeStatusesRef().child("\(questionID)/\(currentUserID)/likeStatus").setValue(0)
-//                            completion(newLikeCount: decrementedLikeCount)
-//                        }
-//                    })
-//                } else {
-//                    incrementedLikeCount = (currentLikeCount) + 1
-//                    self.questionsRef().child("\(questionID)/likeCount").setValue(incrementedLikeCount)
-//                    self.likeStatusesRef().child("\(questionID)/\(currentUserID)/likeStatus").setValue(1)
-//                    completion(newLikeCount: incrementedLikeCount)
-//                }
-//            })
-//        })
     }
     //MARK:
     //MARK: - New Question Data Upload
@@ -238,48 +207,12 @@ class FirebaseMgr {
         self.ref.updateChildValues(childUpdates as! [String : AnyObject])
     }
     //MARK:
-    //MARK: - Answer Like Count Data Upload
-    //MARK:
-    func saveNewAnswerLikeCount(questionID: String, answerID: String, completion: (newLikeCount: Int) -> Void) {
-        var incrementedLikeCount = Int()
-        self.answersRef().child("\(questionID)/\(answerID)/likeCount").observeSingleEventOfType(.Value, withBlock: { (likeCountSnapshot) in
-            guard let currentLikeCount = likeCountSnapshot.value as? Int else { return }
-            guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
-            self.likeStatusesRef().child(answerID).observeSingleEventOfType(.Value, withBlock: { (likeStatusesSnapshot) in
-                if likeStatusesSnapshot.hasChild(currentUserID) {
-                    self.likeStatusesRef().child(answerID).child(currentUserID).observeSingleEventOfType(.Value, withBlock: {
-                        (likeStatusSnapshot) in
-                        let likeStatusDict = likeStatusSnapshot.value as! [String: Int]
-                        guard let likeStatus = likeStatusDict[Constants.LikeStatusFields.likeStatus] else { return }
-                        if likeStatus == 0 {
-                            incrementedLikeCount = (currentLikeCount) + 1
-                            self.answersRef().child("\(questionID)/\(answerID)/likeCount").setValue(incrementedLikeCount)
-                            self.likeStatusesRef().child("\(answerID)/\(currentUserID)/likeStatus").setValue(1)
-                            completion(newLikeCount: incrementedLikeCount)
-                        } else if likeStatus == 1 {
-                            let decrementedLikeCount = (currentLikeCount) - 1
-                            self.answersRef().child("\(questionID)/\(answerID)/likeCount").setValue(decrementedLikeCount)
-                            self.likeStatusesRef().child("\(answerID)/\(currentUserID)/likeStatus").setValue(0)
-                            completion(newLikeCount: decrementedLikeCount)
-                        }
-                    })
-                } else {
-                    incrementedLikeCount = (currentLikeCount) + 1
-                    self.answersRef().child("\(questionID)/\(answerID)/likeCount").setValue(incrementedLikeCount)
-                    self.likeStatusesRef().child("\(answerID)/\(currentUserID)/likeStatus").setValue(1)
-                    completion(newLikeCount: incrementedLikeCount)
-                }
-            })
-        })
-    }
-    //MARK:
     //MARK: - New Answer Data Upload
     //MARK:
     func saveNewAnswer(dataDict: [String: AnyObject], questionID: String, userID: String) {
         let key = self.answersRef().child(questionID).childByAutoId().key
-        let childUpdates = ["answers/\(questionID)/\(key)": dataDict,
-                            "likeStatuses/\(key)/\(userID)/likeStatus": 0]
-        self.ref.updateChildValues(childUpdates as! [String : AnyObject])
+        let childUpdates = ["answers/\(questionID)/\(key)": dataDict]
+        self.ref.updateChildValues(childUpdates)
     }
     //MARK:
     //MARK: - Image Data Upload

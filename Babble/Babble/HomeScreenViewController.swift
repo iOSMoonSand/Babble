@@ -40,7 +40,7 @@
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.registerForNotifications()
-        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tableViewCell")
+        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tableViewQuestionCell")
         FirebaseMgr.shared.retrieveHomeQuestions()
     }
     
@@ -231,32 +231,6 @@
  
  
  
- 
- //if let photoDownloadURL = self.question[Constants.QuestionFields.photoDownloadURL] as! String? {
- //                            let url = NSURL(string: photoDownloadURL)
- //                            self.profilePhotoImageButton.kf_setImageWithURL(url, forState: .Normal, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"))
- //                        } else if let photoUrl = self.question[Constants.QuestionFields.photoUrl] {
- //                            let image = UIImage(named: "Profile_avatar_placeholder_large")
- //                            self.profilePhotoImageButton.setImage(image, forState: .Normal)
- //                        } else if let photoUrl = self.question[Constants.QuestionFields.photoUrl] {
- //                            FIRStorage.storage().referenceForURL(photoUrl as! String).dataWithMaxSize(INT64_MAX) { (data, error) in
- //                                self.profilePhotoImageButton.setImage(nil, forState: .Normal)
- //                                if error != nil {
- //                                    print("Error downloading: \(error)")
- //                                    return
- //                                } else {
- //                                    let image = UIImage(data: data!)
- //                                    self.profilePhotoImageButton.setImage(image, forState: .Normal)
- //                                }
- //                            }
- //                        }
- //
- //                    } else if let photoUrl = self.question[Constants.QuestionFields.photoUrl], url = NSURL(string:photoUrl as! String), data = NSData(contentsOfURL: url) {
- //                        let image = UIImage(data: data)
- //                        self.profilePhotoImageButton.setImage(image, forState: .Normal)
- //
- //                    }
- //                })
  
  
  

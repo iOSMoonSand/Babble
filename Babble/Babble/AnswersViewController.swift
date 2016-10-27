@@ -18,7 +18,6 @@ class AnswersViewController: UIViewController {
     // MARK:
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var sendAnswerTextView: UITextView!
-    @IBOutlet weak var SendAnswerButton: UIButton!
     @IBOutlet weak var scrollView: UIScrollView!
     var selectedQuestionIdDict: [String: String]?
     var selectedIndexRow: Int?
@@ -57,8 +56,9 @@ class AnswersViewController: UIViewController {
         self.sendAnswerTextView.delegate = self
         self.registerForNotifications()
         self.postNotifications()
-        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tableViewCell")
+        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tableViewAnswerCell")
         FirebaseMgr.shared.retrieveHomeAnswers()
+        self.formatTextView()
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -70,6 +70,15 @@ class AnswersViewController: UIViewController {
             guard let destinationVC = segue.destinationViewController as? UserProfileViewController else { return }
             destinationVC.selectedUserID = userID
         }
+    }
+    
+    func formatTextView() {
+        self.sendAnswerTextView.layer.borderWidth = 1
+        self.sendAnswerTextView.layer.borderColor = UIColor.darkGrayColor().CGColor
+        self.sendAnswerTextView.clipsToBounds = true
+        self.sendAnswerTextView.layer.cornerRadius = 6
+        self.sendAnswerTextView.text = "Write a comment here!"
+        self.sendAnswerTextView.textColor = UIColor.lightGrayColor()
     }
     // MARK:
     // MARK: - Notification Registration Methods
@@ -132,14 +141,17 @@ class AnswersViewController: UIViewController {
     // MARK: - Button Actions
     // MARK:
     
-    
     @IBAction func didTapSendAnswerButton(sender: UIButton) {
+        self.sendAnswerTextView.textColor = UIColor.lightGrayColor()
         let data = [Constants.AnswerFields.text: self.sendAnswerTextView.text! as String]
         sendAnswer(data)
         self.sendAnswerTextView.resignFirstResponder()
+        self.sendAnswerTextView.text = "Thanks for the comment :)"
         self.tableView.allowsSelection = true
         self.view.removeGestureRecognizer(tapOutsideTextView)
     }
+    
+    
     
     func sendAnswer(data: [String: AnyObject]) {
         var answerDataDict = data
@@ -147,12 +159,8 @@ class AnswersViewController: UIViewController {
             currentUserID = FIRAuth.auth()?.currentUser?.uid,
             questionID = self.selectedQuestionIdDict?["questionID"]
             else { return }
-        answerDataDict[Constants.AnswerFields.likeCount] = 0
         answerDataDict[Constants.AnswerFields.userID] = currentUserID
-        
         FirebaseMgr.shared.saveNewAnswer(answerDataDict, questionID: questionID, userID: currentUserID)
-        
-        
     }
     // MARK:
     // MARK: - Unwind Segues
@@ -161,7 +169,7 @@ class AnswersViewController: UIViewController {
         //From UserProfiles to Answers
     }
 }
-    
+
 // MARK:
 // MARK: - UITableViewDataSource & UITableViewDelegate Protocols
 // MARK:
@@ -196,20 +204,9 @@ extension AnswersViewController: UITableViewDelegate, UITableViewDataSource {
                 self.formatImage(cell)
             }
         })
-        //
-        FirebaseMgr.shared.retrieveLikeStatus(answer.answerID, completion: { (likeStatus) in
-            if likeStatus == 1 {
-                let fullHeartImage = UIImage(named: "heart-full")
-                cell.likeButton.setImage(fullHeartImage, forState: .Normal)
-            } else if likeStatus == 0 {
-                let emptyHeartImage = UIImage(named: "heart-empty")
-                cell.likeButton.setImage(emptyHeartImage, forState: .Normal)
-            }
-            
-        })
         return cell
     }
-
+    
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
@@ -236,16 +233,6 @@ extension AnswersViewController: AnswerCellDelegate {
         self.selectedIndexRow = row
         performSegueWithIdentifier(Constants.Segues.AnswersToUserProfiles, sender: self)
     }
-    
-    func handleLikeButtonTapOn(row: Int, cell: AnswerCell) {
-        let answer = self.answersArray[row]
-        guard let questionID = self.selectedQuestionIdDict?["questionID"] else { return }
-        FirebaseMgr.shared.saveNewAnswerLikeCount(questionID, answerID: answer.answerID, completion: { (newLikeCount) in
-            self.answersArray[row].likeCount = newLikeCount
-            let indexPath = NSIndexPath(forRow: row, inSection: 0)
-            self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-        })
-    }
 }
 
 // MARK:
@@ -257,6 +244,10 @@ extension AnswersViewController: UITextViewDelegate {
     // MARK:
     func textViewDidBeginEditing(textView: UITextView) {
         print("textViewDidBeginEditing")
+        if self.sendAnswerTextView.text == "Write a comment here!" || self.sendAnswerTextView.text == "Thanks for the comment :)" {
+            self.sendAnswerTextView.text = ""
+            self.sendAnswerTextView.textColor = UIColor.blackColor()
+        }
         self.tableView.allowsSelection = false
         self.tapOutsideTextView = UITapGestureRecognizer(target: self, action: #selector(self.didTapOutsideTextViewWhenEditing))
         self.view.addGestureRecognizer(tapOutsideTextView)
@@ -268,6 +259,10 @@ extension AnswersViewController: UITextViewDelegate {
     
     func textViewDidEndEditing(textView: UITextView) {
         print("textViewDidEndEditing")
+        if self.sendAnswerTextView.text.isEmpty {
+            self.sendAnswerTextView.text = "Write a comment here!"
+            self.sendAnswerTextView.textColor = UIColor.lightGrayColor()
+        }
         self.tableView.allowsSelection = true
         self.view.removeGestureRecognizer(tapOutsideTextView)
     }
