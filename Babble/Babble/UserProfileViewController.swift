@@ -9,8 +9,10 @@
 import UIKit
 import Kingfisher
 
+//MARK:
+//MARK: - UserProfileViewController Class
+//MARK:
 class UserProfileViewController: UIViewController {
-
     //MARK:
     //MARK: - Properties
     //MARK:
@@ -24,6 +26,7 @@ class UserProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.retrieveUserProfileData()
+        self.formatBioTextView()
     }
     
     func retrieveUserProfileData() {
@@ -34,7 +37,12 @@ class UserProfileViewController: UIViewController {
         })
         
         FirebaseMgr.shared.retrieveUserBio(userID, completion: { userBio in
-            self.userProfileTextView.text = userBio
+            if userBio == nil {
+                self.userProfileTextView.text = "Apparently, this user prefers to keep an air of mystery about them."
+                self.userProfileTextView.textColor = UIColor.lightGrayColor()
+            } else {
+                self.userProfileTextView.text = userBio
+            }
         })
         
         FirebaseMgr.shared.retrieveUserPhotoDownloadURL(userID, completion: { photoDownloadURL, defaultImage in
@@ -55,6 +63,13 @@ class UserProfileViewController: UIViewController {
         self.userProfileImageView.layer.borderColor = UIColor.blackColor().CGColor
         self.userProfileImageView.layer.cornerRadius = self.userProfileImageView.bounds.width / 2
         self.userProfileImageView.clipsToBounds = true
+    }
+    
+    func formatBioTextView() {
+        self.userProfileTextView.layer.borderWidth = 1
+        self.userProfileTextView.layer.borderColor = UIColor.darkGrayColor().CGColor
+        self.userProfileTextView.clipsToBounds = true
+        self.userProfileTextView.layer.cornerRadius = 6
     }
 }
 

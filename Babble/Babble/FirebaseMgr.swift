@@ -6,9 +6,6 @@
 //  Copyright © 2016 Alexis Schreier. All rights reserved.
 //
 
-//will be used to construct the references used to pull data
-
-
 import UIKit
 import Firebase
 import Kingfisher
@@ -39,7 +36,6 @@ class FirebaseMgr {
             NSNotificationCenter.defaultCenter().postNotification((NSNotification(name: Constants.NotifKeys.HomeQuestionsRetrieved, object: nil)))
         }
     }
-    
     // Home Answers Array
     var homeAnswersArray = [Answer]() {
         didSet {
@@ -68,7 +64,6 @@ class FirebaseMgr {
     //MARK: - Questions Data Retrieval
     //MARK:
     func retrieveHomeQuestions() {
-        //TODO: look up why use [weak self] in closure
         self.homeQuestionsArray = [Question]()
         self._questionsRefHandle = self.questionsRef().observeEventType(.ChildAdded, withBlock: { (questionSnapshot) in
             let retrievedQuestion = questionSnapshot.value as! [String: AnyObject]
@@ -133,27 +128,6 @@ class FirebaseMgr {
         self.usersRef().child("\(userID)/userBio").observeSingleEventOfType(.Value, withBlock: { (userBioSnapshot) in
             let retrievedUserBio = userBioSnapshot.value as? String
             completion(userBio: retrievedUserBio)
-        })
-    }
-    //MARK:
-    //MARK: - LikeStatus Data Retrieval
-    //MARK:
-    func retrieveLikeStatus(objectID: String, completion: (likeStatus: Int) -> Void) {
-        guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
-        self.likeStatusesRef().child(objectID).observeSingleEventOfType(.Value, withBlock: { (likeStatusesSnapshot) in
-            if likeStatusesSnapshot.hasChild(currentUserID) {
-                self.likeStatusesRef().child(objectID).child(currentUserID).observeSingleEventOfType(.Value, withBlock: { (likeStatusSnapshot) in
-                    var retrievedLikeStatus = likeStatusSnapshot.value as! [String: Int]
-                    if currentUserID == likeStatusSnapshot.key {
-                        guard let likeStatus = retrievedLikeStatus[Constants.LikeStatusFields.likeStatus] else { return }
-                        completion(likeStatus: likeStatus)
-                    }
-                })
-            } else {
-                let likeStatus = 0
-                self.likeStatusesRef().child("\(objectID)/\(currentUserID)/likeStatus").setValue(0)
-                completion(likeStatus: likeStatus)
-            }
         })
     }
     //MARK:

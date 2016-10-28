@@ -25,7 +25,7 @@ protocol QuestionCellDelegate: class {
 //MARK:
 class QuestionCell: UITableViewCell {
     //MARK:
-    //MARK: - Attributes
+    //MARK: - Properties
     //MARK:
     @IBOutlet weak var profilePhotoImageButton: UIButton!
     @IBOutlet weak var displayNameLabel: UILabel!
@@ -55,25 +55,20 @@ class QuestionCell: UITableViewCell {
                     self.likeButton.setImage(fullHeart, forState: .Normal)
                 }
             }
-            //WHAT YOU NEED TO DO NOW: WHEN USER LIKES A QUESTION, ADD HIS USERID TO THE LIKESTATUSES DICT OF THE QUESTION
-            //REPEAT BOTH STEPS ABOVE FOR ANSWERS!!!!!!!!!
-            //CHANGE LIKE BUTTON TITLE TO INCLUDE LIKE COUNT?
         }
     }
     //MARK:
     //MARK: - Button Actions
     //MARK:
     @IBAction func didTapProfilePictureButton(sender: UIButton) {
-
+        
         delegate?.handleProfileImageButtonTapOn(self)
     }
     
     @IBAction func didTapLikeButton(sender: UIButton) {
         delegate?.handleLikeButtonTapOn(self)
     }
-    
-    
-    }
+}
 
 
 

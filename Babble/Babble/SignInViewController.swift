@@ -15,7 +15,7 @@ import Kingfisher
 //MARK:
 class SignInViewController: UIViewController {
     //MARK:
-    //MARK: - Attributes
+    //MARK: - Properties
     //MARK:
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
@@ -103,17 +103,17 @@ class SignInViewController: UIViewController {
     func setDisplayNameAndDefaultPhoto(user: FIRUser) {
         let changeRequest = user.profileChangeRequest()
         changeRequest.displayName = user.email!.componentsSeparatedByString("@")[0]
-        changeRequest.commitChangesWithCompletion() { [weak self] (error) in
+        changeRequest.commitChangesWithCompletion() { (error) in
             if let error = error {
                 print(error.localizedDescription)
                 return
             }
-            guard let placeholderPhotoRef = self?.storageRef.child("Profile_avatar_placeholder_large.png") else { return }
+            let placeholderPhotoRef = self.storageRef.child("Profile_avatar_placeholder_large.png")
             let placeholderPhotoRefString = "gs://babble-8b668.appspot.com/" + placeholderPhotoRef.fullPath ?? ""
             AppState.sharedInstance.defaultPhotoURL = placeholderPhotoRefString
             let userDataDict = [Constants.UserFields.photoURL: placeholderPhotoRefString]
-            self?.createUserData(userDataDict)
-            self?.signedIn(FIRAuth.auth()?.currentUser)
+            self.createUserData(userDataDict)
+            self.signedIn(FIRAuth.auth()?.currentUser)
         }
     }
     
