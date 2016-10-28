@@ -192,7 +192,7 @@ class MyProfileViewController: UIViewController {
     //MARK:
     //MARK: - Button Actions
     //MARK:
-    @IBAction func didTapEditPhoto(sender: UIButton) {
+    @IBAction func didTapEditProfilePictureButton(sender: UIButton) {
         didTapProfilePhotoImageView()
     }
     
