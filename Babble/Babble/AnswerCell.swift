@@ -16,7 +16,7 @@ protocol AnswerCellDelegate: class {
     //MARK:
     //MARK: - AnswerCellDelegate Methods
     //MARK:
-    func handleProfileImageButtonTapOn(row: Int)
+    func handleProfileImageButtonTapOn(cell: AnswerCell)
 }
 //MARK:
 //MARK: - AnswerCell Class
@@ -28,12 +28,6 @@ class AnswerCell: UITableViewCell {
     @IBOutlet weak var profilePhotoImageButton: UIButton!
     @IBOutlet weak var displayNameLabel: UILabel!
     @IBOutlet weak var answerTextView: UITextView!
-    
-//    @IBOutlet weak var profilePhotoImageButton: UIButton!
-//    @IBOutlet weak var displayNameLabel: UILabel!
-//    @IBOutlet weak var answerTextView: UITextView!
-//    @IBOutlet weak var likeButton: UIButton!
-//    @IBOutlet weak var likeButtonCountLabel: UILabel!
     weak var delegate: AnswerCellDelegate?
     var answer = [String: AnyObject]()
     var row: Int?
@@ -50,10 +44,9 @@ class AnswerCell: UITableViewCell {
     //MARK:
     //MARK: - Button Actions
     //MARK:
-//    @IBAction func profileImageButtonTapped(sender: UIButton) {
-//        guard let row = self.row else { return }
-//        delegate?.handleProfileImageButtonTapOn(row)
-//    }
+    @IBAction func profileImageButtonTapped(sender: UIButton) {
+        delegate?.handleProfileImageButtonTapOn(self)
+    }
 }
 
 

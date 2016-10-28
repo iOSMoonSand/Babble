@@ -64,6 +64,9 @@ class AnswersViewController: UIViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
         if segue.identifier == Constants.Segues.AnswersToUserProfiles {
+            let backItem = UIBarButtonItem()
+            backItem.title = ""
+            navigationItem.backBarButtonItem = backItem
             guard let selectedIndexRow = self.selectedIndexRow else { return }
             let question = self.answersArray[selectedIndexRow]
             let userID = question.userID
@@ -229,8 +232,10 @@ extension AnswersViewController: AnswerCellDelegate {
     //MARK:
     //MARK: - AnswerCellDelegate Methods
     //MARK:
-    func handleProfileImageButtonTapOn(row: Int) {
-        self.selectedIndexRow = row
+    func handleProfileImageButtonTapOn(cell: AnswerCell) {
+        var selectedIndexPath: NSIndexPath!
+        selectedIndexPath = self.tableView.indexPathForCell(cell)
+        self.selectedIndexRow = selectedIndexPath.row
         performSegueWithIdentifier(Constants.Segues.AnswersToUserProfiles, sender: self)
     }
 }
@@ -266,8 +271,6 @@ extension AnswersViewController: UITextViewDelegate {
         self.tableView.allowsSelection = true
         self.view.removeGestureRecognizer(tapOutsideTextView)
     }
-    
-    
 }
 
 

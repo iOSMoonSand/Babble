@@ -280,6 +280,9 @@
                                                                         <constraint firstAttribute="width" constant="46" id="cQN-Xy-n2S"/>
                                                                         <constraint firstAttribute="height" constant="46" id="uuC-1e-Jac"/>
                                                                     </constraints>
+                                                                    <connections>
+                                                                        <action selector="profileImageButtonTapped:" destination="TyS-hs-K3x" eventType="touchUpInside" id="gqs-Za-pI1"/>
+                                                                    </connections>
                                                                 </button>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QqX-N0-XjM">
                                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -479,7 +482,12 @@
                                                 </constraints>
                                             </imageView>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iQg-u1-ymw">
-                                                <state key="normal" title="edit"/>
+                                                <state key="normal" title="EDIT">
+                                                    <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="didTapEditProfilePictureButton:" destination="HlS-33-47T" eventType="touchUpInside" id="Jit-2p-Lnf"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -489,14 +497,12 @@
                                             <constraint firstItem="1Oz-ke-9oh" firstAttribute="top" secondItem="c18-zh-CO1" secondAttribute="top" constant="8" id="6an-ri-Eq7"/>
                                             <constraint firstItem="GE6-PA-NH0" firstAttribute="top" secondItem="iQg-u1-ymw" secondAttribute="bottom" constant="35" id="9G3-Zn-8VQ"/>
                                             <constraint firstAttribute="trailing" secondItem="1Oz-ke-9oh" secondAttribute="trailing" constant="8" id="R9T-ph-27d"/>
-                                            <constraint firstAttribute="trailing" secondItem="iQg-u1-ymw" secondAttribute="trailing" constant="165" id="VM6-TX-zb7"/>
                                             <constraint firstItem="GE6-PA-NH0" firstAttribute="leading" secondItem="c18-zh-CO1" secondAttribute="leading" constant="8" id="Y6x-Ag-hNA"/>
-                                            <constraint firstAttribute="trailing" secondItem="I36-Co-8Fo" secondAttribute="trailing" constant="70" id="blI-vY-adY"/>
+                                            <constraint firstItem="I36-Co-8Fo" firstAttribute="centerX" secondItem="c18-zh-CO1" secondAttribute="centerX" id="cV4-GP-s1s"/>
+                                            <constraint firstItem="iQg-u1-ymw" firstAttribute="centerX" secondItem="I36-Co-8Fo" secondAttribute="centerX" id="exw-MQ-bVo"/>
                                             <constraint firstAttribute="bottom" secondItem="GE6-PA-NH0" secondAttribute="bottom" constant="8" id="nIc-Dd-1G0"/>
                                             <constraint firstItem="1Oz-ke-9oh" firstAttribute="leading" secondItem="c18-zh-CO1" secondAttribute="leading" constant="8" id="nmg-HO-KI6"/>
                                             <constraint firstItem="I36-Co-8Fo" firstAttribute="top" secondItem="1Oz-ke-9oh" secondAttribute="bottom" constant="8" id="oTT-K1-uRT"/>
-                                            <constraint firstItem="iQg-u1-ymw" firstAttribute="leading" secondItem="c18-zh-CO1" secondAttribute="leading" constant="164" id="pyn-C3-YSC"/>
-                                            <constraint firstItem="I36-Co-8Fo" firstAttribute="leading" secondItem="c18-zh-CO1" secondAttribute="leading" constant="70" id="xGG-hf-lZl"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -577,11 +583,10 @@
                                             <constraint firstItem="YLu-cv-hAi" firstAttribute="top" secondItem="GlH-6n-bKc" secondAttribute="bottom" constant="73" id="Quc-JT-7mt"/>
                                             <constraint firstItem="vBw-iv-J0k" firstAttribute="leading" secondItem="1qw-yh-unR" secondAttribute="leading" constant="8" id="TLO-fM-t4J"/>
                                             <constraint firstItem="YLu-cv-hAi" firstAttribute="leading" secondItem="1qw-yh-unR" secondAttribute="leading" constant="8" id="WLV-3g-RBM"/>
-                                            <constraint firstItem="GlH-6n-bKc" firstAttribute="leading" secondItem="1qw-yh-unR" secondAttribute="leading" constant="70" id="njH-7v-jXR"/>
+                                            <constraint firstItem="GlH-6n-bKc" firstAttribute="centerX" secondItem="1qw-yh-unR" secondAttribute="centerX" id="lQm-cg-Bc5"/>
                                             <constraint firstAttribute="trailing" secondItem="YLu-cv-hAi" secondAttribute="trailing" constant="8" id="o4C-Rz-Gq9"/>
                                             <constraint firstAttribute="bottom" secondItem="YLu-cv-hAi" secondAttribute="bottom" constant="8" id="uiG-i6-5GQ"/>
                                             <constraint firstItem="GlH-6n-bKc" firstAttribute="top" secondItem="vBw-iv-J0k" secondAttribute="bottom" constant="8" id="wrH-tc-k2Q"/>
-                                            <constraint firstAttribute="trailing" secondItem="GlH-6n-bKc" secondAttribute="trailing" constant="70" id="xzF-bA-hlK"/>
                                         </constraints>
                                     </view>
                                 </subviews>

@@ -17,7 +17,7 @@ protocol QuestionCellDelegate: class {
     //MARK:
     //MARK: - QuestionCellDelegate Methods
     //MARK:
-    func handleProfileImageButtonTapOn(row: Int)
+    func handleProfileImageButtonTapOn(cell: QuestionCell)
     func handleLikeButtonTapOn(cell: QuestionCell)
 }
 //MARK:
@@ -64,8 +64,8 @@ class QuestionCell: UITableViewCell {
     //MARK: - Button Actions
     //MARK:
     @IBAction func didTapProfilePictureButton(sender: UIButton) {
-//        guard let row = self.row else { return }
-//        delegate?.handleProfileImageButtonTapOn(row)
+
+        delegate?.handleProfileImageButtonTapOn(self)
     }
     
     @IBAction func didTapLikeButton(sender: UIButton) {

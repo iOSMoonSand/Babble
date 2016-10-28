@@ -35,8 +35,6 @@
     //MARK: -
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.registerForNotifications()
@@ -46,6 +44,9 @@
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == Constants.Segues.HomeToAnswers {
+            let backItem = UIBarButtonItem()
+            backItem.title = ""
+            navigationItem.backBarButtonItem = backItem
             guard let selectedIndexPath = self.tableView.indexPathForSelectedRow else { return }
             let selectedQuestion = self.questionsArray[selectedIndexPath.row]
             let questionID = selectedQuestion.questionID
@@ -55,6 +56,9 @@
         }
         
         if segue.identifier == Constants.Segues.HomeToUserProfiles {
+            let backItem = UIBarButtonItem()
+            backItem.title = ""
+            navigationItem.backBarButtonItem = backItem
             guard let selectedIndexRow = self.selectedIndexRow else { return }
             let question = self.questionsArray[selectedIndexRow]
             let userID = question.userID
@@ -102,7 +106,7 @@
         //From AddQuestion to HomeScreen
     }
     
-    @IBAction func didTapCancelAddQuestion(_ segue: UIStoryboardSegue) {
+    @IBAction func didTapCancelAddQuestion(segue: UIStoryboardSegue) {
         
     }
     
@@ -150,29 +154,6 @@
                 self.formatImage(cell)
             }
         })
-        //
-//        guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return UITableViewCell() }
-//        FirebaseMgr.shared.likeStatusesRef().child(question.questionID).observeSingleEventOfType(.Value, withBlock: { (likeStatusesSnapshot) in
-//            if likeStatusesSnapshot.hasChild(currentUserID) {
-//                FirebaseMgr.shared.likeStatusesRef().child(question.questionID).child(currentUserID).observeSingleEventOfType(.Value, withBlock: { (likeStatusSnapshot) in
-//                    var retrievedLikeStatus = likeStatusSnapshot.value as! [String: Int]
-//                    if currentUserID == likeStatusSnapshot.key {
-//                        guard let likeStatus = retrievedLikeStatus[Constants.LikeStatusFields.likeStatus] else { return }
-//                        if likeStatus == 1 {
-//                            let fullHeartImage = UIImage(named: "heart-full")
-//                            cell.likeButton.setImage(fullHeartImage, forState: .Normal)
-//                        } else if likeStatus == 0 {
-//                            let emptyHeartImage = UIImage(named: "heart-empty")
-//                            cell.likeButton.setImage(emptyHeartImage, forState: .Normal)
-//                        }
-//                    }
-//                })
-//            } else {
-//                FirebaseMgr.shared.likeStatusesRef().child("\(question.questionID)/\(currentUserID)/likeStatus").setValue(0)
-//                let emptyHeartImage = UIImage(named: "heart-empty")
-//                cell.likeButton.setImage(emptyHeartImage, forState: .Normal)
-//            }
-//        })
         return cell
     }
     
@@ -199,8 +180,10 @@
     //MARK:
     //MARK: - QuestionCellDelegate Methods
     //MARK:
-    func handleProfileImageButtonTapOn(row: Int) {
-        self.selectedIndexRow = row
+    func handleProfileImageButtonTapOn(cell: QuestionCell) {
+        var selectedIndexPath: NSIndexPath!
+        selectedIndexPath = self.tableView.indexPathForCell(cell)
+        self.selectedIndexRow = selectedIndexPath.row
         performSegueWithIdentifier(Constants.Segues.HomeToUserProfiles, sender: self)
     }
     
