@@ -23,7 +23,7 @@ protocol AnswerCellDelegate: class {
 //MARK:
 class AnswerCell: UITableViewCell {
     //MARK:
-    //MARK: - Attributes
+    //MARK: - Properties
     //MARK:
     @IBOutlet weak var profilePhotoImageButton: UIButton!
     @IBOutlet weak var displayNameLabel: UILabel!

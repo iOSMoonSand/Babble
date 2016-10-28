@@ -19,7 +19,7 @@ protocol AddQuestionViewControllerDelegate: class {
 //MARK:
 class AddQuestionViewController: UIViewController {
     //MARK:
-    //MARK: - Attributes
+    //MARK: - Properties
     //MARK:
     @IBOutlet weak var textView: UITextView!
     var newQuestionText: String?
@@ -33,6 +33,16 @@ class AddQuestionViewController: UIViewController {
         self.textView.textColor = UIColor.lightGrayColor()
     }
     
+    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
+        if identifier == Constants.Segues.PostNewQuestionToHome {
+            if self.textView.text == "" || self.textView.text == "Example: Swift 2.2 or Swift 3.0?" {
+                Utility.shared.errorAlert("Oops", message: "Please write something before tapping the Post button.", presentingViewController: self)
+                return false
+            }
+        }
+        return true
+    }
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == Constants.Segues.PostNewQuestionToHome {
             newQuestionText = self.textView.text
@@ -41,16 +51,19 @@ class AddQuestionViewController: UIViewController {
         }
     }
 }
-
+//MARK:
+//MARK: - UITextViewDelegate Protocol
+//MARK:
 extension AddQuestionViewController: UITextViewDelegate {
-    
+    //MARK:
+    //MARK: - UITextViewDelegate Methods
+    //MARK:
     func textViewDidBeginEditing(textView: UITextView) {
         if self.textView.text == "Example: Swift 2.2 or Swift 3.0?" {
             self.textView.text = ""
             self.textView.textColor = UIColor.blackColor()
         }
     }
-    
 }
 
 

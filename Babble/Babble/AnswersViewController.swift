@@ -33,19 +33,6 @@ class AnswersViewController: UIViewController {
             }
         }
     }
-    private func changeRowsForDifference(difference: Int, inSection section: Int){
-        var indexPaths: [NSIndexPath] = []
-        
-        let rowOffSet = self.answersArray.count-1
-        
-        for i in 0..<abs(difference) {
-            indexPaths.append(NSIndexPath(forRow: i + rowOffSet, inSection: section))
-        }
-        
-        if difference > 0 {
-            self.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
-        }
-    }
     // MARK:
     // MARK: - UIViewController Methods
     // MARK:
@@ -153,8 +140,6 @@ class AnswersViewController: UIViewController {
         self.tableView.allowsSelection = true
         self.view.removeGestureRecognizer(tapOutsideTextView)
     }
-    
-    
     
     func sendAnswer(data: [String: AnyObject]) {
         var answerDataDict = data

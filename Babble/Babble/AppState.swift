@@ -8,10 +8,14 @@
 
 import Foundation
 
+//MARK:
+//MARK: - AppState Class Singleton
+//MARK:
 class AppState: NSObject {
-    
+    //MARK:
+    //MARK: - Properties
+    //MARK:
     static let sharedInstance = AppState()
-    
     var signedIn = false
     var displayName: String?
     var photoDownloadURL: String?

@@ -14,7 +14,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     override init() {
         super.init()
-        // Firebase Init
         FIRApp.configure()
     }
 
@@ -22,9 +21,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        
-        //FIRApp.configure()
-        
         return true
     }
 
