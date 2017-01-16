@@ -175,7 +175,7 @@ open class KingfisherManager {
         let downloader = options?.downloader ?? self.downloader
         return downloader.downloadImageWithURL(URL, retrieveImageTask: retrieveImageTask, options: options,
             progressBlock: { receivedSize, totalSize in
-                progressBlock?(receivedSize: receivedSize, totalSize: totalSize)
+                progressBlock?(receivedSize, totalSize)
             },
             completionHandler: { image, error, imageURL, originalData in
 
@@ -184,7 +184,7 @@ open class KingfisherManager {
                     // Not modified. Try to find the image from cache.
                     // (The image should be in cache. It should be guaranteed by the framework users.)
                     targetCache.retrieveImageForKey(key, options: options, completionHandler: { (cacheImage, cacheType) -> () in
-                        completionHandler?(image: cacheImage, error: nil, cacheType: cacheType, imageURL: URL)
+                        completionHandler?(cacheImage, nil, cacheType, URL)
                         
                     })
                     return
@@ -194,7 +194,7 @@ open class KingfisherManager {
                     targetCache.storeImage(image, originalData: originalData, forKey: key, toDisk: !(options?.cacheMemoryOnly ?? false), completionHandler: nil)
                 }
 
-                completionHandler?(image: image, error: error, cacheType: .none, imageURL: URL)
+                completionHandler?(image, error, .none, URL)
 
             })
     }
@@ -216,10 +216,10 @@ open class KingfisherManager {
         let diskTask = targetCache.retrieveImageForKey(key, options: options,
             completionHandler: { image, cacheType in
                 if image != nil {
-                    diskTaskCompletionHandler(image: image, error: nil, cacheType:cacheType, imageURL: URL)
+                    diskTaskCompletionHandler(image, nil, cacheType, URL)
                 } else if let options = options, options.onlyFromCache {
                     let error = NSError(domain: KingfisherErrorDomain, code: KingfisherError.notCached.rawValue, userInfo: nil)
-                    diskTaskCompletionHandler(image: nil, error: error, cacheType:.none, imageURL: URL)
+                    diskTaskCompletionHandler(nil, error, .none, URL)
                 } else {
                     self.downloadAndCacheImageWithURL(URL,
                         forKey: key,

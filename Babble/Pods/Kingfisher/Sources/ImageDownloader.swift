@@ -441,7 +441,7 @@ class ImageDownloaderSessionHandler: NSObject, URLSessionDataDelegate, Authentic
             
             for callbackPair in callbackPairs {
                 dispatch_async_safely_to_queue(options.callbackDispatchQueue, { () -> Void in
-                    callbackPair.completionHander?(image: image, error: error, imageURL: imageURL, originalData: originalData)
+                    callbackPair.completionHander?(image, error, imageURL, originalData)
                 })
             }
             
@@ -463,14 +463,14 @@ class ImageDownloaderSessionHandler: NSObject, URLSessionDataDelegate, Authentic
             if let fetchLoad = downloader.fetchLoadForKey(URL) {
                 
                 let options = fetchLoad.options ?? KingfisherEmptyOptionsInfo
-                if let image = Image.kf_imageWithData(fetchLoad.responseData, scale: options.scaleFactor, preloadAllGIFData: options.preloadAllGIFData) {
+                if let image = Image.kf_imageWithData(fetchLoad.responseData as Data, scale: options.scaleFactor, preloadAllGIFData: options.preloadAllGIFData) {
                     
                     downloader.delegate?.imageDownloader?(downloader, didDownloadImage: image, forURL: URL, withResponse: task.response!)
                     
                     if options.backgroundDecode {
-                        self.callbackWithImage(image.kf_decodedImage(scale: options.scaleFactor), error: nil, imageURL: URL, originalData: fetchLoad.responseData)
+                        self.callbackWithImage(image.kf_decodedImage(scale: options.scaleFactor), error: nil, imageURL: URL, originalData: fetchLoad.responseData as Data)
                     } else {
-                        self.callbackWithImage(image, error: nil, imageURL: URL, originalData: fetchLoad.responseData)
+                        self.callbackWithImage(image, error: nil, imageURL: URL, originalData: fetchLoad.responseData as Data)
                     }
                     
                 } else {

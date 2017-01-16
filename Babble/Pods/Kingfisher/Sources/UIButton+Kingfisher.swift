@@ -95,7 +95,7 @@ extension UIButton {
         let task = KingfisherManager.sharedManager.retrieveImageWithResource(resource, optionsInfo: optionsInfo,
             progressBlock: { receivedSize, totalSize in
                 if let progressBlock = progressBlock {
-                    progressBlock(receivedSize: receivedSize, totalSize: totalSize)
+                    progressBlock(receivedSize, totalSize)
                 }
             },
             completionHandler: {[weak self] image, error, cacheType, imageURL in
@@ -110,7 +110,7 @@ extension UIButton {
                         sSelf.setImage(image, for: state)
                     }
                     
-                    completionHandler?(image: image, error: error, cacheType: cacheType, imageURL: imageURL)
+                    completionHandler?(image, error, cacheType, imageURL)
                 }
             })
         
@@ -232,7 +232,7 @@ extension UIButton {
         let task = KingfisherManager.sharedManager.retrieveImageWithResource(resource, optionsInfo: optionsInfo,
             progressBlock: { receivedSize, totalSize in
                 if let progressBlock = progressBlock {
-                    progressBlock(receivedSize: receivedSize, totalSize: totalSize)
+                    progressBlock(receivedSize, totalSize)
                 }
             },
             completionHandler: { [weak self] image, error, cacheType, imageURL in
@@ -246,7 +246,7 @@ extension UIButton {
                     if image != nil {
                         sSelf.setBackgroundImage(image, for: state)
                     }
-                    completionHandler?(image: image, error: error, cacheType: cacheType, imageURL: imageURL)
+                    completionHandler?(image, error, cacheType, imageURL)
                 }
             })
         

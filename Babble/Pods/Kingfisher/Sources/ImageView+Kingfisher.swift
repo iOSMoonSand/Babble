@@ -109,7 +109,7 @@ extension ImageView {
         let task = KingfisherManager.sharedManager.retrieveImageWithResource(resource, optionsInfo: options,
             progressBlock: { receivedSize, totalSize in
                 if let progressBlock = progressBlock {
-                    progressBlock(receivedSize: receivedSize, totalSize: totalSize)
+                    progressBlock(receivedSize, totalSize)
                 }
             },
             completionHandler: {[weak self] image, error, cacheType, imageURL in
@@ -123,7 +123,7 @@ extension ImageView {
                     
                     guard let image = image else {
                         maybeIndicator?.stopAnimatingView()
-                        completionHandler?(image: nil, error: error, cacheType: cacheType, imageURL: imageURL)
+                        completionHandler?(nil, error, cacheType, imageURL)
                         return
                     }
                     
@@ -143,14 +143,14 @@ extension ImageView {
                                             },
                                             completion: { finished in
                                                 transition.completion?(finished)
-                                                completionHandler?(image: image, error: error, cacheType: cacheType, imageURL: imageURL)
+                                                completionHandler?(image, error, cacheType, imageURL)
                                         })
                                 })
                             #endif
                     } else {
                         maybeIndicator?.stopAnimatingView()
                         sSelf.image = image
-                        completionHandler?(image: image, error: error, cacheType: cacheType, imageURL: imageURL)
+                        completionHandler?(image, error, cacheType, imageURL)
                     }
                 }
             })
