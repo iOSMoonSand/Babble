@@ -54,7 +54,7 @@ extension ImageView {
      The `CallbackDispatchQueue` specified in `optionsInfo` will not be used in callbacks of this method.
      */
     
-    public func kf_setImageWithURL(URL: NSURL?,
+    public func kf_setImageWithURL(_ URL: Foundation.URL?,
                                    placeholderImage: Image? = nil,
                                    optionsInfo: KingfisherOptionsInfo? = nil,
                                    progressBlock: DownloadProgressBlock? = nil,
@@ -83,7 +83,7 @@ extension ImageView {
     - note: Both the `progressBlock` and `completionHandler` will be invoked in main thread. 
      The `CallbackDispatchQueue` specified in `optionsInfo` will not be used in callbacks of this method.
     */
-    public func kf_setImageWithResource(resource: Resource?,
+    public func kf_setImageWithResource(_ resource: Resource?,
                                 placeholderImage: Image? = nil,
                                      optionsInfo: KingfisherOptionsInfo? = nil,
                                    progressBlock: DownloadProgressBlock? = nil,
@@ -92,18 +92,18 @@ extension ImageView {
         image = placeholderImage
         
         guard let resource = resource else {
-            completionHandler?(image: nil, error: nil, cacheType: .None, imageURL: nil)
+            completionHandler?(nil, nil, .none, nil)
             return RetrieveImageTask.emptyTask
         }
         
         let maybeIndicator = kf_indicator
         maybeIndicator?.startAnimatingView()
         
-        kf_setWebURL(resource.downloadURL)
+        kf_setWebURL(resource.downloadURL as URL)
         
         var options = optionsInfo ?? []
         if shouldPreloadAllGIF() {
-            options.append(.PreloadAllGIFData)
+            options.append(.preloadAllGIFData)
         }
 
         let task = KingfisherManager.sharedManager.retrieveImageWithResource(resource, optionsInfo: options,
@@ -115,7 +115,7 @@ extension ImageView {
             completionHandler: {[weak self] image, error, cacheType, imageURL in
                 
                 dispatch_async_safely_to_main_queue {
-                    guard let sSelf = self where imageURL == sSelf.kf_webURL else {
+                    guard let sSelf = self, imageURL == sSelf.kf_webURL else {
                         return
                     }
                     
@@ -127,16 +127,16 @@ extension ImageView {
                         return
                     }
                     
-                    if let transitionItem = options.kf_firstMatchIgnoringAssociatedValue(.Transition(.None)),
-                        case .Transition(let transition) = transitionItem where ( options.forceTransition || cacheType == .None) {
+                    if let transitionItem = options.kf_firstMatchIgnoringAssociatedValue(.transition(.none)),
+                        case .transition(let transition) = transitionItem, ( options.forceTransition || cacheType == .none) {
                             #if !os(OSX)
-                                UIView.transitionWithView(sSelf, duration: 0.0, options: [],
+                                UIView.transition(with: sSelf, duration: 0.0, options: [],
                                     animations: {
                                         maybeIndicator?.stopAnimatingView()
                                     },
                                     completion: { finished in
-                                        UIView.transitionWithView(sSelf, duration: transition.duration,
-                                            options: [transition.animationOptions, .AllowUserInteraction],
+                                        UIView.transition(with: sSelf, duration: transition.duration,
+                                            options: [transition.animationOptions, .allowUserInteraction],
                                             animations: {
                                                 // Set image property in the animation.
                                                 transition.animations?(sSelf, image)
@@ -183,13 +183,13 @@ extension ImageView {
 extension ImageView {
     public enum IndicatorType {
         /// No indicator.
-        case None
+        case none
         /// Use system activity indicator.
-        case Activity
+        case activity
         /// Use an image as indicator. GIF is supported.
-        case Image(imageData: NSData)
+        case image(imageData: Data)
         /// Use a custom indicator, which conforms to the `Indicator` protocol.
-        case Custom(indicator: Indicator)
+        case custom(indicator: Indicator)
     }
 }
 
@@ -201,11 +201,11 @@ private var imageTaskKey: Void?
 
 extension ImageView {
     /// Get the image URL binded to this image view.
-    public var kf_webURL: NSURL? {
-        return objc_getAssociatedObject(self, &lastURLKey) as? NSURL
+    public var kf_webURL: URL? {
+        return objc_getAssociatedObject(self, &lastURLKey) as? URL
     }
     
-    private func kf_setWebURL(URL: NSURL) {
+    fileprivate func kf_setWebURL(_ URL: Foundation.URL) {
         objc_setAssociatedObject(self, &lastURLKey, URL, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
 
@@ -215,11 +215,11 @@ extension ImageView {
     public var kf_showIndicatorWhenLoading: Bool {
         get {
             switch kf_indicatorType {
-            case .None:
+            case .none:
                 return false
-            case .Activity: fallthrough
-            case .Image(_): fallthrough
-            case .Custom(_): return true
+            case .activity: fallthrough
+            case .image(_): fallthrough
+            case .custom(_): return true
             }
         }
         
@@ -227,7 +227,7 @@ extension ImageView {
             if kf_showIndicatorWhenLoading == newValue {
                 return
             } else {
-                kf_indicatorType = .Activity
+                kf_indicatorType = .activity
             }
         }
     }
@@ -237,18 +237,18 @@ extension ImageView {
     public var kf_indicatorType: IndicatorType {
         get {
             let indicator = (objc_getAssociatedObject(self, &indicatorTypeKey) as? Box<IndicatorType?>)?.value
-            return indicator ?? .None
+            return indicator ?? .none
         }
         
         set {
             switch newValue {
-            case .None:
+            case .none:
                 kf_indicator = nil
-            case .Activity:
+            case .activity:
                 kf_indicator = ActivityIndicator()
-            case .Image(let data):
+            case .image(let data):
                 kf_indicator = ImageIndicator(imageData: data)
-            case .Custom(let indicator):
+            case .custom(let indicator):
                 kf_indicator = indicator
             }
 
@@ -259,7 +259,7 @@ extension ImageView {
     /// `kf_indicator` holds any type that conforms to the protocol `Indicator`.
     /// The protocol `Indicator` has a `view` property that will be shown when loading an image.
     /// Everything will be `nil` if `kf_indicatorType` is .None.
-    public private(set) var kf_indicator: Indicator? {
+    public fileprivate(set) var kf_indicator: Indicator? {
         get {
             return (objc_getAssociatedObject(self, &indicatorKey) as? Box<Indicator?>)?.value
         }
@@ -274,7 +274,7 @@ extension ImageView {
             if var newIndicator = newValue {
                 newIndicator.view.frame = self.frame
                 newIndicator.viewCenter = CGPoint(x: bounds.midX, y: bounds.midY)
-                newIndicator.view.hidden = true
+                newIndicator.view.isHidden = true
                 self.addSubview(newIndicator.view)
             }
 
@@ -283,11 +283,11 @@ extension ImageView {
         }
     }
 
-    private var kf_imageTask: RetrieveImageTask? {
+    fileprivate var kf_imageTask: RetrieveImageTask? {
         return objc_getAssociatedObject(self, &imageTaskKey) as? RetrieveImageTask
     }
     
-    private func kf_setImageTask(task: RetrieveImageTask?) {
+    fileprivate func kf_setImageTask(_ task: RetrieveImageTask?) {
         objc_setAssociatedObject(self, &imageTaskKey, task, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
 }
