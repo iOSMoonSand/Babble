@@ -33,37 +33,13 @@
 
 import UIKit
 import ImageIO
-// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
-// Consider refactoring the code to use the non-optional operators.
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
-
-// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
-// Consider refactoring the code to use the non-optional operators.
-fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l > r
-  default:
-    return rhs < lhs
-  }
-}
-
 
 /// `AnimatedImageView` is a subclass of `UIImageView` for displaying animated image.
-open class AnimatedImageView: UIImageView {
+public class AnimatedImageView: UIImageView {
     
     /// Proxy object for prevending a reference cycle between the CADDisplayLink and AnimatedImageView.
     class TargetProxy {
-        fileprivate weak var target: AnimatedImageView?
+        private weak var target: AnimatedImageView?
         
         init(target: AnimatedImageView) {
             self.target = target
@@ -76,23 +52,23 @@ open class AnimatedImageView: UIImageView {
     
     // MARK: - Public property
     /// Whether automatically play the animation when the view become visible. Default is true.
-    open var autoPlayAnimatedImage = true
+    public var autoPlayAnimatedImage = true
     
     /// The size of the frame cache.
-    open var framePreloadCount = 10
+    public var framePreloadCount = 10
     
     /// Specifies whether the GIF frames should be pre-scaled to save memory. Default is true.
-    open var needsPrescaling = true
+    public var needsPrescaling = true
     
     /// The animation timer's run loop mode. Default is `NSRunLoopCommonModes`. Set this property to `NSDefaultRunLoopMode` will make the animation pause during UIScrollView scrolling.
-    open var runLoopMode = RunLoopMode.commonModes {
+    public var runLoopMode = NSRunLoopCommonModes {
         willSet {
             if runLoopMode == newValue {
                 return
             } else {
                 stopAnimating()
-                displayLink.remove(from: RunLoop.main, forMode: runLoopMode)
-                displayLink.add(to: RunLoop.main, forMode: newValue)
+                displayLink.removeFromRunLoop(NSRunLoop.mainRunLoop(), forMode: runLoopMode)
+                displayLink.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: newValue)
                 startAnimating()
             }
         }
@@ -100,22 +76,22 @@ open class AnimatedImageView: UIImageView {
     
     // MARK: - Private property
     /// `Animator` instance that holds the frames of a specific image in memory.
-    fileprivate var animator: Animator?
+    private var animator: Animator?
     
     /// A flag to avoid invalidating the displayLink on deinit if it was never created, because displayLink is so lazy. :D
-    fileprivate var displayLinkInitialized: Bool = false
+    private var displayLinkInitialized: Bool = false
     
     /// A display link that keeps calling the `updateFrame` method on every screen refresh.
-    fileprivate lazy var displayLink: CADisplayLink = {
+    private lazy var displayLink: CADisplayLink = {
         self.displayLinkInitialized = true
         let displayLink = CADisplayLink(target: TargetProxy(target: self), selector: #selector(TargetProxy.onScreenUpdate))
-        displayLink.add(to: RunLoop.main, forMode: self.runLoopMode)
-        displayLink.isPaused = true
+        displayLink.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: self.runLoopMode)
+        displayLink.paused = true
         return displayLink
     }()
     
     // MARK: - Override
-    override open var image: Image? {
+    override public var image: Image? {
         didSet {
             if image != oldValue {
                 reset()
@@ -131,45 +107,45 @@ open class AnimatedImageView: UIImageView {
         }
     }
     
-    override open var isAnimating : Bool {
+    override public func isAnimating() -> Bool {
         if displayLinkInitialized {
-            return !displayLink.isPaused
+            return !displayLink.paused
         } else {
-            return super.isAnimating
+            return super.isAnimating()
         }
     }
     
     /// Starts the animation.
-    override open func startAnimating() {
-        if self.isAnimating {
+    override public func startAnimating() {
+        if self.isAnimating() {
             return
         } else {
-            displayLink.isPaused = false
+            displayLink.paused = false
         }
     }
     
     /// Stops the animation.
-    override open func stopAnimating() {
+    override public func stopAnimating() {
         super.stopAnimating()
         if displayLinkInitialized {
-            displayLink.isPaused = true
+            displayLink.paused = true
         }
     }
     
-    override open func display(_ layer: CALayer) {
+    override public func displayLayer(layer: CALayer) {
         if let currentFrame = animator?.currentFrame {
-            layer.contents = currentFrame.cgImage
+            layer.contents = currentFrame.CGImage
         } else {
-            layer.contents = image?.cgImage
+            layer.contents = image?.CGImage
         }
     }
     
-    override open func didMoveToWindow() {
+    override public func didMoveToWindow() {
         super.didMoveToWindow()
         didMove()
     }
     
-    override open func didMoveToSuperview() {
+    override public func didMoveToSuperview() {
         super.didMoveToSuperview()
         didMove()
     }
@@ -181,7 +157,7 @@ open class AnimatedImageView: UIImageView {
     
     // MARK: - Private method
     /// Reset the animator.
-    fileprivate func reset() {
+    private func reset() {
         animator = nil
         if let imageSource = image?.kf_imageSource?.imageRef {
             animator = Animator(imageSource: imageSource, contentMode: contentMode, size: bounds.size, framePreloadCount: framePreloadCount)
@@ -191,9 +167,9 @@ open class AnimatedImageView: UIImageView {
         didMove()
     }
     
-    fileprivate func didMove() {
+    private func didMove() {
         if autoPlayAnimatedImage && animator != nil {
-            if let _ = superview, let _ = window {
+            if let _ = superview, _ = window {
                 startAnimating()
             } else {
                 stopAnimating()
@@ -202,7 +178,7 @@ open class AnimatedImageView: UIImageView {
     }
     
     /// Update the current frame with the displayLink duration.
-    fileprivate func updateFrame() {
+    private func updateFrame() {
         if animator?.updateCurrentFrame(displayLink.duration) ?? false {
             layer.setNeedsDisplay()
         }
@@ -212,10 +188,10 @@ open class AnimatedImageView: UIImageView {
 /// Keeps a reference to an `Image` instance and its duration as a GIF frame.
 struct AnimatedFrame {
     var image: Image?
-    let duration: TimeInterval
+    let duration: NSTimeInterval
     
     static func null() -> AnimatedFrame {
-        return AnimatedFrame(image: .none, duration: 0.0)
+        return AnimatedFrame(image: .None, duration: 0.0)
     }
 }
 
@@ -223,26 +199,26 @@ struct AnimatedFrame {
 ///
 class Animator {
     // MARK: Private property
-    fileprivate let size: CGSize
-    fileprivate let maxFrameCount: Int
-    fileprivate let imageSource: CGImageSource
+    private let size: CGSize
+    private let maxFrameCount: Int
+    private let imageSource: CGImageSourceRef
     
-    fileprivate var animatedFrames = [AnimatedFrame]()
-    fileprivate let maxTimeStep: TimeInterval = 1.0
-    fileprivate var frameCount = 0
-    fileprivate var currentFrameIndex = 0
-    fileprivate var currentPreloadIndex = 0
-    fileprivate var timeSinceLastFrameChange: TimeInterval = 0.0
-    fileprivate var needsPrescaling = true
+    private var animatedFrames = [AnimatedFrame]()
+    private let maxTimeStep: NSTimeInterval = 1.0
+    private var frameCount = 0
+    private var currentFrameIndex = 0
+    private var currentPreloadIndex = 0
+    private var timeSinceLastFrameChange: NSTimeInterval = 0.0
+    private var needsPrescaling = true
     
     /// Loop count of animatd image.
-    fileprivate var loopCount = 0
+    private var loopCount = 0
     
     var currentFrame: UIImage? {
         return frameAtIndex(currentFrameIndex)
     }
     
-    var contentMode: UIViewContentMode = .scaleToFill
+    var contentMode: UIViewContentMode = .ScaleToFill
     
     /**
      Init an animator with image source reference.
@@ -257,14 +233,14 @@ class Animator {
      
      - returns: The animator object.
      */
-    init(imageSource src: CGImageSource, contentMode mode: UIViewContentMode, size: CGSize, framePreloadCount: Int) {
+    init(imageSource src: CGImageSourceRef, contentMode mode: UIViewContentMode, size: CGSize, framePreloadCount: Int) {
         self.imageSource = src
         self.contentMode = mode
         self.size = size
         self.maxFrameCount = framePreloadCount
     }
     
-    func frameAtIndex(_ index: Int) -> Image? {
+    func frameAtIndex(index: Int) -> Image? {
         return animatedFrames[index].image
     }
     
@@ -272,8 +248,8 @@ class Animator {
         frameCount = CGImageSourceGetCount(imageSource)
         
         if let properties = CGImageSourceCopyProperties(imageSource, nil),
-            let gifInfo = (properties as NSDictionary)[kCGImagePropertyGIFDictionary as String] as? NSDictionary,
-            let loopCount = gifInfo[kCGImagePropertyGIFLoopCount as String] as? Int {
+            gifInfo = (properties as NSDictionary)[kCGImagePropertyGIFDictionary as String] as? NSDictionary,
+            loopCount = gifInfo[kCGImagePropertyGIFLoopCount as String] as? Int {
             self.loopCount = loopCount
         }
         
@@ -282,7 +258,7 @@ class Animator {
         animatedFrames = (0..<frameToProcess).reduce([]) { $0 + pure(prepareFrame($1))}
     }
     
-    func prepareFrame(_ index: Int) -> AnimatedFrame {
+    func prepareFrame(index: Int) -> AnimatedFrame {
         guard let imageRef = CGImageSourceCreateImageAtIndex(imageSource, index, nil) else {
             return AnimatedFrame.null()
         }
@@ -303,7 +279,7 @@ class Animator {
             return duration > 0.011 ? duration : 0.100
         }
         
-        let image = Image(cgImage: imageRef)
+        let image = Image(CGImage: imageRef)
         let scaledImage: Image?
         
         if needsPrescaling {
@@ -318,9 +294,9 @@ class Animator {
     /**
      Updates the current frame if necessary using the frame timer and the duration of each frame in `animatedFrames`.
      */
-    func updateCurrentFrame(_ duration: CFTimeInterval) -> Bool {
+    func updateCurrentFrame(duration: CFTimeInterval) -> Bool {
         timeSinceLastFrameChange += min(maxTimeStep, duration)
-        guard let frameDuration = animatedFrames[safe: currentFrameIndex]?.duration, frameDuration <= timeSinceLastFrameChange else {
+        guard let frameDuration = animatedFrames[safe: currentFrameIndex]?.duration where frameDuration <= timeSinceLastFrameChange else {
             return false
         }
         
@@ -340,12 +316,12 @@ class Animator {
 
 // MARK: - Resize
 extension Image {
-    func kf_resizeToSize(_ size: CGSize, contentMode: UIViewContentMode) -> Image {
+    func kf_resizeToSize(size: CGSize, contentMode: UIViewContentMode) -> Image {
         switch contentMode {
-        case .scaleAspectFit:
+        case .ScaleAspectFit:
             let newSize = self.size.kf_sizeConstrainedSize(size)
             return kf_resizeToSize(newSize)
-        case .scaleAspectFill:
+        case .ScaleAspectFill:
             let newSize = self.size.kf_sizeFillingSize(size)
             return kf_resizeToSize(newSize)
         default:
@@ -353,9 +329,9 @@ extension Image {
         }
     }
     
-    fileprivate func kf_resizeToSize(_ size: CGSize) -> Image {
+    private func kf_resizeToSize(size: CGSize) -> Image {
         UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
-        draw(in: CGRect(origin: CGPoint.zero, size: size))
+        drawInRect(CGRect(origin: CGPoint.zero, size: size))
         let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return resizedImage ?? self
@@ -363,26 +339,26 @@ extension Image {
 }
 
 extension CGSize {
-    func kf_sizeConstrainedSize(_ size: CGSize) -> CGSize {
+    func kf_sizeConstrainedSize(size: CGSize) -> CGSize {
         let aspectWidth = round(kf_aspectRatio * size.height)
         let aspectHeight = round(size.width / kf_aspectRatio)
         
         return aspectWidth > size.width ? CGSize(width: size.width, height: aspectHeight) : CGSize(width: aspectWidth, height: size.height)
     }
     
-    func kf_sizeFillingSize(_ size: CGSize) -> CGSize {
+    func kf_sizeFillingSize(size: CGSize) -> CGSize {
         let aspectWidth = round(kf_aspectRatio * size.height)
         let aspectHeight = round(size.width / kf_aspectRatio)
         
         return aspectWidth < size.width ? CGSize(width: size.width, height: aspectHeight) : CGSize(width: aspectWidth, height: size.height)
     }
-    fileprivate var kf_aspectRatio: CGFloat {
+    private var kf_aspectRatio: CGFloat {
         return height == 0.0 ? 1.0 : width / height
     }
 }
 
-extension CGImageSource {
-    func kf_GIFPropertiesAtIndex(_ index: Int) -> [String: Double]? {
+extension CGImageSourceRef {
+    func kf_GIFPropertiesAtIndex(index: Int) -> [String: Double]? {
         let properties = CGImageSourceCopyPropertiesAtIndex(self, index, nil) as Dictionary?
         return properties?[kCGImagePropertyGIFDictionary as String] as? [String: Double]
     }
@@ -390,10 +366,10 @@ extension CGImageSource {
 
 extension Array {
     subscript(safe index: Int) -> Element? {
-        return indices ~= index ? self[index] : .none
+        return indices ~= index ? self[index] : .None
     }
 }
 
-private func pure<T>(_ value: T) -> [T] {
+private func pure<T>(value: T) -> [T] {
     return [value]
 }

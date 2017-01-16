@@ -80,7 +80,7 @@ struct ActivityIndicator: Indicator {
     #if os(OSX)
     private let activityIndicatorView: NSProgressIndicator
     #else
-    fileprivate let activityIndicatorView: UIActivityIndicatorView
+    private let activityIndicatorView: UIActivityIndicatorView
     #endif
 
     var view: IndicatorView {
@@ -93,7 +93,7 @@ struct ActivityIndicator: Indicator {
         #else
             activityIndicatorView.startAnimating()
         #endif
-        activityIndicatorView.isHidden = false
+        activityIndicatorView.hidden = false
     }
 
     func stopAnimatingView() {
@@ -102,7 +102,7 @@ struct ActivityIndicator: Indicator {
         #else
             activityIndicatorView.stopAnimating()
         #endif
-        activityIndicatorView.isHidden = true
+        activityIndicatorView.hidden = true
     }
 
     init() {
@@ -119,10 +119,10 @@ struct ActivityIndicator: Indicator {
             #if os(tvOS)
                 let indicatorStyle = UIActivityIndicatorViewStyle.White
             #else
-                let indicatorStyle = UIActivityIndicatorViewStyle.gray
+                let indicatorStyle = UIActivityIndicatorViewStyle.Gray
             #endif
             activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle:indicatorStyle)
-            activityIndicatorView.autoresizingMask = [.flexibleLeftMargin, .flexibleRightMargin, .flexibleBottomMargin, .flexibleTopMargin]
+            activityIndicatorView.autoresizingMask = [.FlexibleLeftMargin, .FlexibleRightMargin, .FlexibleBottomMargin, .FlexibleTopMargin]
         #endif
     }
 }
@@ -130,13 +130,13 @@ struct ActivityIndicator: Indicator {
 // MARK: - ImageIndicator
 // Displays an ImageView. Supports gif
 struct ImageIndicator: Indicator {
-    fileprivate let animatedImageIndicatorView: ImageView
+    private let animatedImageIndicatorView: ImageView
 
     var view: IndicatorView {
         return animatedImageIndicatorView
     }
 
-    init(imageData data: Data) {
+    init(imageData data: NSData) {
 
         let image = Image.kf_imageWithData(data, scale: 1.0, preloadAllGIFData: true)
         animatedImageIndicatorView = ImageView()
@@ -147,12 +147,12 @@ struct ImageIndicator: Indicator {
             self.animatedImageIndicatorView.imageScaling = .ScaleNone
             self.animatedImageIndicatorView.canDrawSubviewsIntoLayer = true
         #else
-            animatedImageIndicatorView.contentMode = .center
+            animatedImageIndicatorView.contentMode = .Center
             
-            animatedImageIndicatorView.autoresizingMask = [.flexibleLeftMargin,
-                                                           .flexibleRightMargin,
-                                                           .flexibleBottomMargin,
-                                                           .flexibleTopMargin]
+            animatedImageIndicatorView.autoresizingMask = [.FlexibleLeftMargin,
+                                                           .FlexibleRightMargin,
+                                                           .FlexibleBottomMargin,
+                                                           .FlexibleTopMargin]
         #endif
     }
 
@@ -162,7 +162,7 @@ struct ImageIndicator: Indicator {
         #else
             animatedImageIndicatorView.startAnimating()
         #endif
-        animatedImageIndicatorView.isHidden = false
+        animatedImageIndicatorView.hidden = false
     }
 
     func stopAnimatingView() {
@@ -171,6 +171,6 @@ struct ImageIndicator: Indicator {
         #else
             animatedImageIndicatorView.stopAnimating()
         #endif
-        animatedImageIndicatorView.isHidden = true
+        animatedImageIndicatorView.hidden = true
     }
 }

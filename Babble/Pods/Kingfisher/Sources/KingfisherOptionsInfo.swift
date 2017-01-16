@@ -54,18 +54,18 @@ Items could be added into KingfisherOptionsInfo.
 - PreloadAllGIFData: Whether all the GIF data should be preloaded. Default it false, which means following frames will be loaded on need. If true, all the GIF data will be loaded and decoded into memory. This option is mainly used for back compatibility internally. You should not set it directly. `AnimatedImageView` will not preload all data, while a normal image view (`UIImageView` or `NSImageView`) will load all data. Choose to use corresponding image view type instead of setting this option.
 */
 public enum KingfisherOptionsInfoItem {
-    case targetCache(ImageCache?)
-    case downloader(ImageDownloader?)
-    case transition(ImageTransition)
-    case downloadPriority(Float)
-    case forceRefresh
-    case forceTransition
-    case cacheMemoryOnly
-    case onlyFromCache
-    case backgroundDecode
-    case callbackDispatchQueue(DispatchQueue?)
-    case scaleFactor(CGFloat)
-    case preloadAllGIFData
+    case TargetCache(ImageCache?)
+    case Downloader(ImageDownloader?)
+    case Transition(ImageTransition)
+    case DownloadPriority(Float)
+    case ForceRefresh
+    case ForceTransition
+    case CacheMemoryOnly
+    case OnlyFromCache
+    case BackgroundDecode
+    case CallbackDispatchQueue(dispatch_queue_t?)
+    case ScaleFactor(CGFloat)
+    case PreloadAllGIFData
 }
 
 infix operator <== {
@@ -76,37 +76,37 @@ infix operator <== {
 // This operator returns true if two `KingfisherOptionsInfoItem` enum is the same, without considering the associated values.
 func <== (lhs: KingfisherOptionsInfoItem, rhs: KingfisherOptionsInfoItem) -> Bool {
     switch (lhs, rhs) {
-    case (.targetCache(_), .targetCache(_)): fallthrough
-    case (.downloader(_), .downloader(_)): fallthrough
-    case (.transition(_), .transition(_)): fallthrough
-    case (.downloadPriority(_), .downloadPriority(_)): fallthrough
-    case (.forceRefresh, .forceRefresh): fallthrough
-    case (.forceTransition, .forceTransition): fallthrough
-    case (.cacheMemoryOnly, .cacheMemoryOnly): fallthrough
-    case (.onlyFromCache, .onlyFromCache): fallthrough
-    case (.backgroundDecode, .backgroundDecode): fallthrough
-    case (.callbackDispatchQueue(_), .callbackDispatchQueue(_)): fallthrough
-    case (.scaleFactor(_), .scaleFactor(_)): fallthrough
-    case (.preloadAllGIFData, .preloadAllGIFData): return true
+    case (.TargetCache(_), .TargetCache(_)): fallthrough
+    case (.Downloader(_), .Downloader(_)): fallthrough
+    case (.Transition(_), .Transition(_)): fallthrough
+    case (.DownloadPriority(_), .DownloadPriority(_)): fallthrough
+    case (.ForceRefresh, .ForceRefresh): fallthrough
+    case (.ForceTransition, .ForceTransition): fallthrough
+    case (.CacheMemoryOnly, .CacheMemoryOnly): fallthrough
+    case (.OnlyFromCache, .OnlyFromCache): fallthrough
+    case (.BackgroundDecode, .BackgroundDecode): fallthrough
+    case (.CallbackDispatchQueue(_), .CallbackDispatchQueue(_)): fallthrough
+    case (.ScaleFactor(_), .ScaleFactor(_)): fallthrough
+    case (.PreloadAllGIFData, .PreloadAllGIFData): return true
         
     default: return false
     }
 }
 
-extension Collection where Iterator.Element == KingfisherOptionsInfoItem {
-    func kf_firstMatchIgnoringAssociatedValue(_ target: Iterator.Element) -> Iterator.Element? {
-        return index { $0 <== target }.flatMap { self[$0] }
+extension CollectionType where Generator.Element == KingfisherOptionsInfoItem {
+    func kf_firstMatchIgnoringAssociatedValue(target: Generator.Element) -> Generator.Element? {
+        return indexOf { $0 <== target }.flatMap { self[$0] }
     }
     
-    func kf_removeAllMatchesIgnoringAssociatedValue(_ target: Iterator.Element) -> [Iterator.Element] {
+    func kf_removeAllMatchesIgnoringAssociatedValue(target: Generator.Element) -> [Generator.Element] {
         return self.filter { !($0 <== target) }
     }
 }
 
-extension Collection where Iterator.Element == KingfisherOptionsInfoItem {
+extension CollectionType where Generator.Element == KingfisherOptionsInfoItem {
     var targetCache: ImageCache? {
-        if let item = kf_firstMatchIgnoringAssociatedValue(.targetCache(nil)),
-            case .targetCache(let cache) = item
+        if let item = kf_firstMatchIgnoringAssociatedValue(.TargetCache(nil)),
+            case .TargetCache(let cache) = item
         {
             return cache
         }
@@ -114,8 +114,8 @@ extension Collection where Iterator.Element == KingfisherOptionsInfoItem {
     }
     
     var downloader: ImageDownloader? {
-        if let item = kf_firstMatchIgnoringAssociatedValue(.downloader(nil)),
-            case .downloader(let downloader) = item
+        if let item = kf_firstMatchIgnoringAssociatedValue(.Downloader(nil)),
+            case .Downloader(let downloader) = item
         {
             return downloader
         }
@@ -123,59 +123,59 @@ extension Collection where Iterator.Element == KingfisherOptionsInfoItem {
     }
     
     var transition: ImageTransition {
-        if let item = kf_firstMatchIgnoringAssociatedValue(.transition(.none)),
-            case .transition(let transition) = item
+        if let item = kf_firstMatchIgnoringAssociatedValue(.Transition(.None)),
+            case .Transition(let transition) = item
         {
             return transition
         }
-        return ImageTransition.none
+        return ImageTransition.None
     }
     
     var downloadPriority: Float {
-        if let item = kf_firstMatchIgnoringAssociatedValue(.downloadPriority(0)),
-            case .downloadPriority(let priority) = item
+        if let item = kf_firstMatchIgnoringAssociatedValue(.DownloadPriority(0)),
+            case .DownloadPriority(let priority) = item
         {
             return priority
         }
-        return URLSessionTask.defaultPriority
+        return NSURLSessionTaskPriorityDefault
     }
     
     var forceRefresh: Bool {
-        return contains{ $0 <== .forceRefresh }
+        return contains{ $0 <== .ForceRefresh }
     }
     
     var forceTransition: Bool {
-        return contains{ $0 <== .forceTransition }
+        return contains{ $0 <== .ForceTransition }
     }
     
     var cacheMemoryOnly: Bool {
-        return contains{ $0 <== .cacheMemoryOnly }
+        return contains{ $0 <== .CacheMemoryOnly }
     }
     
     var onlyFromCache: Bool {
-        return contains{ $0 <== .onlyFromCache }
+        return contains{ $0 <== .OnlyFromCache }
     }
     
     var backgroundDecode: Bool {
-        return contains{ $0 <== .backgroundDecode }
+        return contains{ $0 <== .BackgroundDecode }
     }
     
     var preloadAllGIFData: Bool {
-        return contains { $0 <== .preloadAllGIFData }
+        return contains { $0 <== .PreloadAllGIFData }
     }
     
-    var callbackDispatchQueue: DispatchQueue {
-        if let item = kf_firstMatchIgnoringAssociatedValue(.callbackDispatchQueue(nil)),
-            case .callbackDispatchQueue(let queue) = item
+    var callbackDispatchQueue: dispatch_queue_t {
+        if let item = kf_firstMatchIgnoringAssociatedValue(.CallbackDispatchQueue(nil)),
+            case .CallbackDispatchQueue(let queue) = item
         {
-            return queue ?? DispatchQueue.main
+            return queue ?? dispatch_get_main_queue()
         }
-        return DispatchQueue.main
+        return dispatch_get_main_queue()
     }
     
     var scaleFactor: CGFloat {
-        if let item = kf_firstMatchIgnoringAssociatedValue(.scaleFactor(0)),
-            case .scaleFactor(let scale) = item
+        if let item = kf_firstMatchIgnoringAssociatedValue(.ScaleFactor(0)),
+            case .ScaleFactor(let scale) = item
         {
             return scale
         }
