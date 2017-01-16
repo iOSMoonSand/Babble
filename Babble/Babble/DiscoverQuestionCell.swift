@@ -17,8 +17,8 @@ protocol DiscoverQuestionCellDelegate: class {
     //MARK:
     //MARK: - DiscoverQuestionCellDelegate Methods
     //MARK:
-    func handleProfileImageButtonTapOn(row: Int)
-    func handleLikeButtonTapOn(row: Int, cell: DiscoverQuestionCell)
+    func handleProfileImageButtonTapOn(_ row: Int)
+    func handleLikeButtonTapOn(_ row: Int, cell: DiscoverQuestionCell)
 }
 //MARK:
 //MARK: - DiscoverQuestionCell Class
@@ -37,24 +37,24 @@ class DiscoverQuestionCell: UITableViewCell {
     //MARK:
     //MARK: - Instance Methods
     //MARK:
-    func updateViewsWith(question: Question) {
+    func updateViewsWith(_ question: Question) {
         let questionText = question.text
         let likeCount = question.likeCount
         let defaultProfileImage = UIImage(named: "Profile_avatar_placeholder_large")
         self.questionTextView.text = questionText
-        self.profilePhotoImageButton.setImage(nil, forState: .Normal)
-        self.profilePhotoImageButton.setImage(defaultProfileImage, forState: .Normal)
+        self.profilePhotoImageButton.setImage(nil, for: UIControlState())
+        self.profilePhotoImageButton.setImage(defaultProfileImage, for: UIControlState())
         self.likeButtonCountLabel.text = String(likeCount)
     }
     //MARK:
     //MARK: - Button Actions
     //MARK:
-    @IBAction func profileImageButtonTapped(sender: UIButton) {
+    @IBAction func profileImageButtonTapped(_ sender: UIButton) {
         guard let row = self.row else { return }
         delegate?.handleProfileImageButtonTapOn(row)
     }
     
-    @IBAction func likeButtonTapped(sender: UIButton) {
+    @IBAction func likeButtonTapped(_ sender: UIButton) {
         guard let row = self.row else { return }
         delegate?.handleLikeButtonTapOn(row, cell: self)
     }

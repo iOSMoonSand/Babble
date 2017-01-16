@@ -24,9 +24,9 @@
             if questionsArray.count == 0 {
                 self.tableView.reloadData()
             } else {
-            var indexPaths: [NSIndexPath] = []
-            indexPaths.append(NSIndexPath(forRow:0, inSection: 0))
-            self.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
+            var indexPaths: [IndexPath] = []
+            indexPaths.append(IndexPath(row:0, section: 0))
+            self.tableView.insertRows(at: indexPaths, with: .fade)
             }
         }
     }
@@ -38,11 +38,11 @@
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.registerForNotifications()
-        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tableViewQuestionCell")
+        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "tableViewQuestionCell")
         FirebaseMgr.shared.retrieveHomeQuestions()
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == Constants.Segues.HomeToAnswers {
             let backItem = UIBarButtonItem()
             backItem.title = ""
@@ -51,7 +51,7 @@
             let selectedQuestion = self.questionsArray[selectedIndexPath.row]
             let questionID = selectedQuestion.questionID
             let questionIdDict = ["questionID": questionID]
-            guard let destinationVC = segue.destinationViewController as? AnswersViewController else { return }
+            guard let destinationVC = segue.destination as? AnswersViewController else { return }
             destinationVC.selectedQuestionIdDict = questionIdDict
         }
         
@@ -62,7 +62,7 @@
             guard let selectedIndexRow = self.selectedIndexRow else { return }
             let question = self.questionsArray[selectedIndexRow]
             let userID = question.userID
-            guard let destinationVC = segue.destinationViewController as? UserProfileViewController else { return }
+            guard let destinationVC = segue.destination as? UserProfileViewController else { return }
             destinationVC.selectedUserID = userID
         }
     }
@@ -70,7 +70,7 @@
     // MARK: - Notification Registration Methods
     // MARK:
     func registerForNotifications() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateQuestionsArray), name: Constants.NotifKeys.HomeQuestionsRetrieved, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateQuestionsArray), name: NSNotification.Name(rawValue: Constants.NotifKeys.HomeQuestionsRetrieved), object: nil)
     }
     
     func updateQuestionsArray(){
@@ -80,44 +80,44 @@
     // MARK: - Notification Unregistration Methods
     // MARK:
     func unregisterForNotifications() {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     // MARK:
     // MARK: - Button Actions
     // MARK:
-        @IBAction func didTapPostAddQuestion(segue:UIStoryboardSegue) {
+        @IBAction func didTapPostAddQuestion(_ segue:UIStoryboardSegue) {
             //Unwind segue from AddQuestion to HomeScreen
             //Identifier: PostNewQuestionToHome
             let data = [Constants.QuestionFields.text: self.newQuestion! as String]
-            postQuestion(data)
+            postQuestion(data as [String : AnyObject])
         }
     
-        func postQuestion(data: [String: AnyObject]) {
+        func postQuestion(_ data: [String: AnyObject]) {
             var questionDataDict = data
             guard let currentUserID = FIRAuth.auth()?.currentUser?.uid else { return }
-            questionDataDict[Constants.QuestionFields.userID] = currentUserID
-            questionDataDict[Constants.QuestionFields.likeCount] = 0
+            questionDataDict[Constants.QuestionFields.userID] = currentUserID as AnyObject?
+            questionDataDict[Constants.QuestionFields.likeCount] = 0 as AnyObject?
             FirebaseMgr.shared.saveNewQuestion(questionDataDict, userID: currentUserID)
         }
     // MARK:
     // MARK: - Unwind Segues
     // MARK:
-    @IBAction func didTapBackAnswers(segue:UIStoryboardSegue) {
+    @IBAction func didTapBackAnswers(_ segue:UIStoryboardSegue) {
         //From AddQuestion to HomeScreen
     }
     
-    @IBAction func didTapCancelAddQuestion(segue: UIStoryboardSegue) {
+    @IBAction func didTapCancelAddQuestion(_ segue: UIStoryboardSegue) {
         
     }
     
-    @IBAction func didTapBackProfilesToHome(segue:UIStoryboardSegue) {
+    @IBAction func didTapBackProfilesToHome(_ segue:UIStoryboardSegue) {
         //From UserProfiles to HomeScreen
     }
     // MARK:
     // MARK: - Deinit
     // MARK:
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
  }
  // MARK:
@@ -127,12 +127,12 @@
     // MARK:
     // MARK: - UITableViewDataSource & UITableViewDelegate Methods
     // MARK:
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.questionsArray.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = self.tableView.dequeueReusableCellWithIdentifier("QuestionCell", forIndexPath: indexPath) as! QuestionCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = self.tableView.dequeueReusableCell(withIdentifier: "QuestionCell", for: indexPath) as! QuestionCell
         cell.delegate = self
         //cell.row = indexPath.row
         let question: Question = self.questionsArray[indexPath.row]
@@ -144,31 +144,31 @@
         })
         //
         FirebaseMgr.shared.retrieveUserPhotoDownloadURL(question.userID, completion: { (photoDownloadURL, defaultImage) in
-            cell.profilePhotoImageButton.setImage(nil, forState: .Normal)
+            cell.profilePhotoImageButton.setImage(nil, for: UIControlState())
             if photoDownloadURL != nil {
-                let url = NSURL(string: photoDownloadURL!)
-                cell.profilePhotoImageButton.kf_setImageWithURL(url, forState: .Normal, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"))
+                let url = URL(string: photoDownloadURL!)
+                cell.profilePhotoImageButton.kf.setImage(with: url, for: .normal, placeholder: UIImage(named: "Profile_avatar_placeholder_large"), options: nil, progressBlock: nil, completionHandler: nil)
                 self.formatImage(cell)
             } else {
-                cell.profilePhotoImageButton.setImage(UIImage(named: "Profile_avatar_placeholder_large"), forState: .Normal)
+                cell.profilePhotoImageButton.setImage(UIImage(named: "Profile_avatar_placeholder_large"), for: UIControlState())
                 self.formatImage(cell)
             }
         })
         return cell
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        performSegueWithIdentifier(Constants.Segues.HomeToAnswers, sender: self)
-        self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: Constants.Segues.HomeToAnswers, sender: self)
+        self.tableView.deselectRow(at: indexPath, animated: true)
     }
     // MARK:
     // MARK: - Image Formatting
     // MARK:
-    func formatImage(cell: QuestionCell) {
-        cell.profilePhotoImageButton.imageView?.contentMode = .ScaleAspectFill
+    func formatImage(_ cell: QuestionCell) {
+        cell.profilePhotoImageButton.imageView?.contentMode = .scaleAspectFill
         cell.profilePhotoImageButton.layer.borderWidth = 1
         cell.profilePhotoImageButton.layer.masksToBounds = false
-        cell.profilePhotoImageButton.layer.borderColor = UIColor.blackColor().CGColor
+        cell.profilePhotoImageButton.layer.borderColor = UIColor.black.cgColor
         cell.profilePhotoImageButton.layer.cornerRadius = cell.profilePhotoImageButton.bounds.width/2
         cell.profilePhotoImageButton.clipsToBounds = true
     }
@@ -180,16 +180,16 @@
     //MARK:
     //MARK: - QuestionCellDelegate Methods
     //MARK:
-    func handleProfileImageButtonTapOn(cell: QuestionCell) {
-        var selectedIndexPath: NSIndexPath!
-        selectedIndexPath = self.tableView.indexPathForCell(cell)
+    func handleProfileImageButtonTapOn(_ cell: QuestionCell) {
+        var selectedIndexPath: IndexPath!
+        selectedIndexPath = self.tableView.indexPath(for: cell)
         self.selectedIndexRow = selectedIndexPath.row
-        performSegueWithIdentifier(Constants.Segues.HomeToUserProfiles, sender: self)
+        performSegue(withIdentifier: Constants.Segues.HomeToUserProfiles, sender: self)
     }
     
-    func handleLikeButtonTapOn(cell: QuestionCell) {
-        var selectedIndexPath: NSIndexPath!
-        selectedIndexPath = self.tableView.indexPathForCell(cell)
+    func handleLikeButtonTapOn(_ cell: QuestionCell) {
+        var selectedIndexPath: IndexPath!
+        selectedIndexPath = self.tableView.indexPath(for: cell)
         guard let currentUserID = AppState.sharedInstance.currentUserID else { return }
         let question = self.questionsArray[selectedIndexPath.row]
         var likeStatusesDict = self.questionsArray[selectedIndexPath.row].likeStatuses
@@ -202,8 +202,8 @@
             } else if like == false && likeStatusesDict != nil {
                 self.questionsArray[selectedIndexPath.row].likeStatuses![currentUserID] = nil
             }
-            let indexPath = NSIndexPath(forRow: selectedIndexPath.row, inSection: 0)
-            self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+            let indexPath = IndexPath(row: selectedIndexPath.row, section: 0)
+            self.tableView.reloadRows(at: [indexPath], with: .fade)
         })
     }
  }

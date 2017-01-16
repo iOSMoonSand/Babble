@@ -20,13 +20,13 @@ class Utility {
     //MARK:
     //MARK: - Instance Methods
     //MARK:
-    func errorAlert(title: String, message: String, presentingViewController: UIViewController) {
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+    func errorAlert(_ title: String, message: String, presentingViewController: UIViewController) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
-        let OKAction = UIAlertAction(title: "Ok", style: .Default) { (action) in }
+        let OKAction = UIAlertAction(title: "Ok", style: .default) { (action) in }
         alertController.addAction(OKAction)
-        dispatch_async(dispatch_get_main_queue(), {
-            presentingViewController.presentViewController(alertController, animated: true, completion: nil)
+        DispatchQueue.main.async(execute: {
+            presentingViewController.present(alertController, animated: true, completion: nil)
         })
     }
 }

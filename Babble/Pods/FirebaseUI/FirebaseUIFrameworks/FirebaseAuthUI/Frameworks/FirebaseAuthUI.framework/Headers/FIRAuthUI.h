@@ -22,6 +22,11 @@
 @class FIRAuthPickerViewController;
 @class FIRAuthUI;
 @class FIRUser;
+@class FIREmailEntryViewController;
+@class FIRPasswordSignInViewController;
+@class FIRPasswordSignUpViewController;
+@class FIRPasswordRecoveryViewController;
+@class FIRPasswordVerificationViewController;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -56,6 +61,55 @@ typedef void (^FIRAuthUIResultCallback)(FIRUser *_Nullable user, NSError *_Nulla
  */
 - (FIRAuthPickerViewController *)authPickerViewControllerForAuthUI:(FIRAuthUI *)authUI;
 
+/** @fn emailEntryViewControllerForAuthUI:
+    @brief Sent to the receiver to ask for an instance of @c FIREmailEntryViewController subclass
+    to allow UI customizations.
+    @param authUI The @c FIRAuthUI instance sending the message.
+    @return an instance of @c FIREmailEntryViewController subclass.
+ */
+- (FIREmailEntryViewController *)emailEntryViewControllerForAuthUI:(FIRAuthUI *)authUI;
+
+/** @fn passwordSignInViewControllerForAuthUI:email:
+    @brief Sent to the receiver to ask for an instance of @c FIRPasswordSignInViewController subclass
+    to allow sign-in UI customizations.
+    @param authUI The @c FIRAuthUI instance sending the message.
+    @param email The email user is using for sin-in.
+    @return an instance of @c FIRPasswordSignInViewController subclass.
+ */
+- (FIRPasswordSignInViewController *)passwordSignInViewControllerForAuthUI:(FIRAuthUI *)authUI
+                                                                     email:(NSString *)email;
+
+/** @fn passwordSignInViewControllerForAuthUI:email:
+    @brief Sent to the receiver to ask for an instance of @c FIRPasswordSignUpViewController subclass
+    to allow sign-up UI customizations.
+    @param authUI The @c FIRAuthUI instance sending the message.
+    @param email The email user is using for sin-in.
+    @return an instance of @c FIRPasswordSignUpViewController subclass.
+ */
+- (FIRPasswordSignUpViewController *)passwordSignUpViewControllerForAuthUI:(FIRAuthUI *)authUI
+                                                                     email:(NSString *)email;
+
+/** @fn passwordRecoveryViewControllerForAuthUI:email:
+    @brief Sent to the receiver to ask for an instance of @c FIRPasswordRecoveryViewController subclass
+    to allow sign-up UI customizations.
+    @param authUI The @c FIRAuthUI instance sending the message.
+    @param email The email user is using for password recovery.
+    @return an instance of @c FIRPasswordRecoveryViewController subclass.
+ */
+- (FIRPasswordRecoveryViewController *)passwordRecoveryViewControllerForAuthUI:(FIRAuthUI *)authUI
+                                                                         email:(NSString *)email;
+
+/** @fn passwordVerificationViewControllerForAuthUI:email:newCredential:
+    @brief Sent to the receiver to ask for an instance of @c FIRPasswordVerificationViewController subclass
+    to allow password verification UI customizations.
+    @param authUI The @c FIRAuthUI instance sending the message.
+    @param email The email user is using for sin-in.
+    @param newCredential This @c FIRAuthCredential obtained from linked account.
+    @return an instance of @c FIRPasswordVerificationViewController subclass.
+ */
+- (FIRPasswordVerificationViewController *)passwordVerificationViewControllerForAuthUI:(FIRAuthUI *)authUI
+                                                                                 email:(NSString *)email
+                                                                         newCredential:(FIRAuthCredential *)newCredential;
 @end
 
 /** @class FIRAuthUI
@@ -127,10 +181,23 @@ typedef void (^FIRAuthUIResultCallback)(FIRUser *_Nullable user, NSError *_Nulla
     sourceApplication:(nullable NSString *)sourceApplication;
 
 /** @fn authViewController
-    @brief Returns an instance of the initial view controller of AuthUI.
-    @return An instance of the the initial view controller of AuthUI.
+    @brief Returns an instance of the initial navigation view controller of AuthUI.
+    @return An instance of the the initial navigation view controller of AuthUI.
  */
-- (UIViewController *)authViewController;
+- (UINavigationController *)authViewController;
+
+/** @fn signOutWithError:
+    @brief Signs out the current user from Firbase and all providers.
+    @param error Optionally; if an error occurs during Firebase signout, upon return contains an
+    NSError object that describes the problem; is nil otherwise. If Firebase error occurs all providers
+    are not logged-out and sign-out should be retried.
+    @return @YES when the sign out request was successful. @NO otherwise.
+    @remarks Possible error codes:
+    - @c FIRAuthErrorCodeKeychainError Indicates an error occurred when accessing the keychain.
+    The @c NSLocalizedFailureReasonErrorKey field in the @c NSError.userInfo dictionary
+    will contain more information about the error encountered.
+ */
+- (BOOL)signOutWithError:(NSError *_Nullable *_Nullable)error;
 
 @end
 

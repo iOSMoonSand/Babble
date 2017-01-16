@@ -30,7 +30,7 @@ typedef void (^FIRAuthUIAlertActionHandler)(void);
 /** @class FIRAuthUIBaseViewController
     @brief The base view controller that provides common methods for all subclasses.
  */
-@interface FIRAuthUIBaseViewController : UITableViewController
+@interface FIRAuthUIBaseViewController : UIViewController
 
 /** @property auth
     @brief The @c FIRAuth instance of the application.
@@ -104,6 +104,12 @@ typedef void (^FIRAuthUIAlertActionHandler)(void);
  */
 - (void)pushViewController:(UIViewController *)viewController;
 
+/** @fn onBack
+    @brief Pops the view controller from navigation stack. If current controller is root 
+    works as @c cancelAuthorization
+ */
+- (void)onBack;
+
 /** @fn incrementActivity
     @brief Increment the current acitivity count. If there's positive number of activities, display
         and animate the activity indicator with a short period of delay.
@@ -118,6 +124,10 @@ typedef void (^FIRAuthUIAlertActionHandler)(void);
  */
 - (void)decrementActivity;
 
+/** @fn cancelAuthorization
+    @brief Cancels Authorization flow, calls UI delegate callbacks and hides UI
+ */
+- (void)cancelAuthorization;
 @end
 
 NS_ASSUME_NONNULL_END
