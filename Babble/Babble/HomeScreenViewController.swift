@@ -147,7 +147,7 @@
             cell.profilePhotoImageButton.setImage(nil, for: UIControlState())
             if photoDownloadURL != nil {
                 let url = URL(string: photoDownloadURL!)
-                cell.profilePhotoImageButton.kf_setImageWithURL(url, forState: .Normal, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"))
+                cell.profilePhotoImageButton.kf.setImage(with: url, for: .normal, placeholder: UIImage(named: "Profile_avatar_placeholder_large"), options: nil, progressBlock: nil, completionHandler: nil)
                 self.formatImage(cell)
             } else {
                 cell.profilePhotoImageButton.setImage(UIImage(named: "Profile_avatar_placeholder_large"), for: UIControlState())

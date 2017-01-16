@@ -52,11 +52,11 @@ class SignInViewController: UIViewController {
             AppState.sharedInstance.photoDownloadURL = nil
             if let photoDownloadURL = user[Constants.UserFields.photoDownloadURL] as! String? {
                 AppState.sharedInstance.photoDownloadURL = photoDownloadURL
-                let prefetchPhotoDownloadURL = [photoDownloadURL].map { URL(string: $0)! }
-                let prefetcher = ImagePrefetcher(urls: prefetchPhotoDownloadURL, optionsInfo: nil, progressBlock: nil, completionHandler: {
-                    (skippedResources, failedResources, completedResources) -> () in
+                let urls = [photoDownloadURL].map { URL(string: $0)! }
+                let prefetcher = ImagePrefetcher(urls: urls) {
+                    skippedResources, failedResources, completedResources in
                     print("These resources are prefetched: \(completedResources)")
-                })
+                }
                 prefetcher.start()
             }
         })

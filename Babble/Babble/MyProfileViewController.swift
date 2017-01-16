@@ -52,7 +52,7 @@ class MyProfileViewController: UIViewController {
             self.formatImageView()
         } else {
             if let photoDownloadURL = AppState.sharedInstance.photoDownloadURL {
-                self.profilePhotoImageView.kf_setImageWithURL(URL(string: photoDownloadURL)!, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"), optionsInfo: nil)
+                self.profilePhotoImageView.kf.setImage(with: URL(string: photoDownloadURL)!, placeholder: UIImage(named: "Profile_avatar_placeholder_large"), options: nil, progressBlock: nil, completionHandler: nil)
                 self.formatImageView()
             } else {
                 let image = UIImage(named: "Profile_avatar_placeholder_large")

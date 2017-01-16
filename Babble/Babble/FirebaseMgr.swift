@@ -206,11 +206,11 @@ class FirebaseMgr {
                     self.usersRef().child("\(currentUserUID)/photoDownloadURL").setValue(downloadURLString)
                 }
                 
-                let prefetchPhotoDownloadURL = [downloadURLString].map { URL(string: $0)! }
-                let prefetcher = ImagePrefetcher(urls: prefetchPhotoDownloadURL, optionsInfo: nil, progressBlock: nil, completionHandler: {
-                    (skippedResources, failedResources, completedResources) -> () in
+                let urls = [downloadURLString].map { URL(string: $0)! }
+                let prefetcher = ImagePrefetcher(urls: urls) {
+                    skippedResources, failedResources, completedResources in
                     print("These resources are prefetched: \(completedResources)")
-                })
+                }
                 prefetcher.start()
             }
         }

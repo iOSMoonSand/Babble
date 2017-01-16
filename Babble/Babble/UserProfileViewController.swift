@@ -48,7 +48,7 @@ class UserProfileViewController: UIViewController {
         FirebaseMgr.shared.retrieveUserPhotoDownloadURL(userID, completion: { photoDownloadURL, defaultImage in
             if photoDownloadURL != nil {
                 let url = URL(string: photoDownloadURL!)
-                self.userProfileImageView.kf_setImageWithURL(url, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"), optionsInfo: nil, progressBlock: nil, completionHandler: nil)
+                self.userProfileImageView.kf.setImage(with: url, placeholder: UIImage(named: "Profile_avatar_placeholder_large"), options: nil, progressBlock: nil, completionHandler: nil)
                 self.formatImage()
             } else {
                 self.userProfileImageView.image =  UIImage(named: "Profile_avatar_placeholder_large")
