@@ -22,24 +22,24 @@ class FirebaseMgr {
         FIRDatabase.database().reference()
     }()
     lazy var storageRef: FIRStorageReference! = {
-        FIRStorage.storage().referenceForURL("gs://babble-8b668.appspot.com/")
+        FIRStorage.storage().reference(forURL: "gs://babble-8b668.appspot.com/")
     }()
-    private var _questionsRefHandle: FIRDatabaseHandle!
-    private var _answersRefHandle: FIRDatabaseHandle!
-    private var _usersNameRefHandle: FIRDatabaseHandle!
-    private var _usersPhotoRefHandle: FIRDatabaseHandle!
-    private var selectedQuestionID = String()
-    private var selectedUserID = String()
+    fileprivate var _questionsRefHandle: FIRDatabaseHandle!
+    fileprivate var _answersRefHandle: FIRDatabaseHandle!
+    fileprivate var _usersNameRefHandle: FIRDatabaseHandle!
+    fileprivate var _usersPhotoRefHandle: FIRDatabaseHandle!
+    fileprivate var selectedQuestionID = String()
+    fileprivate var selectedUserID = String()
     // Home Questions Array
     var homeQuestionsArray = [Question]() {
         didSet {
-            NSNotificationCenter.defaultCenter().postNotification((NSNotification(name: Constants.NotifKeys.HomeQuestionsRetrieved, object: nil)))
+            NotificationCenter.default.post((Notification(name: Notification.Name(rawValue: Constants.NotifKeys.HomeQuestionsRetrieved), object: nil)))
         }
     }
     // Home Answers Array
     var homeAnswersArray = [Answer]() {
         didSet {
-            NSNotificationCenter.defaultCenter().postNotification((NSNotification(name: Constants.NotifKeys.HomeAnswersRetrieved, object: nil)))
+            NotificationCenter.default.post((Notification(name: Notification.Name(rawValue: Constants.NotifKeys.HomeAnswersRetrieved), object: nil)))
         }
     }
     //MARK:
@@ -65,19 +65,19 @@ class FirebaseMgr {
     //MARK:
     func retrieveHomeQuestions() {
         self.homeQuestionsArray = [Question]()
-        self._questionsRefHandle = self.questionsRef().observeEventType(.ChildAdded, withBlock: { (questionSnapshot) in
+        self._questionsRefHandle = self.questionsRef().observe(.childAdded, with: { (questionSnapshot) in
             let retrievedQuestion = questionSnapshot.value as! [String: AnyObject]
             let questionID = questionSnapshot.key
             guard let
                 text = retrievedQuestion[Constants.QuestionFields.text] as? String,
-                userID = retrievedQuestion[Constants.QuestionFields.userID] as? String,
-                likeCount = retrievedQuestion[Constants.QuestionFields.likeCount] as? Int
+                let userID = retrievedQuestion[Constants.QuestionFields.userID] as? String,
+                let likeCount = retrievedQuestion[Constants.QuestionFields.likeCount] as? Int
                 else { return }
-            var question = Question(questionID: questionID, text: text, userID: userID, likeCount: likeCount)
+            let question = Question(questionID: questionID, text: text, userID: userID, likeCount: likeCount)
             if let likeStatuses = retrievedQuestion[Constants.QuestionFields.likeStatuses] as? [String: Bool] {
                 question.likeStatuses = likeStatuses
             }
-            self.homeQuestionsArray.insert(question, atIndex: 0)
+            self.homeQuestionsArray.insert(question, at: 0)
         })
     }
     //MARK:
@@ -85,38 +85,38 @@ class FirebaseMgr {
     //MARK:
     func retrieveHomeAnswers() {
         self.homeAnswersArray = [Answer]()
-        self._answersRefHandle = self.answersRef().child(self.selectedQuestionID).observeEventType(.ChildAdded, withBlock: { (answerSnapshot) in
+        self._answersRefHandle = self.answersRef().child(self.selectedQuestionID).observe(.childAdded, with: { (answerSnapshot) in
             let retrievedAnswer = answerSnapshot.value as! [String: AnyObject]
             let answerID = answerSnapshot.key
             guard let
                 text = retrievedAnswer[Constants.AnswerFields.text] as? String,
-                userID = retrievedAnswer[Constants.AnswerFields.userID] as? String
+                let userID = retrievedAnswer[Constants.AnswerFields.userID] as? String
             else { return }
             let answer = Answer(answerID: answerID, text: text, userID: userID)
-            self.homeAnswersArray.insert(answer, atIndex: 0)
+            self.homeAnswersArray.insert(answer, at: 0)
         })
     }
     //MARK:
     //MARK: - User Data Retrieval
     //MARK:
-    func retrieveUserDisplayName(userID: String, completion: (displayName: String) -> Void) {
+    func retrieveUserDisplayName(_ userID: String, completion: @escaping (_ displayName: String) -> Void) {
         //retrieve userID, displayName, photoURL, userBio, and OPTIONALLY photoDownloadURL
-        self._usersNameRefHandle = self.usersRef().child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
+        self._usersNameRefHandle = self.usersRef().child(userID).observe(.value, with: { (userSnapshot) in
             var retrievedUser = userSnapshot.value as! [String: AnyObject]
             if userID == userSnapshot.key {
                 guard let displayName = retrievedUser[Constants.UserFields.displayName] as? String else { return }
-                completion(displayName: displayName)
+                completion(displayName)
             }
         })
     }
     
-    func retrieveUserPhotoDownloadURL(userID: String, completion: (photoDownloadURL: String?, defaultImage: UIImage) -> Void) {
-        self._usersPhotoRefHandle = self.usersRef().child(userID).observeEventType(.Value, withBlock: { (userSnapshot) in
+    func retrieveUserPhotoDownloadURL(_ userID: String, completion: @escaping (_ photoDownloadURL: String?, _ defaultImage: UIImage) -> Void) {
+        self._usersPhotoRefHandle = self.usersRef().child(userID).observe(.value, with: { (userSnapshot) in
             guard let defaultImage = UIImage(named: "Profile_avatar_placeholder_large") else { return }
             var retrievedUser = userSnapshot.value as! [String: AnyObject]
             if userID == userSnapshot.key {
                 if let photoDownloadURL = retrievedUser[Constants.UserFields.photoDownloadURL] as? String {
-                    completion(photoDownloadURL: photoDownloadURL, defaultImage: defaultImage)
+                    completion(photoDownloadURL, defaultImage)
                 } else {
                     print("No photoDownloadURL: user has not selected a profile photo.")
                 }
@@ -124,25 +124,25 @@ class FirebaseMgr {
         })
     }
     
-    func retrieveUserBio(userID: String, completion: (userBio: String?) -> Void) {
-        self.usersRef().child("\(userID)/userBio").observeSingleEventOfType(.Value, withBlock: { (userBioSnapshot) in
+    func retrieveUserBio(_ userID: String, completion: @escaping (_ userBio: String?) -> Void) {
+        self.usersRef().child("\(userID)/userBio").observeSingleEvent(of: .value, with: { (userBioSnapshot) in
             let retrievedUserBio = userBioSnapshot.value as? String
-            completion(userBio: retrievedUserBio)
+            completion(retrievedUserBio)
         })
     }
     //MARK:
     //MARK: - User Data Upload
     //MARK:
-    func saveNewBio(userID: String, bioText: String) {
+    func saveNewBio(_ userID: String, bioText: String) {
         self.usersRef().child("\(userID)/userBio").setValue(bioText)
     }
     //MARK:
     //MARK: - Question Like Count Data Upload
     //MARK:
-    func saveNewQuestionLikeCount(questionID: String, completion: (newLikeCount: Int, like: Bool) -> Void) {
+    func saveNewQuestionLikeCount(_ questionID: String, completion: @escaping (_ newLikeCount: Int, _ like: Bool) -> Void) {
         var incrementedLikeCount = Int()
         var decrementedLikeCount = Int()
-        self.questionsRef().child(questionID).observeSingleEventOfType(.Value, withBlock: { questionSnapshot in
+        self.questionsRef().child(questionID).observeSingleEvent(of: .value, with: { questionSnapshot in
             guard let retrievedQuestion = questionSnapshot.value as? [String: AnyObject] else { return }
             guard let currentLikeCount = retrievedQuestion[Constants.QuestionFields.likeCount] as? Int else { return }
             guard let currentUserID = AppState.sharedInstance.currentUserID else { return }
@@ -152,14 +152,14 @@ class FirebaseMgr {
                         self.questionsRef().child("\(questionID)/likeStatuses/\(currentUserID)").removeValue()
                         decrementedLikeCount = currentLikeCount - 1
                         self.questionsRef().child("\(questionID)/likeCount").setValue(decrementedLikeCount)
-                        completion(newLikeCount: decrementedLikeCount, like: false)
+                        completion(decrementedLikeCount, false)
                     } else if likeStatusesDict[currentUserID] == nil {
                         let newLikeStatus = [currentUserID: true]
                         likeStatusesDict[currentUserID] = true
                         incrementedLikeCount = currentLikeCount + 1
                         self.questionsRef().child("\(questionID)/likeCount").setValue(incrementedLikeCount)
                         self.questionsRef().child(questionID).child("likeStatuses").updateChildValues(newLikeStatus)
-                        completion(newLikeCount: incrementedLikeCount, like: true)
+                        completion(incrementedLikeCount, true)
                     }
                 }
             } else {
@@ -167,23 +167,23 @@ class FirebaseMgr {
                 incrementedLikeCount = currentLikeCount + 1
                 self.questionsRef().child("\(questionID)/likeCount").setValue(incrementedLikeCount)
                 self.questionsRef().child(questionID).child("likeStatuses").setValue(newLikeStatus)
-                completion(newLikeCount: incrementedLikeCount, like: true)
+                completion(incrementedLikeCount, true)
             }
         })
     }
     //MARK:
     //MARK: - New Question Data Upload
     //MARK:
-    func saveNewQuestion(dataDict: [String: AnyObject], userID: String) {
+    func saveNewQuestion(_ dataDict: [String: AnyObject], userID: String) {
         let key = self.questionsRef().childByAutoId().key
         let childUpdates = ["questions/\(key)": dataDict,
-                            "likeStatuses/\(key)/\(userID)/likeStatus": 0]
-        self.ref.updateChildValues(childUpdates as! [String : AnyObject])
+                            "likeStatuses/\(key)/\(userID)/likeStatus": 0] as [String : Any]
+        self.ref.updateChildValues(childUpdates as [String : AnyObject])
     }
     //MARK:
     //MARK: - New Answer Data Upload
     //MARK:
-    func saveNewAnswer(dataDict: [String: AnyObject], questionID: String, userID: String) {
+    func saveNewAnswer(_ dataDict: [String: AnyObject], questionID: String, userID: String) {
         let key = self.answersRef().child(questionID).childByAutoId().key
         let childUpdates = ["answers/\(questionID)/\(key)": dataDict]
         self.ref.updateChildValues(childUpdates)
@@ -191,8 +191,8 @@ class FirebaseMgr {
     //MARK:
     //MARK: - Image Data Upload
     //MARK:
-    func uploadSelectedImageData(photoRef: FIRStorageReference, imageData: NSData, metaData: FIRStorageMetadata) {
-        photoRef.putData(imageData, metadata: metaData) { metadata, error in
+    func uploadSelectedImageData(_ photoRef: FIRStorageReference, imageData: Data, metaData: FIRStorageMetadata) {
+        photoRef.put(imageData, metadata: metaData) { metadata, error in
             if let error = error {
                 print("Error uploading:\(error.localizedDescription)")
                 return
@@ -206,7 +206,7 @@ class FirebaseMgr {
                     self.usersRef().child("\(currentUserUID)/photoDownloadURL").setValue(downloadURLString)
                 }
                 
-                let prefetchPhotoDownloadURL = [downloadURLString].map { NSURL(string: $0)! }
+                let prefetchPhotoDownloadURL = [downloadURLString].map { URL(string: $0)! }
                 let prefetcher = ImagePrefetcher(urls: prefetchPhotoDownloadURL, optionsInfo: nil, progressBlock: nil, completionHandler: {
                     (skippedResources, failedResources, completedResources) -> () in
                     print("These resources are prefetched: \(completedResources)")
@@ -219,10 +219,10 @@ class FirebaseMgr {
     //MARK: - Notification Registration Methods
     //MARK:
     func registerForNotifications() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(storeQuestionIdDict(_:)), name: Constants.NotifKeys.SendQuestionID, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(storeQuestionIdDict(_:)), name: NSNotification.Name(rawValue: Constants.NotifKeys.SendQuestionID), object: nil)
     }
     
-    @objc func storeQuestionIdDict(notification: NSNotification) {
+    @objc func storeQuestionIdDict(_ notification: Notification) {
         if let userInfo = notification.userInfo {
             guard let questionID = userInfo["questionID"] as? String else { return }
             self.selectedQuestionID = questionID
@@ -237,11 +237,11 @@ class FirebaseMgr {
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-        self.usersRef().removeObserverWithHandle(self._usersNameRefHandle)
-        self.usersRef().removeObserverWithHandle(self._usersPhotoRefHandle)
-        self.questionsRef().removeObserverWithHandle(self._questionsRefHandle)
-        self.answersRef().removeObserverWithHandle(self._answersRefHandle)
+        NotificationCenter.default.removeObserver(self)
+        self.usersRef().removeObserver(withHandle: self._usersNameRefHandle)
+        self.usersRef().removeObserver(withHandle: self._usersPhotoRefHandle)
+        self.questionsRef().removeObserver(withHandle: self._questionsRefHandle)
+        self.answersRef().removeObserver(withHandle: self._answersRefHandle)
     }
 }
 

@@ -27,9 +27,9 @@ class AnswersViewController: UIViewController {
             if answersArray.count == 0 {
                 self.tableView.reloadData()
             } else {
-                var indexPaths: [NSIndexPath] = []
-                indexPaths.append(NSIndexPath(forRow:0, inSection: 0))
-                self.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
+                var indexPaths: [IndexPath] = []
+                indexPaths.append(IndexPath(row:0, section: 0))
+                self.tableView.insertRows(at: indexPaths, with: .fade)
             }
         }
     }
@@ -43,12 +43,12 @@ class AnswersViewController: UIViewController {
         self.sendAnswerTextView.delegate = self
         self.registerForNotifications()
         self.postNotifications()
-        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "tableViewAnswerCell")
+        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "tableViewAnswerCell")
         FirebaseMgr.shared.retrieveHomeAnswers()
         self.formatTextView()
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == Constants.Segues.AnswersToUserProfiles {
             let backItem = UIBarButtonItem()
@@ -57,35 +57,35 @@ class AnswersViewController: UIViewController {
             guard let selectedIndexRow = self.selectedIndexRow else { return }
             let question = self.answersArray[selectedIndexRow]
             let userID = question.userID
-            guard let destinationVC = segue.destinationViewController as? UserProfileViewController else { return }
+            guard let destinationVC = segue.destination as? UserProfileViewController else { return }
             destinationVC.selectedUserID = userID
         }
     }
     
     func formatTextView() {
         self.sendAnswerTextView.layer.borderWidth = 1
-        self.sendAnswerTextView.layer.borderColor = UIColor.darkGrayColor().CGColor
+        self.sendAnswerTextView.layer.borderColor = UIColor.darkGray.cgColor
         self.sendAnswerTextView.clipsToBounds = true
         self.sendAnswerTextView.layer.cornerRadius = 6
         self.sendAnswerTextView.text = "Write a comment here!"
-        self.sendAnswerTextView.textColor = UIColor.lightGrayColor()
+        self.sendAnswerTextView.textColor = UIColor.lightGray
     }
     // MARK:
     // MARK: - Notification Registration Methods
     // MARK:
     func registerForNotifications() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateAnswersArray), name: Constants.NotifKeys.HomeAnswersRetrieved, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWasShown(_:)), name: UIKeyboardWillShowNotification, object:nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillBeHidden(_:)), name: UIKeyboardWillHideNotification, object:nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateAnswersArray), name: NSNotification.Name(rawValue: Constants.NotifKeys.HomeAnswersRetrieved), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWasShown(_:)), name: NSNotification.Name.UIKeyboardWillShow, object:nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillBeHidden(_:)), name: NSNotification.Name.UIKeyboardWillHide, object:nil)
     }
     //MARK:
     //MARK: - NSNotification Methods
     //MARK:
     var kbHeight: CGFloat!
     
-    func keyboardWasShown(notification: NSNotification) {
+    func keyboardWasShown(_ notification: Notification) {
         guard let info = notification.userInfo else { return }
-        guard let kbSize = info[UIKeyboardFrameBeginUserInfoKey]!.CGRectValue().size as? CGSize? else { return }
+        guard let kbSize = (info[UIKeyboardFrameBeginUserInfoKey]! as AnyObject).cgRectValue.size as? CGSize? else { return }
         let contentInsets = UIEdgeInsetsMake(0.0, 0.0, ((kbSize?.height)! + 8.0), 0.0)
         self.scrollView.contentInset = contentInsets
         self.scrollView.scrollIndicatorInsets = contentInsets
@@ -93,29 +93,29 @@ class AnswersViewController: UIViewController {
         var aRect = self.view.frame
         aRect.size.height -= (kbSize?.height)!
         
-        if (!CGRectContainsPoint(aRect, self.sendAnswerTextView.frame.origin)) {
+        if (!aRect.contains(self.sendAnswerTextView.frame.origin)) {
             self.scrollView.scrollRectToVisible(self.sendAnswerTextView.frame, animated: true)
         }
     }
     
-    func keyboardWillBeHidden(notification: NSNotification) {
-        let contentInsets = UIEdgeInsetsZero
+    func keyboardWillBeHidden(_ notification: Notification) {
+        let contentInsets = UIEdgeInsets.zero
         self.scrollView.contentInset = contentInsets
         self.scrollView.scrollIndicatorInsets = contentInsets
     }
     // MARK:
     // MARK: - Unregister Notifications & Obvservers
     // MARK:
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         guard let questionID = self.selectedQuestionIdDict?["questionID"] else { return }
         FirebaseMgr.shared.removeAnswerObservers(For: questionID)
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object:nil)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object:nil)
+        NotificationCenter.default.removeObserver(self)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object:nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object:nil)
     }
     
     func updateAnswersArray() {
@@ -125,35 +125,35 @@ class AnswersViewController: UIViewController {
     // MARK: - Notification Post Methods
     // MARK:
     func postNotifications() {
-        NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotifKeys.SendQuestionID, object: self, userInfo: self.selectedQuestionIdDict)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: Constants.NotifKeys.SendQuestionID), object: self, userInfo: self.selectedQuestionIdDict)
     }
     // MARK:
     // MARK: - Button Actions
     // MARK:
     
-    @IBAction func didTapSendAnswerButton(sender: UIButton) {
-        self.sendAnswerTextView.textColor = UIColor.lightGrayColor()
+    @IBAction func didTapSendAnswerButton(_ sender: UIButton) {
+        self.sendAnswerTextView.textColor = UIColor.lightGray
         let data = [Constants.AnswerFields.text: self.sendAnswerTextView.text! as String]
-        sendAnswer(data)
+        sendAnswer(data as [String : AnyObject])
         self.sendAnswerTextView.resignFirstResponder()
         self.sendAnswerTextView.text = "Thanks for the comment :)"
         self.tableView.allowsSelection = true
         self.view.removeGestureRecognizer(tapOutsideTextView)
     }
     
-    func sendAnswer(data: [String: AnyObject]) {
+    func sendAnswer(_ data: [String: AnyObject]) {
         var answerDataDict = data
         guard let
             currentUserID = FIRAuth.auth()?.currentUser?.uid,
-            questionID = self.selectedQuestionIdDict?["questionID"]
+            let questionID = self.selectedQuestionIdDict?["questionID"]
             else { return }
-        answerDataDict[Constants.AnswerFields.userID] = currentUserID
+        answerDataDict[Constants.AnswerFields.userID] = currentUserID as AnyObject?
         FirebaseMgr.shared.saveNewAnswer(answerDataDict, questionID: questionID, userID: currentUserID)
     }
     // MARK:
     // MARK: - Unwind Segues
     // MARK:
-    @IBAction func didTapBackProfilesToAnswers(segue:UIStoryboardSegue) {
+    @IBAction func didTapBackProfilesToAnswers(_ segue:UIStoryboardSegue) {
         //From UserProfiles to Answers
     }
 }
@@ -165,12 +165,12 @@ extension AnswersViewController: UITableViewDelegate, UITableViewDataSource {
     // MARK:
     // MARK: - UITableViewDataSource & UITableViewDelegate Methods
     // MARK:
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.answersArray.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = self.tableView.dequeueReusableCellWithIdentifier("AnswerCell", forIndexPath: indexPath) as! AnswerCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = self.tableView.dequeueReusableCell(withIdentifier: "AnswerCell", for: indexPath) as! AnswerCell
         cell.delegate = self
         cell.row = indexPath.row
         let answer: Answer = self.answersArray[indexPath.row]
@@ -182,30 +182,30 @@ extension AnswersViewController: UITableViewDelegate, UITableViewDataSource {
         })
         //
         FirebaseMgr.shared.retrieveUserPhotoDownloadURL(answer.userID, completion: { (photoDownloadURL, defaultImage) in
-            cell.profilePhotoImageButton.setImage(nil, forState: .Normal)
+            cell.profilePhotoImageButton.setImage(nil, for: UIControlState())
             if photoDownloadURL != nil {
-                let url = NSURL(string: photoDownloadURL!)
+                let url = URL(string: photoDownloadURL!)
                 cell.profilePhotoImageButton.kf_setImageWithURL(url, forState: .Normal, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"))
                 self.formatImage(cell)
             } else {
-                cell.profilePhotoImageButton.setImage(UIImage(named: "Profile_avatar_placeholder_large"), forState: .Normal)
+                cell.profilePhotoImageButton.setImage(UIImage(named: "Profile_avatar_placeholder_large"), for: UIControlState())
                 self.formatImage(cell)
             }
         })
         return cell
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.tableView.deselectRow(at: indexPath, animated: true)
     }
     // MARK:
     // MARK: - Image Formatting
     // MARK:
-    func formatImage(cell: AnswerCell) {
-        cell.profilePhotoImageButton.imageView?.contentMode = .ScaleAspectFill
+    func formatImage(_ cell: AnswerCell) {
+        cell.profilePhotoImageButton.imageView?.contentMode = .scaleAspectFill
         cell.profilePhotoImageButton.layer.borderWidth = 1
         cell.profilePhotoImageButton.layer.masksToBounds = false
-        cell.profilePhotoImageButton.layer.borderColor = UIColor.blackColor().CGColor
+        cell.profilePhotoImageButton.layer.borderColor = UIColor.black.cgColor
         cell.profilePhotoImageButton.layer.cornerRadius = cell.profilePhotoImageButton.bounds.width/2
         cell.profilePhotoImageButton.clipsToBounds = true
     }
@@ -217,11 +217,11 @@ extension AnswersViewController: AnswerCellDelegate {
     //MARK:
     //MARK: - AnswerCellDelegate Methods
     //MARK:
-    func handleProfileImageButtonTapOn(cell: AnswerCell) {
-        var selectedIndexPath: NSIndexPath!
-        selectedIndexPath = self.tableView.indexPathForCell(cell)
+    func handleProfileImageButtonTapOn(_ cell: AnswerCell) {
+        var selectedIndexPath: IndexPath!
+        selectedIndexPath = self.tableView.indexPath(for: cell)
         self.selectedIndexRow = selectedIndexPath.row
-        performSegueWithIdentifier(Constants.Segues.AnswersToUserProfiles, sender: self)
+        performSegue(withIdentifier: Constants.Segues.AnswersToUserProfiles, sender: self)
     }
 }
 
@@ -232,11 +232,11 @@ extension AnswersViewController: UITextViewDelegate {
     // MARK:
     // MARK: - UITextViewDelegate Methods
     // MARK:
-    func textViewDidBeginEditing(textView: UITextView) {
+    func textViewDidBeginEditing(_ textView: UITextView) {
         print("textViewDidBeginEditing")
         if self.sendAnswerTextView.text == "Write a comment here!" || self.sendAnswerTextView.text == "Thanks for the comment :)" {
             self.sendAnswerTextView.text = ""
-            self.sendAnswerTextView.textColor = UIColor.blackColor()
+            self.sendAnswerTextView.textColor = UIColor.black
         }
         self.tableView.allowsSelection = false
         self.tapOutsideTextView = UITapGestureRecognizer(target: self, action: #selector(self.didTapOutsideTextViewWhenEditing))
@@ -247,11 +247,11 @@ extension AnswersViewController: UITextViewDelegate {
         self.view.endEditing(true)
     }
     
-    func textViewDidEndEditing(textView: UITextView) {
+    func textViewDidEndEditing(_ textView: UITextView) {
         print("textViewDidEndEditing")
         if self.sendAnswerTextView.text.isEmpty {
             self.sendAnswerTextView.text = "Write a comment here!"
-            self.sendAnswerTextView.textColor = UIColor.lightGrayColor()
+            self.sendAnswerTextView.textColor = UIColor.lightGray
         }
         self.tableView.allowsSelection = true
         self.view.removeGestureRecognizer(tapOutsideTextView)

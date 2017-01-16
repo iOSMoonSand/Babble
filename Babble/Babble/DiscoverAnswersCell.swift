@@ -16,8 +16,8 @@ protocol DiscoverAnswersCellDelegate: class {
     //MARK:
     //MARK: - DiscoverAnswersCellDelegate Methods
     //MARK:
-    func handleProfileImageButtonTapOn(row: Int)
-    func handleLikeButtonTapOn(row: Int, cell: DiscoverAnswersCell)
+    func handleProfileImageButtonTapOn(_ row: Int)
+    func handleLikeButtonTapOn(_ row: Int, cell: DiscoverAnswersCell)
 }
 //MARK:
 //MARK: - AnswerCell Class
@@ -36,22 +36,22 @@ class DiscoverAnswersCell: UITableViewCell {
     //MARK:
     //MARK: - Instance Methods
     //MARK:
-    func updateViewsWith(answer: Answer) {
+    func updateViewsWith(_ answer: Answer) {
         let answerText = answer.text
         let defaultProfileImage = UIImage(named: "Profile_avatar_placeholder_large")
         self.answerTextView.text = answerText
-        self.profilePhotoImageButton.setImage(nil, forState: .Normal)
-        self.profilePhotoImageButton.setImage(defaultProfileImage, forState: .Normal)
+        self.profilePhotoImageButton.setImage(nil, for: UIControlState())
+        self.profilePhotoImageButton.setImage(defaultProfileImage, for: UIControlState())
     }
     //MARK:
     //MARK: - Button Actions
     //MARK:
-    @IBAction func profileImageButtonTapped(sender: UIButton) {
+    @IBAction func profileImageButtonTapped(_ sender: UIButton) {
         guard let row = self.row else { return }
         delegate?.handleProfileImageButtonTapOn(row)
     }
     
-    @IBAction func likeButtonTapped(sender: UIButton) {
+    @IBAction func likeButtonTapped(_ sender: UIButton) {
         guard let row = self.row else { return }
         delegate?.handleLikeButtonTapOn(row, cell: self)
     }

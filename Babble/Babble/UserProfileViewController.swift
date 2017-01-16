@@ -39,7 +39,7 @@ class UserProfileViewController: UIViewController {
         FirebaseMgr.shared.retrieveUserBio(userID, completion: { userBio in
             if userBio == nil {
                 self.userProfileTextView.text = "Apparently, this user prefers to keep an air of mystery about them."
-                self.userProfileTextView.textColor = UIColor.lightGrayColor()
+                self.userProfileTextView.textColor = UIColor.lightGray
             } else {
                 self.userProfileTextView.text = userBio
             }
@@ -47,7 +47,7 @@ class UserProfileViewController: UIViewController {
         
         FirebaseMgr.shared.retrieveUserPhotoDownloadURL(userID, completion: { photoDownloadURL, defaultImage in
             if photoDownloadURL != nil {
-                let url = NSURL(string: photoDownloadURL!)
+                let url = URL(string: photoDownloadURL!)
                 self.userProfileImageView.kf_setImageWithURL(url, placeholderImage: UIImage(named: "Profile_avatar_placeholder_large"), optionsInfo: nil, progressBlock: nil, completionHandler: nil)
                 self.formatImage()
             } else {
@@ -60,14 +60,14 @@ class UserProfileViewController: UIViewController {
     func formatImage() {
         self.userProfileImageView.layer.borderWidth = 1
         self.userProfileImageView.layer.masksToBounds = false
-        self.userProfileImageView.layer.borderColor = UIColor.blackColor().CGColor
+        self.userProfileImageView.layer.borderColor = UIColor.black.cgColor
         self.userProfileImageView.layer.cornerRadius = self.userProfileImageView.bounds.width / 2
         self.userProfileImageView.clipsToBounds = true
     }
     
     func formatBioTextView() {
         self.userProfileTextView.layer.borderWidth = 1
-        self.userProfileTextView.layer.borderColor = UIColor.darkGrayColor().CGColor
+        self.userProfileTextView.layer.borderColor = UIColor.darkGray.cgColor
         self.userProfileTextView.clipsToBounds = true
         self.userProfileTextView.layer.cornerRadius = 6
     }

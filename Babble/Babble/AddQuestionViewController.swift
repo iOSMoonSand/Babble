@@ -12,7 +12,7 @@ import UIKit
 //MARK: - AddQuestionViewControllerDelegate Class Protocol
 //MARK:
 protocol AddQuestionViewControllerDelegate: class {
-    func handlePostQuestionButtonTapFor(newQuestionText: String)
+    func handlePostQuestionButtonTapFor(_ newQuestionText: String)
 }
 //MARK:
 //MARK: - AddQuestionViewController Class
@@ -30,10 +30,10 @@ class AddQuestionViewController: UIViewController {
         super.viewDidLoad()
         self.textView.delegate = self
         self.textView.text = "Example: Swift 2.2 or Swift 3.0?"
-        self.textView.textColor = UIColor.lightGrayColor()
+        self.textView.textColor = UIColor.lightGray
     }
     
-    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
         if identifier == Constants.Segues.PostNewQuestionToHome {
             if self.textView.text == "" || self.textView.text == "Example: Swift 2.2 or Swift 3.0?" {
                 Utility.shared.errorAlert("Oops", message: "Please write something before tapping the Post button.", presentingViewController: self)
@@ -43,10 +43,10 @@ class AddQuestionViewController: UIViewController {
         return true
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == Constants.Segues.PostNewQuestionToHome {
             newQuestionText = self.textView.text
-            guard let destinationVC = segue.destinationViewController as? HomeScreenViewController else { return }
+            guard let destinationVC = segue.destination as? HomeScreenViewController else { return }
             destinationVC.newQuestion = newQuestionText
         }
     }
@@ -58,10 +58,10 @@ extension AddQuestionViewController: UITextViewDelegate {
     //MARK:
     //MARK: - UITextViewDelegate Methods
     //MARK:
-    func textViewDidBeginEditing(textView: UITextView) {
+    func textViewDidBeginEditing(_ textView: UITextView) {
         if self.textView.text == "Example: Swift 2.2 or Swift 3.0?" {
             self.textView.text = ""
-            self.textView.textColor = UIColor.blackColor()
+            self.textView.textColor = UIColor.black
         }
     }
 }

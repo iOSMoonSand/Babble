@@ -317,7 +317,7 @@
 					5E2E6F1B1D25A794003588DC = {
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = Q7DNMW64ZP;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0820;
 					};
 				};
 			};
@@ -561,7 +561,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.MoonSandApps.Babble;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -578,7 +578,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.MoonSandApps.Babble;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

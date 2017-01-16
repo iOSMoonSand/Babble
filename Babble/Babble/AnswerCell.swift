@@ -16,7 +16,7 @@ protocol AnswerCellDelegate: class {
     //MARK:
     //MARK: - AnswerCellDelegate Methods
     //MARK:
-    func handleProfileImageButtonTapOn(cell: AnswerCell)
+    func handleProfileImageButtonTapOn(_ cell: AnswerCell)
 }
 //MARK:
 //MARK: - AnswerCell Class
@@ -34,17 +34,17 @@ class AnswerCell: UITableViewCell {
     //MARK:
     //MARK: - Instance Methods
     //MARK:
-    func updateViewsWith(answer: Answer) {
+    func updateViewsWith(_ answer: Answer) {
         let answerText = answer.text
         let defaultProfileImage = UIImage(named: "Profile_avatar_placeholder_large")
         self.answerTextView.text = answerText
-        self.profilePhotoImageButton.setImage(nil, forState: .Normal)
-        self.profilePhotoImageButton.setImage(defaultProfileImage, forState: .Normal)
+        self.profilePhotoImageButton.setImage(nil, for: UIControlState())
+        self.profilePhotoImageButton.setImage(defaultProfileImage, for: UIControlState())
     }
     //MARK:
     //MARK: - Button Actions
     //MARK:
-    @IBAction func profileImageButtonTapped(sender: UIButton) {
+    @IBAction func profileImageButtonTapped(_ sender: UIButton) {
         delegate?.handleProfileImageButtonTapOn(self)
     }
 }
