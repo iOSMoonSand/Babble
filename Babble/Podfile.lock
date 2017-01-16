@@ -95,6 +95,7 @@ PODS:
   - GTMSessionFetcher/Core (1.1.8)
   - GTMSessionFetcher/Full (1.1.8):
     - GTMSessionFetcher/Core (= 1.1.8)
+  - Kingfisher (3.2.4)
   - SDWebImage (3.8.2):
     - SDWebImage/Core (= 3.8.2)
   - SDWebImage/Core (3.8.2)
@@ -110,6 +111,7 @@ DEPENDENCIES:
   - Firebase/Storage
   - FirebaseAuth
   - FirebaseUI (~> 0.4)
+  - Kingfisher (~> 3.0)
 
 SPEC CHECKSUMS:
   Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
@@ -131,10 +133,11 @@ SPEC CHECKSUMS:
   GoogleToolboxForMac: 8e329f1b599f2512c6b10676d45736bcc2cbbeb0
   GTMOAuth2: 7fc9c10f5c745f4d9850419ea88889fe3baa6b7d
   GTMSessionFetcher: 6f8d8b28b7e345549ac471071608170b31cb4977
+  Kingfisher: 8d80f39da403cd9c9ee11984e1655f4d6a566cdb
   SDWebImage: 098e97e6176540799c27e804c96653ee0833d13c
   TwitterCore: fbdbeaf6d2d20cf7c7aa4136fe5173c1c85df2e2
   TwitterKit: 97e729ceea041d174126235bf6ff67dcf37772d4
 
-PODFILE CHECKSUM: 16f39de55c01b1ecb05bd874aaee3172ac1994f8
+PODFILE CHECKSUM: 2449b2cea69d6517f846b802ff0e7e082b5c7d4b
 
 COCOAPODS: 1.0.0
