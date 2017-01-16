@@ -144,6 +144,7 @@
 		5E2E6F1E1D25A794003588DC /* Babble */ = {
 			isa = PBXGroup;
 			children = (
+				5E2E6F1F1D25A794003588DC /* AppDelegate.swift */,
 				5EA4B52E1DA484EE007316AB /* Models */,
 				5EA4B52F1DA4850E007316AB /* Views */,
 				5EA4B5301DA48544007316AB /* Controllers */,
@@ -227,7 +228,6 @@
 		5EA4B5301DA48544007316AB /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				5E2E6F1F1D25A794003588DC /* AppDelegate.swift */,
 				5EB27AA21DAC0782002F6FCE /* Shared */,
 				5E3E77021D284421006E5EA4 /* View Controllers */,
 			);

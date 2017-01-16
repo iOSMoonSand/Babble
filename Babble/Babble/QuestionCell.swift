@@ -29,7 +29,7 @@ class QuestionCell: UITableViewCell {
     //MARK:
     @IBOutlet weak var profilePhotoImageButton: UIButton!
     @IBOutlet weak var displayNameLabel: UILabel!
-    @IBOutlet weak var questionTextView: UITextView!
+    @IBOutlet weak var questionTextLabel: UILabel!
     @IBOutlet weak var likeButtonCountLabel: UILabel!
     @IBOutlet weak var likeButton: UIButton!
     weak var delegate: QuestionCellDelegate?
@@ -41,7 +41,7 @@ class QuestionCell: UITableViewCell {
         let questionText = question.text
         let likeCount = question.likeCount
         let defaultProfileImage = UIImage(named: "Profile_avatar_placeholder_large")
-        self.questionTextView.text = questionText
+        self.questionTextLabel.text = questionText
         self.profilePhotoImageButton.setImage(nil, for: UIControlState())
         self.profilePhotoImageButton.setImage(defaultProfileImage, for: UIControlState())
         self.likeButtonCountLabel.text = String(likeCount)
