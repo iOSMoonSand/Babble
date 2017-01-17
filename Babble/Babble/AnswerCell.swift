@@ -27,7 +27,7 @@ class AnswerCell: UITableViewCell {
     //MARK:
     @IBOutlet weak var profilePhotoImageButton: UIButton!
     @IBOutlet weak var displayNameLabel: UILabel!
-    @IBOutlet weak var answerTextView: UITextView!
+    @IBOutlet weak var answerTextLabel: UILabel!
     weak var delegate: AnswerCellDelegate?
     var answer = [String: AnyObject]()
     var row: Int?
@@ -37,7 +37,7 @@ class AnswerCell: UITableViewCell {
     func updateViewsWith(_ answer: Answer) {
         let answerText = answer.text
         let defaultProfileImage = UIImage(named: "Profile_avatar_placeholder_large")
-        self.answerTextView.text = answerText
+        self.answerTextLabel.text = answerText
         self.profilePhotoImageButton.setImage(nil, for: UIControlState())
         self.profilePhotoImageButton.setImage(defaultProfileImage, for: UIControlState())
     }
