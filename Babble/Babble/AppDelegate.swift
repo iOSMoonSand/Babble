@@ -22,15 +22,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
+        UIApplication.shared.statusBarStyle = .lightContent
+        
         let navigationBarAppearance = UINavigationBar.appearance()
         navigationBarAppearance.barTintColor = UIColor(red:0.11, green:0.57, blue:0.63, alpha:1.0)
         navigationBarAppearance.tintColor = .white
         navigationBarAppearance.isTranslucent = false
         navigationBarAppearance.titleTextAttributes = [
             NSForegroundColorAttributeName: UIColor.white,
-            NSFontAttributeName: UIFont(name: "HelveticaNeue-Light", size: 20)!
+            NSFontAttributeName: UIFont(name: "HelveticaNeue", size: 22)!
         ]
-        
         return true
     }
 
