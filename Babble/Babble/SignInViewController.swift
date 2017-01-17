@@ -28,6 +28,8 @@ class SignInViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         FirebaseMgr.shared.registerForNotifications()
+        self.emailField.layer.borderColor = UIColor(red:0.27, green:0.69, blue:0.73, alpha:1.0).cgColor
+        self.passwordField.layer.borderColor = UIColor(red:0.27, green:0.69, blue:0.73, alpha:1.0).cgColor
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -72,6 +74,7 @@ class SignInViewController: UIViewController {
         let password = passwordField.text
         FIRAuth.auth()?.signIn(withEmail: email!, password: password!) { (user, error) in
             if let error = error {
+                Utility.shared.errorAlert("Oops", message: error.localizedDescription, presentingViewController: self)
                 print(error.localizedDescription)
                 return
             }
@@ -87,6 +90,7 @@ class SignInViewController: UIViewController {
         let password = passwordField.text
         FIRAuth.auth()?.createUser(withEmail: email!, password: password!) { (user, error) in
             if let error = error {
+                Utility.shared.errorAlert("Oops", message: error.localizedDescription, presentingViewController: self)
                 print(error.localizedDescription)
                 return
             }
@@ -137,9 +141,11 @@ class SignInViewController: UIViewController {
             }
             FIRAuth.auth()?.sendPasswordReset(withEmail: userInput!) { (error) in
                 if let error = error {
+                    Utility.shared.errorAlert("Oops", message: error.localizedDescription, presentingViewController: self)
                     print(error.localizedDescription)
                     return
                 }
+                Utility.shared.errorAlert("Nice!", message: "An email was sent to \(userInput!) to reset your password.", presentingViewController: self)
             }
         }
         prompt.addTextField(configurationHandler: nil)

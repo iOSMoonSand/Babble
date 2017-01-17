@@ -43,7 +43,6 @@ class MyProfileViewController: UIViewController {
     
     func setDisplayNameLabel() {
         self.displayNameLabel.text = AppState.sharedInstance.displayName
-        self.displayNameLabel.font = UIFont.boldSystemFont(ofSize: 22.0)
     }
     
     func setImageView() {
@@ -78,10 +77,6 @@ class MyProfileViewController: UIViewController {
     }
     
     func formatBioTextView() {
-        self.userBioTextView.layer.borderWidth = 1
-        self.userBioTextView.layer.borderColor = UIColor.darkGray.cgColor
-        self.userBioTextView.clipsToBounds = true
-        self.userBioTextView.layer.cornerRadius = 6
         self.userBioTextView.text = "Write your bio here!"
         self.userBioTextView.textColor = UIColor.lightGray
     }

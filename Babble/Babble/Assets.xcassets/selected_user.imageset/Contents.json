@@ -2,11 +2,12 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "Gender Neutral User-32.png",
+      "filename" : "selected_user.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
+      "filename" : "selected_user@2x.png",
       "scale" : "2x"
     },
     {

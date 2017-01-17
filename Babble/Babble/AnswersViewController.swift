@@ -40,6 +40,8 @@ class AnswersViewController: UIViewController {
         super.viewDidLoad()
         self.tableView.delegate = self
         self.tableView.dataSource = self
+        self.tableView.rowHeight = UITableViewAutomaticDimension
+        self.tableView.estimatedRowHeight = 125
         self.sendAnswerTextView.delegate = self
         self.registerForNotifications()
         self.postNotifications()
@@ -64,7 +66,7 @@ class AnswersViewController: UIViewController {
     
     func formatTextView() {
         self.sendAnswerTextView.layer.borderWidth = 1
-        self.sendAnswerTextView.layer.borderColor = UIColor.darkGray.cgColor
+        self.sendAnswerTextView.layer.borderColor = UIColor.lightGray.cgColor
         self.sendAnswerTextView.clipsToBounds = true
         self.sendAnswerTextView.layer.cornerRadius = 6
         self.sendAnswerTextView.text = "Write a comment here!"
@@ -168,7 +170,6 @@ extension AnswersViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.answersArray.count
     }
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = self.tableView.dequeueReusableCell(withIdentifier: "AnswerCell", for: indexPath) as! AnswerCell
         cell.delegate = self
@@ -186,6 +187,7 @@ extension AnswersViewController: UITableViewDelegate, UITableViewDataSource {
             if photoDownloadURL != nil {
                 let url = URL(string: photoDownloadURL!)
                 cell.profilePhotoImageButton.kf.setImage(with: url, for: .normal, placeholder: UIImage(named: "Profile_avatar_placeholder_large"), options: nil, progressBlock: nil, completionHandler: nil)
+                self.formatImage(cell)
             } else {
                 cell.profilePhotoImageButton.setImage(UIImage(named: "Profile_avatar_placeholder_large"), for: UIControlState())
                 self.formatImage(cell)

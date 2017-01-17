@@ -2,11 +2,12 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "Roofing-64.png",
+      "filename" : "selected_roofing.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
+      "filename" : "selected_roofing@2x.png",
       "scale" : "2x"
     },
     {

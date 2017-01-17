@@ -35,10 +35,8 @@
     //MARK: -
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.tableView.delegate = self
-        self.tableView.dataSource = self
         self.registerForNotifications()
-        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "tableViewQuestionCell")
+//        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "tableViewQuestionCell")
         FirebaseMgr.shared.retrieveHomeQuestions()
     }
     
@@ -132,29 +130,29 @@
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = self.tableView.dequeueReusableCell(withIdentifier: "QuestionCell", for: indexPath) as! QuestionCell
-        cell.delegate = self
-        //cell.row = indexPath.row
-        let question: Question = self.questionsArray[indexPath.row]
-        //
-        cell.updateViewsWith(question)
-        //
-        FirebaseMgr.shared.retrieveUserDisplayName(question.userID, completion: { (displayName) in
-            cell.displayNameLabel.text = displayName
-        })
-        //
-        FirebaseMgr.shared.retrieveUserPhotoDownloadURL(question.userID, completion: { (photoDownloadURL, defaultImage) in
-            cell.profilePhotoImageButton.setImage(nil, for: UIControlState())
-            if photoDownloadURL != nil {
-                let url = URL(string: photoDownloadURL!)
-                cell.profilePhotoImageButton.kf.setImage(with: url, for: .normal, placeholder: UIImage(named: "Profile_avatar_placeholder_large"), options: nil, progressBlock: nil, completionHandler: nil)
-                self.formatImage(cell)
-            } else {
-                cell.profilePhotoImageButton.setImage(UIImage(named: "Profile_avatar_placeholder_large"), for: UIControlState())
-                self.formatImage(cell)
-            }
-        })
-        return cell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "QuestionCell", for: indexPath) as! QuestionCell
+            cell.delegate = self
+            //cell.row = indexPath.row
+            let question: Question = self.questionsArray[indexPath.row]
+            //
+            cell.updateViewsWith(question)
+            //
+            FirebaseMgr.shared.retrieveUserDisplayName(question.userID, completion: { (displayName) in
+                cell.displayNameLabel.text = displayName
+            })
+            //
+            FirebaseMgr.shared.retrieveUserPhotoDownloadURL(question.userID, completion: { (photoDownloadURL, defaultImage) in
+                cell.profilePhotoImageButton.setImage(nil, for: UIControlState())
+                if photoDownloadURL != nil {
+                    let url = URL(string: photoDownloadURL!)
+                    cell.profilePhotoImageButton.kf.setImage(with: url, for: .normal, placeholder: UIImage(named: "Profile_avatar_placeholder_large"), options: nil, progressBlock: nil, completionHandler: nil)
+                    self.formatImage(cell)
+                } else {
+                    cell.profilePhotoImageButton.setImage(UIImage(named: "Profile_avatar_placeholder_large"), for: UIControlState())
+                    self.formatImage(cell)
+                }
+            })
+            return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

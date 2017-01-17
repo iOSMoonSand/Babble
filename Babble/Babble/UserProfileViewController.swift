@@ -26,7 +26,6 @@ class UserProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.retrieveUserProfileData()
-        self.formatBioTextView()
     }
     
     func retrieveUserProfileData() {
@@ -63,13 +62,6 @@ class UserProfileViewController: UIViewController {
         self.userProfileImageView.layer.borderColor = UIColor.black.cgColor
         self.userProfileImageView.layer.cornerRadius = self.userProfileImageView.bounds.width / 2
         self.userProfileImageView.clipsToBounds = true
-    }
-    
-    func formatBioTextView() {
-        self.userProfileTextView.layer.borderWidth = 1
-        self.userProfileTextView.layer.borderColor = UIColor.darkGray.cgColor
-        self.userProfileTextView.clipsToBounds = true
-        self.userProfileTextView.layer.cornerRadius = 6
     }
 }
 

@@ -32,6 +32,7 @@
 		5EAC6AB21D9AEEC200A4432F /* DiscoverQuestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AB11D9AEEC200A4432F /* DiscoverQuestionCell.swift */; };
 		5EAC6AB41D9AF8A600A4432F /* DiscoverToProfilesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AB31D9AF8A600A4432F /* DiscoverToProfilesViewController.swift */; };
 		5EAC6AB81D9AFEC700A4432F /* DiscoverAnswersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6AB71D9AFEC700A4432F /* DiscoverAnswersCell.swift */; };
+		5EADAE9D1E2D60250018B049 /* BBLTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EADAE9C1E2D60250018B049 /* BBLTabBarController.swift */; };
 		5EB27A9F1DAADA1B002F6FCE /* DiscoverAnswersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB27A9E1DAADA1B002F6FCE /* DiscoverAnswersViewController.swift */; };
 		5EB27AA11DAB199A002F6FCE /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB27AA01DAB199A002F6FCE /* UserProfileViewController.swift */; };
 		5EB27AA61DAEE171002F6FCE /* MyProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB27AA51DAEE171002F6FCE /* MyProfileViewController.swift */; };
@@ -72,6 +73,7 @@
 		5EAC6AB11D9AEEC200A4432F /* DiscoverQuestionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverQuestionCell.swift; sourceTree = "<group>"; };
 		5EAC6AB31D9AF8A600A4432F /* DiscoverToProfilesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverToProfilesViewController.swift; sourceTree = "<group>"; };
 		5EAC6AB71D9AFEC700A4432F /* DiscoverAnswersCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverAnswersCell.swift; sourceTree = "<group>"; };
+		5EADAE9C1E2D60250018B049 /* BBLTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBLTabBarController.swift; sourceTree = "<group>"; };
 		5EB27A9E1DAADA1B002F6FCE /* DiscoverAnswersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverAnswersViewController.swift; sourceTree = "<group>"; };
 		5EB27AA01DAB199A002F6FCE /* UserProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
 		5EB27AA51DAEE171002F6FCE /* MyProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyProfileViewController.swift; sourceTree = "<group>"; };
@@ -144,6 +146,8 @@
 		5E2E6F1E1D25A794003588DC /* Babble */ = {
 			isa = PBXGroup;
 			children = (
+				5E2E6F1F1D25A794003588DC /* AppDelegate.swift */,
+				5EADAE9C1E2D60250018B049 /* BBLTabBarController.swift */,
 				5EA4B52E1DA484EE007316AB /* Models */,
 				5EA4B52F1DA4850E007316AB /* Views */,
 				5EA4B5301DA48544007316AB /* Controllers */,
@@ -227,7 +231,6 @@
 		5EA4B5301DA48544007316AB /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				5E2E6F1F1D25A794003588DC /* AppDelegate.swift */,
 				5EB27AA21DAC0782002F6FCE /* Shared */,
 				5E3E77021D284421006E5EA4 /* View Controllers */,
 			);
@@ -422,6 +425,7 @@
 				5EB27AA61DAEE171002F6FCE /* MyProfileViewController.swift in Sources */,
 				5E3CFE361D88EC93005D0109 /* MeVCTextViewCell.swift in Sources */,
 				5E2E6F201D25A794003588DC /* AppDelegate.swift in Sources */,
+				5EADAE9D1E2D60250018B049 /* BBLTabBarController.swift in Sources */,
 				5EAC6AB01D9AEAFA00A4432F /* DiscoverViewController.swift in Sources */,
 				5EBD4DE41D7F525E004DA8DD /* HomeToProfilesViewController.swift in Sources */,
 				5EBD4DE61D7F52A8004DA8DD /* AnswersToProfilesViewController.swift in Sources */,
