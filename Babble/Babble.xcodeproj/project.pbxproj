@@ -319,7 +319,7 @@
 				TargetAttributes = {
 					5E2E6F1B1D25A794003588DC = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = Q7DNMW64ZP;
+						DevelopmentTeam = T32WTHET6X;
 						LastSwiftMigration = 0820;
 					};
 				};
@@ -560,9 +560,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = T32WTHET6X;
 				INFOPLIST_FILE = Babble/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.MoonSandApps.Babble;
+				PRODUCT_BUNDLE_IDENTIFIER = com.iosmoonsand.Babble;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_VERSION = 3.0;
@@ -578,9 +579,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = T32WTHET6X;
 				INFOPLIST_FILE = Babble/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.MoonSandApps.Babble;
+				PRODUCT_BUNDLE_IDENTIFIER = com.iosmoonsand.Babble;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_VERSION = 3.0;
