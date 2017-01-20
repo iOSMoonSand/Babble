@@ -36,9 +36,9 @@ class SignInViewController: UIViewController {
         super.viewDidAppear(true)
         self.emailField.delegate = self
         self.passwordField.delegate = self
-        if let user = FIRAuth.auth()?.currentUser {
-            self.signedIn(user)
-        }
+//        if let user = FIRAuth.auth()?.currentUser {
+//            self.signedIn(user)
+//        }
     }
     // MARK:
     // MARK: - Firebase Authentication Configuration
