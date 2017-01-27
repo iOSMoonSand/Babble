@@ -66,7 +66,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sign In" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BCD-Qo-xjv">
-                                <rect key="frame" x="151" y="40" width="68.5" height="26.5"/>
+                                <rect key="frame" x="150" y="40" width="69" height="27"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="22"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -213,12 +213,24 @@
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
+                                                        <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iMY-8X-1re">
+                                                            <rect key="frame" x="320" y="130" width="15" height="15"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="width" constant="15" id="6y0-fH-6np"/>
+                                                                <constraint firstAttribute="height" constant="15" id="anO-ek-x9l"/>
+                                                            </constraints>
+                                                            <state key="normal" image="Empty Flag-50"/>
+                                                            <connections>
+                                                                <action selector="flagButtonTouchUpInside:" destination="1cG-af-NgH" eventType="touchUpInside" id="389-M0-cwJ"/>
+                                                            </connections>
+                                                        </button>
                                                     </subviews>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <constraints>
                                                         <constraint firstItem="taV-8M-Y9O" firstAttribute="leading" secondItem="xp9-3p-Dzq" secondAttribute="leading" constant="8" id="0dO-5I-Ic5"/>
                                                         <constraint firstAttribute="bottom" secondItem="HUN-iw-83B" secondAttribute="bottom" constant="8" id="0eD-Zp-DSo"/>
                                                         <constraint firstItem="x6Y-cw-cXq" firstAttribute="top" secondItem="0Ub-CQ-ga3" secondAttribute="bottom" constant="8" id="67U-z2-Vca"/>
+                                                        <constraint firstAttribute="trailing" secondItem="iMY-8X-1re" secondAttribute="trailing" constant="8" id="8vh-cM-kEE"/>
                                                         <constraint firstItem="HUN-iw-83B" firstAttribute="leading" secondItem="k5k-4a-3wV" secondAttribute="trailing" constant="8" id="AvE-hi-Atg"/>
                                                         <constraint firstAttribute="bottom" secondItem="k5k-4a-3wV" secondAttribute="bottom" constant="8" id="ERG-ex-akn"/>
                                                         <constraint firstItem="k5k-4a-3wV" firstAttribute="top" secondItem="x6Y-cw-cXq" secondAttribute="bottom" constant="8" id="G7c-jt-CYB"/>
@@ -230,6 +242,7 @@
                                                         <constraint firstItem="0Ub-CQ-ga3" firstAttribute="leading" secondItem="xp9-3p-Dzq" secondAttribute="leading" constant="8" id="SSZ-D5-C1Z"/>
                                                         <constraint firstItem="0be-gN-BXI" firstAttribute="leading" secondItem="taV-8M-Y9O" secondAttribute="trailing" constant="8" id="Zfo-wR-Ewv"/>
                                                         <constraint firstItem="0be-gN-BXI" firstAttribute="centerY" secondItem="taV-8M-Y9O" secondAttribute="centerY" id="cdy-Lu-QSV"/>
+                                                        <constraint firstAttribute="bottom" secondItem="iMY-8X-1re" secondAttribute="bottom" constant="8" id="dZW-Hi-KGI"/>
                                                         <constraint firstAttribute="trailing" secondItem="0Ub-CQ-ga3" secondAttribute="trailing" constant="8" id="dbm-z2-htu"/>
                                                         <constraint firstItem="au0-vz-adT" firstAttribute="top" secondItem="taV-8M-Y9O" secondAttribute="bottom" constant="8" id="ffF-IL-cjY"/>
                                                         <constraint firstItem="x6Y-cw-cXq" firstAttribute="leading" secondItem="xp9-3p-Dzq" secondAttribute="leading" id="kS0-0H-a6S"/>
@@ -254,6 +267,7 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="displayNameLabel" destination="0be-gN-BXI" id="JAy-aq-Lqb"/>
+                                            <outlet property="flagButton" destination="iMY-8X-1re" id="e4C-TZ-prR"/>
                                             <outlet property="likeButton" destination="k5k-4a-3wV" id="z62-hK-riF"/>
                                             <outlet property="likeButtonCountLabel" destination="HUN-iw-83B" id="8xr-ay-muM"/>
                                             <outlet property="profilePhotoImageButton" destination="taV-8M-Y9O" id="fWX-6U-AQn"/>
@@ -387,7 +401,7 @@
                                                                     </connections>
                                                                 </button>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QqX-N0-XjM">
-                                                                    <rect key="frame" x="62" y="21" width="305" height="20"/>
+                                                                    <rect key="frame" x="62" y="21" width="282" height="20"/>
                                                                     <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
                                                                     <nil key="textColor"/>
                                                                     <nil key="highlightedColor"/>
@@ -398,17 +412,30 @@
                                                                     <nil key="textColor"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
+                                                                <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yhz-XG-yGu">
+                                                                    <rect key="frame" x="352" y="24" width="15" height="15"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="height" constant="15" id="2xn-IM-Cm4"/>
+                                                                        <constraint firstAttribute="width" constant="15" id="Ewi-E0-Ha8"/>
+                                                                    </constraints>
+                                                                    <state key="normal" image="Empty Flag-50"/>
+                                                                    <connections>
+                                                                        <action selector="answersFlagButtonTouchUpInside:" destination="TyS-hs-K3x" eventType="touchUpInside" id="peo-A9-x1R"/>
+                                                                    </connections>
+                                                                </button>
                                                             </subviews>
                                                             <constraints>
                                                                 <constraint firstItem="QqX-N0-XjM" firstAttribute="top" secondItem="lHA-jM-rrB" secondAttribute="topMargin" constant="13" id="1pu-fc-b4V"/>
+                                                                <constraint firstItem="yhz-XG-yGu" firstAttribute="leading" secondItem="QqX-N0-XjM" secondAttribute="trailing" constant="8" id="2T8-ga-g0w"/>
                                                                 <constraint firstItem="I5j-8V-uDP" firstAttribute="top" secondItem="lHA-jM-rrB" secondAttribute="topMargin" id="582-2k-xxX"/>
                                                                 <constraint firstAttribute="trailing" secondItem="Ifh-Ed-4FP" secondAttribute="trailing" constant="15" id="FF3-hW-pjW"/>
                                                                 <constraint firstItem="Ifh-Ed-4FP" firstAttribute="leading" secondItem="lHA-jM-rrB" secondAttribute="leading" constant="15" id="I58-dj-Fzf"/>
+                                                                <constraint firstItem="yhz-XG-yGu" firstAttribute="centerY" secondItem="QqX-N0-XjM" secondAttribute="centerY" id="XEQ-Q6-Qbw"/>
                                                                 <constraint firstItem="Ifh-Ed-4FP" firstAttribute="top" secondItem="I5j-8V-uDP" secondAttribute="bottom" constant="16" id="dlv-35-mho"/>
                                                                 <constraint firstItem="QqX-N0-XjM" firstAttribute="leading" secondItem="I5j-8V-uDP" secondAttribute="trailing" constant="8" id="e6E-wn-aGE"/>
-                                                                <constraint firstItem="QqX-N0-XjM" firstAttribute="trailing" secondItem="lHA-jM-rrB" secondAttribute="trailingMargin" id="fED-cM-UPB"/>
                                                                 <constraint firstAttribute="bottomMargin" secondItem="Ifh-Ed-4FP" secondAttribute="bottom" constant="8" id="k6d-ir-wFb"/>
                                                                 <constraint firstItem="QqX-N0-XjM" firstAttribute="centerY" secondItem="I5j-8V-uDP" secondAttribute="centerY" id="pmT-Q5-hUH"/>
+                                                                <constraint firstItem="yhz-XG-yGu" firstAttribute="trailing" secondItem="lHA-jM-rrB" secondAttribute="trailingMargin" id="yJM-ri-Bvs"/>
                                                                 <constraint firstItem="I5j-8V-uDP" firstAttribute="leading" secondItem="lHA-jM-rrB" secondAttribute="leadingMargin" id="yu9-LX-6pI"/>
                                                             </constraints>
                                                         </tableViewCellContentView>
@@ -482,7 +509,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="496-jz-myh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1175.5" y="2191.5"/>
+            <point key="canvasLocation" x="-1176.8" y="2190.8545727136434"/>
         </scene>
         <!--Home Screen Nav Controller-->
         <scene sceneID="8Pp-gF-lBE">
@@ -775,6 +802,7 @@
     </scenes>
     <resources>
         <image name="Create_New" width="33" height="33"/>
+        <image name="Empty Flag-50" width="50" height="50"/>
         <image name="Roofing-32" width="32" height="32"/>
         <image name="User-32" width="32" height="32"/>
     </resources>

@@ -38,9 +38,9 @@ class SignInViewController: UIViewController {
         self.makeUserAcceptTerms()
         self.emailField.delegate = self
         self.passwordField.delegate = self
-//        if let user = FIRAuth.auth()?.currentUser {
-//            self.signedIn(user)
-//        }
+        if let user = FIRAuth.auth()?.currentUser {
+            self.signedIn(user)
+        }
     }
     //MARK: - EULA and user-generated content agreement
     func setUserDefaults() {

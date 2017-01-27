@@ -19,6 +19,7 @@ protocol QuestionCellDelegate: class {
     //MARK:
     func handleProfileImageButtonTapOn(_ cell: QuestionCell)
     func handleLikeButtonTapOn(_ cell: QuestionCell)
+    func handleFlagButtonTapFor(cell: QuestionCell, questionID: String)
 }
 //MARK:
 //MARK: - QuestionCell Class
@@ -32,12 +33,15 @@ class QuestionCell: UITableViewCell {
     @IBOutlet weak var questionTextLabel: UILabel!
     @IBOutlet weak var likeButtonCountLabel: UILabel!
     @IBOutlet weak var likeButton: UIButton!
+    @IBOutlet weak var flagButton: UIButton!
+    var currentQuestion: Question?
     weak var delegate: QuestionCellDelegate?
     var row: Int?
     //MARK:
     //MARK: - Instance Methods
     //MARK:
     func updateViewsWith(_ question: Question) {
+        self.currentQuestion = question
         let questionText = question.text
         let likeCount = question.likeCount
         let defaultProfileImage = UIImage(named: "Profile_avatar_placeholder_large")
@@ -68,6 +72,11 @@ class QuestionCell: UITableViewCell {
     @IBAction func didTapLikeButton(_ sender: UIButton) {
         delegate?.handleLikeButtonTapOn(self)
     }
+    @IBAction func flagButtonTouchUpInside(_ sender: UIButton) {
+        guard let questionID = self.currentQuestion?.questionID else { return }
+        self.delegate?.handleFlagButtonTapFor(cell: self, questionID: questionID)
+    }
+    
 }
 
 
