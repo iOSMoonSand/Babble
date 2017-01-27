@@ -11,19 +11,17 @@ import Firebase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    
+
+    var window: UIWindow?
+    var userDidAcceptTerms: Bool = false
+
     override init() {
         super.init()
         FIRApp.configure()
     }
 
-    var window: UIWindow?
-
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        
         UIApplication.shared.statusBarStyle = .lightContent
-        
         let navigationBarAppearance = UINavigationBar.appearance()
         navigationBarAppearance.barTintColor = UIColor(red:0.11, green:0.57, blue:0.63, alpha:1.0)
         navigationBarAppearance.tintColor = .white

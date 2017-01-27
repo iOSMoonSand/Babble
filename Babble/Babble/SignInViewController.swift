@@ -27,6 +27,7 @@ class SignInViewController: UIViewController {
     //MARK:
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.setUserDefaults()
         FirebaseMgr.shared.registerForNotifications()
         self.emailField.layer.borderColor = UIColor(red:0.27, green:0.69, blue:0.73, alpha:1.0).cgColor
         self.passwordField.layer.borderColor = UIColor(red:0.27, green:0.69, blue:0.73, alpha:1.0).cgColor
@@ -34,12 +35,41 @@ class SignInViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
+        self.makeUserAcceptTerms()
         self.emailField.delegate = self
         self.passwordField.delegate = self
 //        if let user = FIRAuth.auth()?.currentUser {
 //            self.signedIn(user)
 //        }
     }
+    //MARK: - EULA and user-generated content agreement
+    func setUserDefaults() {
+        UserDefaults.standard.bool(forKey: "launchedBefore")
+    }
+    func makeUserAcceptTerms() {
+        if UserDefaults.standard.bool(forKey: "launchedBefore")  {
+            print("Not first launch.")
+        } else {
+            print("First launch, setting UserDefault.")
+            let termsAlert = UIAlertController.init(title: "User-generated Content Agreement", message: Constants.TermsAndConditions.terms, preferredStyle: .alert)
+            let yesAction = UIAlertAction.init(title: "I agree!", style: .default) { (action) in
+                UserDefaults.standard.set(true, forKey: "launchedBefore")
+                return
+            }
+            let noAction = UIAlertAction.init(title: "I disagree.", style: .default) { (action) in
+                let alert2 = UIAlertController(title: "Oops", message: "You must agree to the Terms & Conditions to use this app.", preferredStyle: .alert)
+                alert2.addAction(UIAlertAction(title: "OK", style: .cancel, handler: { _ in
+                    self.present(termsAlert, animated: true, completion: nil)
+                }))
+                self.present(alert2, animated: true, completion: nil)
+            }
+            termsAlert.addAction(yesAction)
+            termsAlert.addAction(noAction)
+            self.present(termsAlert, animated: true, completion: nil)
+        }
+    }
+    
+
     // MARK:
     // MARK: - Firebase Authentication Configuration
     // MARK:
