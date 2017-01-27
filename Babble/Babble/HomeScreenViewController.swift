@@ -204,6 +204,27 @@
             self.tableView.reloadRows(at: [indexPath], with: .fade)
         })
     }
+    
+    func handleFlagButtonTapFor(cell: QuestionCell, questionID: String) {
+        let flagAlert = UIAlertController.init(title: "Flagged Content", message: "Are you sure you want to report this content?", preferredStyle: .alert)
+        let yesAction = UIAlertAction.init(title: "Yes, it's offensive", style: .default) { (action) in
+            FIRAnalytics.logEvent(withName: "conent_flagged", parameters: [
+                kFIRParameterItemID: questionID as NSObject
+                //add user who flagged?
+                ])
+            let alert2 = UIAlertController(title: "Thanks", message: "We'll address the issue immediately.", preferredStyle: .alert)
+            alert2.addAction(UIAlertAction(title: "OK", style: .cancel, handler: { _ in
+                return
+            }))
+            self.present(alert2, animated: true, completion: nil)
+        }
+        let noAction = UIAlertAction.init(title: "No", style: .default) { (action) in
+            return
+        }
+        flagAlert.addAction(yesAction)
+        flagAlert.addAction(noAction)
+        self.present(flagAlert, animated: true, completion: nil)
+    }
  }
  
  

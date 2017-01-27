@@ -17,6 +17,7 @@ protocol AnswerCellDelegate: class {
     //MARK: - AnswerCellDelegate Methods
     //MARK:
     func handleProfileImageButtonTapOn(_ cell: AnswerCell)
+    func handleFlagButtonTapFor(cell: AnswerCell, answerID: String)
 }
 //MARK:
 //MARK: - AnswerCell Class
@@ -29,12 +30,14 @@ class AnswerCell: UITableViewCell {
     @IBOutlet weak var displayNameLabel: UILabel!
     @IBOutlet weak var answerTextLabel: UILabel!
     weak var delegate: AnswerCellDelegate?
+    var currentAnswer: Answer?
     var answer = [String: AnyObject]()
     var row: Int?
     //MARK:
     //MARK: - Instance Methods
     //MARK:
     func updateViewsWith(_ answer: Answer) {
+        self.currentAnswer = answer
         let answerText = answer.text
         let defaultProfileImage = UIImage(named: "Profile_avatar_placeholder_large")
         self.answerTextLabel.text = answerText
@@ -47,6 +50,12 @@ class AnswerCell: UITableViewCell {
     @IBAction func profileImageButtonTapped(_ sender: UIButton) {
         delegate?.handleProfileImageButtonTapOn(self)
     }
+    
+    @IBAction func answersFlagButtonTouchUpInside(_ sender: UIButton) {
+        guard let answerID = self.currentAnswer?.answerID else { return }
+        self.delegate?.handleFlagButtonTapFor(cell: self, answerID: answerID)
+    }
+    
 }
 
 

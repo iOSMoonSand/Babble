@@ -80,4 +80,10 @@ struct Constants {
         static let userBio = "userBio"
         static let photoDownloadURL = "photoDownloadURL"
     }
+    //MARK:
+    //MARK: - Legal Terms and Conditions
+    //MARK:
+    struct TermsAndConditions {
+        static let terms = "Welcome to Babble!\nWe want to make sure that everyone’s experience using this app is a good one. By choosing “I agree!” you agree to the following terms and conditions:\nAgree to Apple’s End User License Agreement (EULA) that can be found here: http://www.apple.com/legal/internet-services/itunes/appstore/dev/stdeula/\nAgree to the Offensive Messages terms: “Offensive Messages: There is no tolerance for objectionable content or abusive users. You may not use this app to send messages that are offensive. If you see a post or comment that you feel is offensive, please flag it to notify the administrator. Immediate corrective action will be taken by either blocking or suspending the author if they are deemed at fault.”"
+    }
 }
