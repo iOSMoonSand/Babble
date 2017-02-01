@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 import Kingfisher
 
 //MARK:
@@ -63,6 +64,33 @@ class UserProfileViewController: UIViewController {
         self.userProfileImageView.layer.cornerRadius = self.userProfileImageView.bounds.width / 2
         self.userProfileImageView.clipsToBounds = true
     }
+    
+    
+    @IBAction func blockButtonTouchUpInside(_ sender: UIButton) {
+        guard let userID = self.selectedUserID else { return }
+        guard let currentUserID = AppState.sharedInstance.currentUserID else { return }
+        let blockAlert = UIAlertController.init(title: "Block User", message: "Are you sure you want to block this user?", preferredStyle: .alert)
+        let yesAction = UIAlertAction.init(title: "Yes, I'm sure", style: .default) { (action) in
+            FIRAnalytics.logEvent(withName: "user_blocked", parameters: [
+                kFIRParameterItemID: userID as NSObject,
+                "offendedUser": currentUserID as NSObject
+                ])
+            let alert2 = UIAlertController(title: "Thanks", message: "This user won't bother you any more.", preferredStyle: .alert)
+            alert2.addAction(UIAlertAction(title: "OK", style: .cancel, handler: { _ in
+                return
+            }))
+            self.present(alert2, animated: true, completion: nil)
+        }
+        let noAction = UIAlertAction.init(title: "No", style: .default) { (action) in
+            return
+        }
+        blockAlert.addAction(yesAction)
+        blockAlert.addAction(noAction)
+        self.present(blockAlert, animated: true, completion: nil)
+    }
+    
+    
+    
 }
 
 
