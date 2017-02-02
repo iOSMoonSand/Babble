@@ -81,12 +81,12 @@ class SignInViewController: UIViewController {
         self.makeUserAcceptTerms()
         self.emailField.delegate = self
         self.passwordField.delegate = self
-        if FBSDKAccessToken.current() != nil {
-            guard let user = FIRAuth.auth()?.currentUser else { return }
-            self.signedIn(user)
-        }
-        guard let user = FIRAuth.auth()?.currentUser else { return }
-        self.signedIn(user)
+//        if FBSDKAccessToken.current() != nil {
+//            guard let user = FIRAuth.auth()?.currentUser else { return }
+//            self.signedIn(user)
+//        }
+//        guard let user = FIRAuth.auth()?.currentUser else { return }
+//        self.signedIn(user)
     }
     
     //MARK: - EULA and user-generated content agreement
@@ -127,6 +127,7 @@ class SignInViewController: UIViewController {
         let userID = user!.uid
         AppState.sharedInstance.currentUserID = userID
         self.ref?.child("users").child(userID).observe(.value, with: { (userSnapshot) in
+            //create profile photo Url AppState and upload to Firebase
             var user = userSnapshot.value as! [String: AnyObject]
             AppState.sharedInstance.photoDownloadURL = nil
             if let photoDownloadURL = user[Constants.UserFields.photoDownloadURL] as! String? {
@@ -261,7 +262,7 @@ extension SignInViewController: FBSDKLoginButtonDelegate {
         }
         let credential = FIRFacebookAuthProvider.credential(withAccessToken: FBSDKAccessToken.current().tokenString)
         FIRAuth.auth()?.signIn(with: credential) { (user, error) in
-            self.signedIn(user)
+//            self.signedIn(user)
             if let error = error {
                 Utility.shared.errorAlert("Oops", message: error.localizedDescription, presentingViewController: self)
                 print(error.localizedDescription)
