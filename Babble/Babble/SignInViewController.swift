@@ -23,7 +23,9 @@ class SignInViewController: UIViewController {
     //MARK: - Properties
     //MARK:
     @IBOutlet weak var emailField: UITextField!
+    @IBOutlet weak var emailIconImageView: UIImageView!
     @IBOutlet weak var passwordField: UITextField!
+    @IBOutlet weak var passwordIconImageView: UIImageView!
     @IBOutlet weak var logoImageView: UIImageView!
     @IBOutlet weak var createAccountButton: UIButton!
     @IBOutlet weak var forgotPasswordButton: UIButton!
@@ -36,20 +38,24 @@ class SignInViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let gradient = CAGradientLayer()
-        gradient.frame = self.view.bounds
-        gradient.colors = [
+        let viewGradient = CAGradientLayer()
+        viewGradient.frame = self.view.bounds
+        viewGradient.colors = [
             UIColor(red:0.43, green:0.84, blue:0.73, alpha:1.0).cgColor,
             UIColor(red:0.25, green:0.69, blue:0.60, alpha:1.0).cgColor
         ]
-        self.view.layer.insertSublayer(gradient, at: 0)
+        self.view.layer.insertSublayer(viewGradient, at: 0)
         
         self.logoImageView.image = self.logoImageView.image?.withRenderingMode(.alwaysTemplate)
-        self.logoImageView.tintColor = UIColor(red:0.25, green:0.59, blue:0.60, alpha:1.0)
+        self.logoImageView.tintColor = UIColor(red:0.25, green:0.50, blue:0.60, alpha:1.0)
         
+        self.emailIconImageView.image = self.emailIconImageView.image?.withRenderingMode(.alwaysTemplate)
+        self.emailIconImageView.tintColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:0.7)
         self.emailField.layer.borderWidth = 0.0
         self.emailField.textColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.0)
         self.emailField.attributedPlaceholder = NSAttributedString(string: SignInConstants.emailPlaceholder, attributes: [NSForegroundColorAttributeName: UIColor(red:1.00, green:1.00, blue:1.00, alpha:0.7)])
+        self.passwordIconImageView.image = self.passwordIconImageView.image?.withRenderingMode(.alwaysTemplate)
+        self.passwordIconImageView.tintColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:0.7)
         self.passwordField.layer.borderWidth = 0.0
         self.passwordField.textColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.0)
         self.passwordField.attributedPlaceholder = NSAttributedString(string: SignInConstants.passwordPlaceholder, attributes: [NSForegroundColorAttributeName: UIColor(red:1.00, green:1.00, blue:1.00, alpha:0.7)])

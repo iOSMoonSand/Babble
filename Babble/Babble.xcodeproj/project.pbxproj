@@ -39,6 +39,7 @@
 		5EBD4DE41D7F525E004DA8DD /* HomeToProfilesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBD4DE31D7F525E004DA8DD /* HomeToProfilesViewController.swift */; };
 		5EBD4DE61D7F52A8004DA8DD /* AnswersToProfilesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBD4DE51D7F52A8004DA8DD /* AnswersToProfilesViewController.swift */; };
 		5ECC913B1D482B3E001221C4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5ECC913A1D482B3E001221C4 /* GoogleService-Info.plist */; };
+		5ECE375C1E42AC4E001486DC /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5ECE375B1E42AC4E001486DC /* FBSDKLoginKit.framework */; };
 		89062636351A659F5583CF1A /* Pods_Babble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553BF0229359E709927D1DE1 /* Pods_Babble.framework */; };
 /* End PBXBuildFile section */
 
@@ -80,6 +81,7 @@
 		5EBD4DE31D7F525E004DA8DD /* HomeToProfilesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeToProfilesViewController.swift; sourceTree = "<group>"; };
 		5EBD4DE51D7F52A8004DA8DD /* AnswersToProfilesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnswersToProfilesViewController.swift; sourceTree = "<group>"; };
 		5ECC913A1D482B3E001221C4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		5ECE375B1E42AC4E001486DC /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +89,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5ECE375C1E42AC4E001486DC /* FBSDKLoginKit.framework in Frameworks */,
 				89062636351A659F5583CF1A /* Pods_Babble.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -97,6 +100,7 @@
 		02D537B40D799E4BDEBAA375 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5ECE375B1E42AC4E001486DC /* FBSDKLoginKit.framework */,
 				553BF0229359E709927D1DE1 /* Pods_Babble.framework */,
 			);
 			name = Frameworks;
@@ -487,6 +491,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "~/Documents/FacebookSDK";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -535,6 +540,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "~/Documents/FacebookSDK";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -561,6 +567,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = T32WTHET6X;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = Babble/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.iosmoonsand.Babble;
@@ -580,6 +590,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = T32WTHET6X;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = Babble/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.iosmoonsand.Babble;
