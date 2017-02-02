@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import FBSDKCoreKit
+import FBSDKLoginKit
 import Firebase
 import Kingfisher
 
@@ -27,6 +29,7 @@ class SignInViewController: UIViewController {
     @IBOutlet weak var passwordField: UITextField!
     @IBOutlet weak var passwordIconImageView: UIImageView!
     @IBOutlet weak var logoImageView: UIImageView!
+    @IBOutlet weak var fbLoginButton: FBSDKLoginButton!
     @IBOutlet weak var createAccountButton: UIButton!
     @IBOutlet weak var forgotPasswordButton: UIButton!
     let ref = FirebaseMgr.shared.ref
@@ -58,7 +61,10 @@ class SignInViewController: UIViewController {
         self.passwordIconImageView.tintColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:0.7)
         self.passwordField.layer.borderWidth = 0.0
         self.passwordField.textColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.0)
-        self.passwordField.attributedPlaceholder = NSAttributedString(string: SignInConstants.passwordPlaceholder, attributes: [NSForegroundColorAttributeName: UIColor(red:1.00, green:1.00, blue:1.00, alpha:0.7)])
+        self.passwordField.attributedPlaceholder = NSAttributedString(string: SignInConstants.passwordPlaceholder, attributes:[NSForegroundColorAttributeName: UIColor(red:1.00, green:1.00, blue:1.00, alpha:0.7)])
+        
+        self.fbLoginButton.delegate = self
+        self.fbLoginButton.readPermissions = ["public_profile", "email", "user_friends"]
         
         self.createAccountButton.setTitleColor(UIColor(red:1.00, green:1.00, blue:1.00, alpha:0.7), for: .normal)
         self.forgotPasswordButton.setTitleColor(UIColor(red:1.00, green:1.00, blue:1.00, alpha:0.7), for: .normal)
@@ -75,10 +81,14 @@ class SignInViewController: UIViewController {
         self.makeUserAcceptTerms()
         self.emailField.delegate = self
         self.passwordField.delegate = self
-        if let user = FIRAuth.auth()?.currentUser {
+        if FBSDKAccessToken.current() != nil {
+            guard let user = FIRAuth.auth()?.currentUser else { return }
             self.signedIn(user)
         }
+        guard let user = FIRAuth.auth()?.currentUser else { return }
+        self.signedIn(user)
     }
+    
     //MARK: - EULA and user-generated content agreement
     func setUserDefaults() {
         UserDefaults.standard.bool(forKey: "launchedBefore")
@@ -106,7 +116,7 @@ class SignInViewController: UIViewController {
         }
     }
     
-
+    
     // MARK:
     // MARK: - Firebase Authentication Configuration
     // MARK:
@@ -224,9 +234,9 @@ class SignInViewController: UIViewController {
 // MARK: - UITextFieldDelegate Protocol
 // MARK:
 extension SignInViewController: UITextFieldDelegate {
-// MARK:
-// MARK: - UITextFieldDelegate Methods
-// MARK:
+    // MARK:
+    // MARK: - UITextFieldDelegate Methods
+    // MARK:
     func textFieldDidBeginEditing(_ textField: UITextField) {
         print("textFieldDidBeginEditing")
         self.tapOutsideTextView = UITapGestureRecognizer(target: self, action: #selector(self.didTapOutsideTextViewWhenEditing))
@@ -243,7 +253,27 @@ extension SignInViewController: UITextFieldDelegate {
     }
 }
 
-
+extension SignInViewController: FBSDKLoginButtonDelegate {
+    func loginButton(_ loginButton: FBSDKLoginButton!, didCompleteWith result: FBSDKLoginManagerLoginResult!, error: Error!) {
+        if let error = error {
+            print(error.localizedDescription)
+            return
+        }
+        let credential = FIRFacebookAuthProvider.credential(withAccessToken: FBSDKAccessToken.current().tokenString)
+        FIRAuth.auth()?.signIn(with: credential) { (user, error) in
+            self.signedIn(user)
+            if let error = error {
+                Utility.shared.errorAlert("Oops", message: error.localizedDescription, presentingViewController: self)
+                print(error.localizedDescription)
+                return
+            }
+        }
+    }
+    func loginButtonDidLogOut(_ loginButton: FBSDKLoginButton!) {
+        //required method
+        print("not using this method")
+    }
+}
 
 
 

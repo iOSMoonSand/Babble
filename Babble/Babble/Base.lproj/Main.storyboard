@@ -91,7 +91,7 @@
                                     <action selector="didTapCreateAccount:" destination="gr6-q9-TAC" eventType="touchUpInside" id="HPy-fc-q1b"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1w6-FF-IPE">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1w6-FF-IPE" customClass="FBSDKLoginButton">
                                 <rect key="frame" x="16" y="426" width="343" height="44"/>
                                 <color key="backgroundColor" red="0.23137254901960785" green="0.34901960784313724" blue="0.59607843137254901" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -199,6 +199,7 @@
                         <outlet property="EmailField" destination="zCq-5g-y7S" id="Oo4-E8-roh"/>
                         <outlet property="createAccountButton" destination="fYi-yw-k7T" id="Zdj-3V-r6c"/>
                         <outlet property="emailIconImageView" destination="SOi-hd-8HO" id="kPF-ht-6tq"/>
+                        <outlet property="fbLoginButton" destination="1w6-FF-IPE" id="ynh-R2-g8G"/>
                         <outlet property="forgotPasswordButton" destination="jzu-Fv-7Ew" id="vva-Dt-4Oy"/>
                         <outlet property="logoImageView" destination="T5B-IF-07L" id="Hl8-9H-yXB"/>
                         <outlet property="passwordField" destination="5p2-Kw-41S" id="N9f-yb-RDU"/>
